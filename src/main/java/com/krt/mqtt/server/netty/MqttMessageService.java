@@ -5,9 +5,9 @@ import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.beans.MqttTopic;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.service.UserService;
+import com.krt.mqtt.server.utils.MessageIdUtil;
 import com.krt.mqtt.server.utils.MqttUtil;
-import com.krt.mqtt.server.utils.SpringUtil;
-import io.netty.buffer.ByteBuf;
+import com.netty.server.constant.MqttMessageStateConst;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -18,9 +18,7 @@ import io.netty.util.AttributeKey;
 import io.netty.util.IllegalReferenceCountException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,9 +45,9 @@ public class MqttMessageService {
     private static ConcurrentHashMap<String, Set<MqttTopic>> topics = new ConcurrentHashMap<>();
 
     /**
-     * 未完成的报文
+     * 未完成的回复报文
      */
-    private static ConcurrentHashMap<Integer, MqttSendMessage> messages = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<Integer, MqttSendMessage> replyMessages = new ConcurrentHashMap<>();
 
     public void replyConnectMessage(ChannelHandlerContext ctx, MqttConnectMessage mqttConnectMessage){
         /**
@@ -121,38 +119,39 @@ public class MqttMessageService {
 //        System.out.println("publish name: "+mqttPublishMessage.variableHeader().topicName());
 //        System.out.println("publish content: "+content);
 
-//        byte[] payload = MqttUtil.readBytes(mqttPublishMessage.payload());
+        byte[] payload = MqttUtil.readBytes(mqttPublishMessage.payload());
+        /**
+         * 根据客户端发来的报文类型来决定回复客户端的报文类型
+         */
         switch (mqttPublishMessage.fixedHeader().qosLevel()){
             case AT_MOST_ONCE:
                 pushPublishTopic(ctx, mqttPublishMessage);
                 break;
             case AT_LEAST_ONCE:
-//                saveMessage(ctx,
-//                        mqttPublishMessage.variableHeader().messageId(),
-//                        mqttPublishMessage.variableHeader().topicName(),
-//                        payload,
-//                        qosLevel,
-//                        MqttMessageStateConst.PUB);
                 sendPubAckMessage(ctx, mqttPublishMessage);
                 pushPublishTopic(ctx, mqttPublishMessage);
                 break;
             case EXACTLY_ONCE:
-//                saveMessage(ctx,
-//                        mqttPublishMessage.variableHeader().messageId(),
-//                        mqttPublishMessage.variableHeader().topicName(),
-//                        payload,
-//                        qosLevel,
-//                        MqttMessageStateConst.PUB);
-                sendPubRecMessage(ctx, mqttPublishMessage);
+                /**
+                 * 检查一下消息是否重复，是否需要idDup标识位
+                 */
+                if( !mqttPublishMessage.fixedHeader().isDup() ||
+                        !checkExistReplyMessage(mqttPublishMessage.variableHeader().messageId()) ) {
+                    saveReplyMessage(ctx,
+                            mqttPublishMessage.variableHeader().messageId(),
+                            mqttPublishMessage.variableHeader().topicName(),
+                            payload,
+                            com.netty.server.constant.MqttMessageStateConst.REC);
+                }
+                sendPubRecMessage(ctx, mqttPublishMessage.variableHeader().messageId());
                 break;
         }
     }
 
     public void replyPubRelMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage){
-        MqttPublishMessage mqttPublishMessage = (MqttPublishMessage)mqttMessage;
-//        updateMessage(mqttPublishMessage.variableHeader().messageId(), MqttMessageStateConst.COMP);
-        sendPubCompMessage(ctx, mqttPublishMessage);
-        pushPublishTopic(ctx,  mqttPublishMessage);
+        int messageId = ((MqttMessageIdVariableHeader)mqttMessage.variableHeader()).messageId();
+        sendPubCompMessage(ctx, mqttMessage);
+        completeReplyMessage(messageId);
     }
 
     public void replyDisConnectMessage(ChannelHandlerContext ctx){
@@ -167,9 +166,8 @@ public class MqttMessageService {
         writeAndFlush(ctx, mqttPubAckMessage);
     }
 
-    public void sendPubRecMessage(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage){
+    public void sendPubRecMessage(ChannelHandlerContext ctx, int messageId){
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.PUBREC,false, MqttQoS.AT_LEAST_ONCE,false,0x02);
-        int messageId = mqttPublishMessage.variableHeader().messageId();
         MqttMessageIdVariableHeader from = MqttMessageIdVariableHeader.from(messageId);
         MqttPubAckMessage mqttPubRecMessage = new MqttPubAckMessage(mqttFixedHeader, from);
         writeAndFlush(ctx, mqttPubRecMessage);
@@ -227,7 +225,7 @@ public class MqttMessageService {
                 for (MqttTopic mqttTopic : mqttTopics){
                     switch (mqttWill.getMqttQoS()){
                         case AT_MOST_ONCE:
-                            sendTopicMessage(mqttTopic.getCtx(), mqttWill.getWillTopic(), mqttWill.getWillMessage(), com.netty.server.utils.MessageIdUtil.messageId(), mqttWill.getMqttQoS());
+                            sendTopicMessage(mqttTopic.getCtx(), mqttWill.getWillTopic(), mqttWill.getWillMessage(), MessageIdUtil.messageId(), mqttWill.getMqttQoS());
                             break;
                         case AT_LEAST_ONCE:
                             // 先不实现
@@ -260,38 +258,81 @@ public class MqttMessageService {
         for (String deviceId: channels.keySet()) {
             MqttChannel mqttChannel = channels.get(deviceId);
             if( checkOvertime(mqttChannel.getActiveTime(), mqttChannel.getKeepAlive()) ){
-                // 在1.5个心跳周期内没有收到心跳包，则断开与客户端的链接
+                /**
+                 * 在1.5个心跳周期内没有收到心跳包，则断开与客户端的链接
+                  */
                 log.info("客户端（"+mqttChannel.getDeviceId()+"）心跳超时，强制断开链接");
                 forceClose(mqttChannel.getCtx());
             }
         }
     }
 
-//    private static void saveMessage(ChannelHandlerContext ctx, int messageId, String topicName, byte[] payload, MqttQoS mqttQoS, int state){
-//        MqttSendMessage mqttSendMessage = new MqttSendMessage();
-//        mqttSendMessage.setMessageId(messageId);
-//        mqttSendMessage.setTopicName(topicName);
-//        mqttSendMessage.setPayload(payload);
-//        mqttSendMessage.setMqttQoS(mqttQoS);
-//        mqttSendMessage.setState(state);
-//        mqttSendMessage.setCtx(ctx);
-//        mqttSendMessage.setSendTime(new Date().getTime());
-//        messages.put(messageId, mqttSendMessage);
-//    }
-//
-//    private static void updateMessage(int messageId, int state){
-//        MqttSendMessage mqttSendMessage = messages.get(messageId);
-//        if( mqttSendMessage != null ){
-//            mqttSendMessage.setState(state);
-//            mqttSendMessage.setSendTime(new Date().getTime());
-//        }else{
-//            System.out.println("Error：找不到对应的message");
-//        }
-//    }
+    private void saveReplyMessage(ChannelHandlerContext ctx, int messageId, String topicName, byte[] payload, int state){
+        MqttSendMessage mqttSendMessage = new MqttSendMessage();
+        mqttSendMessage.setMessageId(messageId);
+        mqttSendMessage.setTopicName(topicName);
+        mqttSendMessage.setPayload(payload);
+        mqttSendMessage.setState(state);
+        mqttSendMessage.setCtx(ctx);
+        mqttSendMessage.setSendTime(new Date().getTime());
+        mqttSendMessage.setResendCount(0);
+        replyMessages.put(messageId, mqttSendMessage);
+    }
+
+    public void updateReplyMessage(int messageId){
+        MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
+        if( mqttSendMessage != null ){
+            mqttSendMessage.setSendTime(new Date().getTime());
+            mqttSendMessage.setResendCount(mqttSendMessage.getResendCount()+1);
+        }else{
+            log.error("未完成回复报文（"+messageId+"）不存在");
+        }
+    }
+
+    public void completeReplyMessage(int messageId){
+        MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
+        if( mqttSendMessage != null && mqttSendMessage.getState() == com.netty.server.constant.MqttMessageStateConst.REC ){
+            pushPublishTopic(mqttSendMessage.getCtx(), mqttSendMessage.getTopicName(), mqttSendMessage.getPayload());
+            replyMessages.remove(messageId);
+        }else{
+            log.error("未完成回复报文（"+messageId+"）不存在");
+        }
+    }
+
+    public void resendReplyMessage(){
+        for (Integer messageId: replyMessages.keySet()){
+            MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
+            if( mqttSendMessage.getState() == MqttMessageStateConst.REC ){
+                if( mqttSendMessage.getCtx().channel().isActive() && mqttSendMessage.getCtx().channel().isWritable() ){
+                    if( checkReplyTime(mqttSendMessage.getSendTime(), mqttSendMessage.getResendCount()) ) {
+                        sendPubRecMessage(mqttSendMessage.getCtx(), messageId);
+                        updateReplyMessage(messageId);
+                    }
+                }else{
+                    /**
+                     * 通道已关闭，删除消息
+                     */
+                    replyMessages.remove(messageId);
+                }
+            }
+        }
+    }
+
+    private boolean checkExistReplyMessage(int messageId){
+        MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
+        if( mqttSendMessage != null && mqttSendMessage.getState() == com.netty.server.constant.MqttMessageStateConst.REC ){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     private boolean checkOvertime(long activeTime, long keepAlive) {
-//        System.out.println(System.currentTimeMillis()-activeTime);
         return System.currentTimeMillis()-activeTime>=keepAlive*1.5*1000;
+    }
+
+    private boolean checkReplyTime(long sendTime, long interval) {
+        return System.currentTimeMillis()-sendTime>=interval*1000;
     }
 
     public void forceClose(ChannelHandlerContext ctx){
@@ -307,13 +348,19 @@ public class MqttMessageService {
     private void pushPublishTopic(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage){
         String topicName = mqttPublishMessage.variableHeader().topicName();
         byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
+        pushPublishTopic(ctx, topicName, topicMessage);
+    }
+
+    private void pushPublishTopic(ChannelHandlerContext ctx, String topicName, byte[] payload){
         /**
          * 遍历所有订阅了该主题的客户端
          */
         Set<MqttTopic> mqttTopics = topics.get(topicName);
-        for (MqttTopic mqttTopic : mqttTopics){
-            if( mqttTopic.getCtx().channel().isActive() && mqttTopic.getCtx().channel().isWritable() ){
-                sendTopicMessage(mqttTopic.getCtx(), topicName, topicMessage, com.netty.server.utils.MessageIdUtil.messageId(), mqttTopic.getMqttQoS());
+        if( mqttTopics != null ) {
+            for (MqttTopic mqttTopic : mqttTopics) {
+                if (mqttTopic.getCtx().channel().isActive() && mqttTopic.getCtx().channel().isWritable()) {
+                    sendTopicMessage(mqttTopic.getCtx(), topicName, payload, MessageIdUtil.messageId(), mqttTopic.getMqttQoS());
+                }
             }
         }
     }

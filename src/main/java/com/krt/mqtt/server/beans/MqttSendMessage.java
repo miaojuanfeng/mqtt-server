@@ -11,13 +11,13 @@ public class MqttSendMessage {
 
     private byte[] payload;
 
-    private MqttQoS mqttQoS;
-
     private int state;
 
     private ChannelHandlerContext ctx;
 
     private long sendTime;
+
+    private int resendCount;
 
     public int getMessageId() {
         return messageId;
@@ -43,14 +43,6 @@ public class MqttSendMessage {
         this.payload = payload;
     }
 
-    public MqttQoS getMqttQoS() {
-        return mqttQoS;
-    }
-
-    public void setMqttQoS(MqttQoS mqttQoS) {
-        this.mqttQoS = mqttQoS;
-    }
-
     public int getState() {
         return state;
     }
@@ -73,5 +65,13 @@ public class MqttSendMessage {
 
     public void setSendTime(long sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public int getResendCount() {
+        return resendCount;
+    }
+
+    public void setResendCount(int resendCount) {
+        this.resendCount = resendCount;
     }
 }

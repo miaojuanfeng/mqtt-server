@@ -1,4 +1,4 @@
-package com.netty.server.utils;
+package com.krt.mqtt.server.utils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

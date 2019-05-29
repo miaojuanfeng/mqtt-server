@@ -7,6 +7,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Case;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -126,6 +127,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
     //channel发生异常，若不关闭，随着异常channel的逐渐增多，性能也就随之下降
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error("捕获通道异常: "+cause);
+        cause.printStackTrace();
         mqttMessageService.sendWillMessage(ctx);
         mqttMessageService.forceClose(ctx);
 //        super.exceptionCaught(ctx, cause);

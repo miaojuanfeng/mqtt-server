@@ -1,6 +1,7 @@
 package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.thread.AliveThread;
+import com.krt.mqtt.server.thread.MessageThread;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -28,6 +29,8 @@ public class NettyServer {
 
             AliveThread aliveThread = new AliveThread();
             aliveThread.start();
+            MessageThread messageThread = new MessageThread();
+            messageThread.start();
 
             ChannelFuture channelFuture = serverBootstrap.bind(8088).sync();
 
