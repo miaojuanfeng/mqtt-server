@@ -26,54 +26,51 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
         mqttMessageService = SpringUtil.getBean(MqttMessageService.class);
     }
 
-//    static {
-//        userService = SpringUtil.getBean(UserService.class);
-//    }
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MqttMessage mqttMessage) throws Exception {
-        System.out.println("Client said:" + mqttMessage);
-        System.out.println("mqttMessageService:" + mqttMessageService);
+        log.info("客户端发来报文: " + mqttMessage);
         /**
          * 客户端到服务端的网络连接建立后，客户端发送给服务端的第一个报文必须是CONNECT报文
          * 否则断开与该客户端的链接
          */
-        if( !mqttMessage.fixedHeader().messageType().equals(MqttMessageType.CONNECT) && !MqttMessageService.checkLogin(ctx) ){
+        if( !mqttMessage.fixedHeader().messageType().equals(MqttMessageType.CONNECT) && !mqttMessageService.checkLogin(ctx) ){
+            /**
+             * 如果客户端在未登录成功的状态下发送CONNECT以外的报文，
+             * 该行为违反协议规定，服务器立即断开与该客户端的连接
+             */
             ctx.channel().close();
             return;
         }
+        /**
+         * 处理客户端连接报文
+         */
         if( mqttMessage.fixedHeader().messageType().equals(MqttMessageType.CONNECT) ){
-//            MqttMessageService.replyConnectMessage(ctx, (MqttConnectMessage) mqttMessage);
             mqttMessageService.replyConnectMessage(ctx, (MqttConnectMessage) mqttMessage);
             return;
         }
         /**
-         * 更新客户端活跃时间
+         * 收到客户端发来的任何报文，包括但不限于PINGREQ，
+         * 则证明客户端存活，需要更新客户端活跃时间
          */
-        MqttMessageService.updateActiveTime(ctx);
-        //
+        mqttMessageService.updateActiveTime(ctx);
+        /**
+         * 处理客户端发来的其他类型报文
+         */
         switch (mqttMessage.fixedHeader().messageType()){
-//            case CONNECT:
-//                MqttMessageService.replyConnectMessage(ctx, (MqttConnectMessage) mqttMessage);
-//                break;
             case DISCONNECT:
-                MqttMessageService.replyDisConnectMessage(ctx);
+                mqttMessageService.replyDisConnectMessage(ctx);
                 break;
             case PINGREQ:
-                MqttMessageService.replyPingReqMessage(ctx);
+                mqttMessageService.replyPingReqMessage(ctx);
                 break;
             case PUBLISH:
-//                ByteBuf byteBuf = ((MqttPublishMessage)mqttMessage).payload();
-//                byte[] b = new byte[byteBuf.readableBytes()];
-//                byteBuf.readBytes(b);
-//                System.out.println(new String(b));
-                MqttMessageService.replyPublishMessage(ctx, (MqttPublishMessage) mqttMessage);
+                mqttMessageService.replyPublishMessage(ctx, (MqttPublishMessage) mqttMessage);
                 break;
             case PUBREL:
-                MqttMessageService.replyPubRelMessage(ctx, mqttMessage);
+                mqttMessageService.replyPubRelMessage(ctx, mqttMessage);
                 break;
             case SUBSCRIBE:
-                MqttMessageService.replySubscribeMessage(ctx, (MqttSubscribeMessage) mqttMessage);
+                mqttMessageService.replySubscribeMessage(ctx, (MqttSubscribeMessage) mqttMessage);
                 break;
         }
     }
@@ -99,6 +96,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("客户端与服务端断开连接之后");
+//        /**
+//         *  该事件与异常事件同时触发，会关闭2次通道
+//          */
+//        mqttMessageService.sendWillMessage(ctx);
+//        mqttMessageService.forceClose(ctx);
         super.channelInactive(ctx);
     }
 
@@ -123,9 +125,9 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
     @Override
     //channel发生异常，若不关闭，随着异常channel的逐渐增多，性能也就随之下降
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        System.out.println("捕获channel异常");
-        MqttMessageService.sendWillMessage(ctx);
-        MqttMessageService.forceClose(ctx);
+        log.error("捕获通道异常: "+cause);
+        mqttMessageService.sendWillMessage(ctx);
+        mqttMessageService.forceClose(ctx);
 //        super.exceptionCaught(ctx, cause);
     }
 
