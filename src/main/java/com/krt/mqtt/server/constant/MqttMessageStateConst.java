@@ -1,4 +1,4 @@
-package com.netty.server.constant;
+package com.krt.mqtt.server.constant;
 
 public class MqttMessageStateConst {
 

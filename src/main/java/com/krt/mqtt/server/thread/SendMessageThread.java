@@ -3,7 +3,7 @@ package com.krt.mqtt.server.thread;
 import com.krt.mqtt.server.netty.MqttMessageService;
 import com.krt.mqtt.server.utils.SpringUtil;
 
-public class MessageThread extends Thread {
+public class SendMessageThread extends Thread{
 
     private MqttMessageService mqttMessageService;
 
@@ -11,7 +11,7 @@ public class MessageThread extends Thread {
 
     private final long timeout = 1000;
 
-    public MessageThread(){
+    public SendMessageThread(){
         mqttMessageService = SpringUtil.getBean(MqttMessageService.class);
     }
 
@@ -20,7 +20,7 @@ public class MessageThread extends Thread {
         while(true){
             synchronized (lock){
                 try {
-                    mqttMessageService.resendReplyMessage();
+                    mqttMessageService.resendSendMessage();
                     lock.wait(timeout);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

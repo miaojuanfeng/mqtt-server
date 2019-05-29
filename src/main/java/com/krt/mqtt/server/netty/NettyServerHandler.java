@@ -67,11 +67,23 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
             case PUBLISH:
                 mqttMessageService.replyPublishMessage(ctx, (MqttPublishMessage) mqttMessage);
                 break;
+            case PUBACK:
+                mqttMessageService.replyPubAckMessage(ctx, (MqttPubAckMessage) mqttMessage);
+                break;
+            case PUBREC:
+                mqttMessageService.replyPubRecMessage(ctx, (MqttPubAckMessage) mqttMessage);
+                break;
             case PUBREL:
                 mqttMessageService.replyPubRelMessage(ctx, mqttMessage);
                 break;
+            case PUBCOMP:
+                mqttMessageService.replyPubCompMessage(ctx, mqttMessage);
+                break;
             case SUBSCRIBE:
                 mqttMessageService.replySubscribeMessage(ctx, (MqttSubscribeMessage) mqttMessage);
+                break;
+            case UNSUBSCRIBE:
+                mqttMessageService.replyUnsubscribeMessage(ctx, (MqttUnsubscribeMessage) mqttMessage);
                 break;
         }
     }

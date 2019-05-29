@@ -13,6 +13,8 @@ public class MqttSendMessage {
 
     private int state;
 
+    private MqttQoS mqttQoS;
+
     private ChannelHandlerContext ctx;
 
     private long sendTime;
@@ -49,6 +51,14 @@ public class MqttSendMessage {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public MqttQoS getMqttQoS() {
+        return mqttQoS;
+    }
+
+    public void setMqttQoS(MqttQoS mqttQoS) {
+        this.mqttQoS = mqttQoS;
     }
 
     public ChannelHandlerContext getCtx() {

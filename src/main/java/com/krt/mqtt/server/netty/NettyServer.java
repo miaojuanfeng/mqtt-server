@@ -1,14 +1,14 @@
 package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.thread.AliveThread;
-import com.krt.mqtt.server.thread.MessageThread;
+import com.krt.mqtt.server.thread.ReplyMessageThread;
+import com.krt.mqtt.server.thread.SendMessageThread;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,8 +29,10 @@ public class NettyServer {
 
             AliveThread aliveThread = new AliveThread();
             aliveThread.start();
-            MessageThread messageThread = new MessageThread();
-            messageThread.start();
+            ReplyMessageThread replyMessageThread = new ReplyMessageThread();
+            replyMessageThread.start();
+            SendMessageThread sendMessageThread = new SendMessageThread();
+            sendMessageThread.start();
 
             ChannelFuture channelFuture = serverBootstrap.bind(8088).sync();
 
