@@ -1,19 +1,11 @@
 package com.krt.mqtt.server.netty;
 
-import com.krt.mqtt.server.service.UserService;
 import com.krt.mqtt.server.utils.SpringUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.*;
 import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Case;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.nio.ByteBuffer;
 
 @ChannelHandler.Sharable
 @Slf4j
