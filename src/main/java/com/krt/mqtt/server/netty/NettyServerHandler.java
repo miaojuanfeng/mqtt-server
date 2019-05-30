@@ -29,7 +29,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MqttMessage mqttMessage) throws Exception {
-        log.info("客户端发来报文: " + mqttMessage);
         /**
          * 客户端到服务端的网络连接建立后，客户端发送给服务端的第一个报文必须是CONNECT报文
          * 否则断开与该客户端的链接
@@ -42,6 +41,16 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
             ctx.channel().close();
             return;
         }
+        /**
+         * 输出报文日志
+         */
+        String deviceId = "";
+        if( ctx.channel().hasAttr(MqttMessageService._deviceId) ) {
+            deviceId = ctx.channel().attr(MqttMessageService._deviceId).get();
+        }else{
+            deviceId = ((MqttConnectMessage) mqttMessage).payload().clientIdentifier();
+        }
+        log.info("客户端（" + deviceId + "）发来报文: " + mqttMessage);
         /**
          * 处理客户端连接报文
          */
@@ -90,25 +99,25 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel注册");
+//        System.out.println("channel注册");
         super.channelRegistered(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel注册");
+//        System.out.println("channel注销");
         super.channelUnregistered(ctx);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel活跃状态");
+//        System.out.println("客户端与服务端成功连接");
         super.channelActive(ctx);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("客户端与服务端断开连接之后");
+//        System.out.println("客户端与服务端断开连接");
 //        /**
 //         *  该事件与异常事件同时触发，会关闭2次通道
 //          */
@@ -119,19 +128,19 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel读取数据完毕");
+//        System.out.println("channel读取数据完毕");
         super.channelReadComplete(ctx);
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        System.out.println("用户事件触发");
+//        System.out.println("用户事件触发");
         super.userEventTriggered(ctx, evt);
     }
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel可写事件更改");
+//        System.out.println("channel可写事件更改");
         super.channelWritabilityChanged(ctx);
     }
 
@@ -147,13 +156,13 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("助手类添加");
+//        System.out.println("助手类添加");
         super.handlerAdded(ctx);
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("助手类移除");
+//        System.out.println("助手类移除");
         super.handlerRemoved(ctx);
     }
 }

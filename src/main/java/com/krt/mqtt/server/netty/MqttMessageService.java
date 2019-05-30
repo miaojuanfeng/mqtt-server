@@ -30,9 +30,9 @@ public class MqttMessageService {
     @Autowired
     private UserService userService;
 
-    private static final AttributeKey<Boolean> _login = AttributeKey.valueOf("login");
+    public static final AttributeKey<Boolean> _login = AttributeKey.valueOf("login");
 
-    private static final AttributeKey<String> _deviceId = AttributeKey.valueOf("deviceId");
+    public static final AttributeKey<String> _deviceId = AttributeKey.valueOf("deviceId");
 
     /**
      * 已连接到服务器端的通道
@@ -124,17 +124,18 @@ public class MqttMessageService {
 //        System.out.println("publish name: "+mqttPublishMessage.variableHeader().topicName());
 //        System.out.println("publish content: "+content);
 
-        byte[] payload = MqttUtil.readBytes(mqttPublishMessage.payload());
+        String topicName = mqttPublishMessage.variableHeader().topicName();
+        byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
         switch (mqttPublishMessage.fixedHeader().qosLevel()){
             case AT_MOST_ONCE:
-                pushPublishTopic(ctx, mqttPublishMessage);
+                pushPublishTopic(ctx, topicName, topicMessage);
                 break;
             case AT_LEAST_ONCE:
                 sendPubAckMessage(ctx, mqttPublishMessage.variableHeader().messageId());
-                pushPublishTopic(ctx, mqttPublishMessage);
+                pushPublishTopic(ctx, topicName, topicMessage);
                 break;
             case EXACTLY_ONCE:
                 /**
@@ -145,7 +146,7 @@ public class MqttMessageService {
                     saveReplyMessage(ctx,
                             mqttPublishMessage.variableHeader().messageId(),
                             mqttPublishMessage.variableHeader().topicName(),
-                            payload,
+                            topicMessage,
                             MqttMessageStateConst.REC);
                 }
                 sendPubRecMessage(ctx, mqttPublishMessage.variableHeader().messageId());
@@ -472,11 +473,12 @@ public class MqttMessageService {
         }
     }
 
-    private void pushPublishTopic(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage){
-        String topicName = mqttPublishMessage.variableHeader().topicName();
-        byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
-        pushPublishTopic(ctx, topicName, topicMessage);
-    }
+//    private void pushPublishTopic(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage){
+//        String topicName = mqttPublishMessage.variableHeader().topicName();
+//        byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
+//        System.out.println("topicMessage: "+new String(topicMessage));
+//        pushPublishTopic(ctx, topicName, topicMessage);
+//    }
 
     private void pushPublishTopic(ChannelHandlerContext ctx, String topicName, byte[] payload){
         /**
@@ -487,7 +489,11 @@ public class MqttMessageService {
             for (String key : mqttTopics.keySet()) {
                 MqttTopic mqttTopic = mqttTopics.get(key);
                 if (mqttTopic.getCtx().channel().isActive() && mqttTopic.getCtx().channel().isWritable()) {
-                    sendTopicMessage(mqttTopic.getCtx(), topicName, payload, MessageIdUtil.messageId(), mqttTopic.getMqttQoS());
+                    int messageId = MessageIdUtil.messageId();
+                    if( mqttTopic.getMqttQoS().value() > MqttQoS.AT_MOST_ONCE.value() ) {
+                        saveSendMessage(ctx, messageId, topicName, payload, mqttTopic.getMqttQoS(), MqttMessageStateConst.PUB);
+                    }
+                    sendTopicMessage(mqttTopic.getCtx(), topicName, payload, messageId, mqttTopic.getMqttQoS());
                 }
             }
         }
@@ -506,9 +512,9 @@ public class MqttMessageService {
             public void operationComplete(ChannelFuture future) throws Exception {
                 try {
                     if (future.isSuccess()) {
-                        log.info("服务器回写报文：" + mqttMessage);
+                        log.info("服务器（" + ctx.channel().attr(_deviceId).get() + "）回写报文：" + mqttMessage);
                     } else {
-                        log.error("服务器回写失败：" + mqttMessage);
+                        log.error("服务器（" + ctx.channel().attr(_deviceId).get() + "）回写失败：" + mqttMessage);
                     }
                 }catch (IllegalReferenceCountException e){
                     // Do nothing
