@@ -3,17 +3,51 @@
 <mapper namespace="com.krt.mqtt.server.mapper.DeviceMapper">
 
     <resultMap id="BaseResultMap" type="com.krt.mqtt.server.entity.Device">
-        <result column="id" jdbcType="INTEGER" property="id" />
+        <id column="id" jdbcType="INTEGER" property="id" />
         <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
         <result column="ip" jdbcType="VARCHAR" property="ip" />
         <result column="port" jdbcType="INTEGER" property="port" />
-        <result column="login_time" jdbcType="INTEGER" property="loginTime" />
-        <result column="insert_time" jdbcType="INTEGER" property="insertTime" />
-        <result column="update_time" jdbcType="INTEGER" property="updateTime" />
+        <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+        <result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+        <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     </resultMap>
 
-    <select id="Sel" resultType="com.krt.mqtt.server.entity.Device">
-        select * from user where id = #{id}
+    <!--<select id="Sel" resultType="com.krt.mqtt.server.entity.Device">-->
+        <!--select * from user where id = #{id}-->
+    <!--</select>-->
+
+    <insert id="insert" parameterType="com.krt.mqtt.server.entity.Device" useGeneratedKeys="true" keyProperty="id">
+        insert into device(device_id, ip, port, login_time, insert_time, update_time)
+        values(#{deviceId}, #{ip}, #{port}, #{loginTime}, #{insertTime}, #{updateTime})
+--         on duplicate key
+--         update ip = values(ip), port = values(port), login_time = values(login_time), update_time = values(update_time)
+    </insert>
+
+    <select id="selectByDeviceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from device where device_id = #{deviceId}
     </select>
+
+    <update id="updateByPrimaryKey" parameterType="com.krt.mqtt.server.entity.Device">
+        update device
+        <set>
+            <if test="ip != null">
+                ip=#{ip},
+            </if>
+            <if test="port != null">
+                port=#{port},
+            </if>
+            <if test="loginTime != null">
+                login_time=#{loginTime},
+            </if>
+            <if test="logoutTime != null">
+                logout_time=#{logoutTime}
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

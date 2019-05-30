@@ -5,7 +5,9 @@ import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.beans.MqttTopic;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
+import com.krt.mqtt.server.entity.Message;
 import com.krt.mqtt.server.service.DeviceService;
+import com.krt.mqtt.server.service.MessageService;
 import com.krt.mqtt.server.utils.MessageIdUtil;
 import com.krt.mqtt.server.utils.MqttUtil;
 import io.netty.buffer.Unpooled;
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,9 +31,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MqttMessageService {
 
     @Autowired
-    private DeviceService userService;
+    private DeviceService deviceService;
+
+    @Autowired
+    private MessageService messageService;
 
     public static final AttributeKey<Boolean> _login = AttributeKey.valueOf("login");
+
+    public static final AttributeKey<Integer> _id = AttributeKey.valueOf("id");
 
     public static final AttributeKey<String> _deviceId = AttributeKey.valueOf("deviceId");
 
@@ -60,7 +68,7 @@ public class MqttMessageService {
         if( existChannel != null ){
             log.info("客户端（"+deviceId+"）已连接上服务器，断开该客户端之前的连接");
             sendDisConnectMessage(existChannel.getCtx(), mqttConnectMessage);
-            existChannel.getCtx().channel().close();
+            forceClose(existChannel.getCtx());
         }
         /**
          * 创建一个新的客户端实例
@@ -85,10 +93,16 @@ public class MqttMessageService {
         }
         channels.put(deviceId, mqttChannel);
         /**
+         * 持久化客户端信息
+         */
+        InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        int id = deviceService.doLogin(deviceId, remoteAddress.getAddress().getHostAddress(), remoteAddress.getPort());
+        /**
          * 设置客户端通道属性
          */
         Channel channel = ctx.channel();
         channel.attr(_login).set(true);
+        channel.attr(_id).set(id);
         channel.attr(_deviceId).set(deviceId);
         /**
          * 回写连接确认报文
@@ -112,15 +126,13 @@ public class MqttMessageService {
     }
 
     public void replyPublishMessage(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage){
-//        ByteBuf byteBuffer = mqttPublishMessage.payload();
-//        byte[] bytes = new byte[byteBuffer.readableBytes()];
-//        byteBuffer.readBytes(bytes);
-//        String content = new String(bytes);
-//        System.out.println("publish name: "+mqttPublishMessage.variableHeader().topicName());
-//        System.out.println("publish content: "+content);
-
+        int messageId = mqttPublishMessage.variableHeader().messageId();
         String topicName = mqttPublishMessage.variableHeader().topicName();
         byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
+        /**
+         * 持久化发布报文
+         */
+        messageService.insert(channelId(ctx), messageId, topicName, topicMessage);
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
@@ -129,7 +141,7 @@ public class MqttMessageService {
                 pushPublishTopic(ctx, topicName, topicMessage);
                 break;
             case AT_LEAST_ONCE:
-                sendPubAckMessage(ctx, mqttPublishMessage.variableHeader().messageId());
+                sendPubAckMessage(ctx, messageId);
                 pushPublishTopic(ctx, topicName, topicMessage);
                 break;
             case EXACTLY_ONCE:
@@ -137,14 +149,14 @@ public class MqttMessageService {
                  * 检查一下消息是否重复，是否需要idDup标识位
                  */
                 if( !mqttPublishMessage.fixedHeader().isDup() ||
-                        !checkExistReplyMessage(channelDeviceId(ctx), mqttPublishMessage.variableHeader().messageId()) ) {
+                        !checkExistReplyMessage(channelDeviceId(ctx), messageId) ) {
                     saveReplyMessage(ctx,
-                            mqttPublishMessage.variableHeader().messageId(),
-                            mqttPublishMessage.variableHeader().topicName(),
+                            messageId,
+                            topicName,
                             topicMessage,
                             MqttMessageStateConst.REC);
                 }
-                sendPubRecMessage(ctx, mqttPublishMessage.variableHeader().messageId(), false);
+                sendPubRecMessage(ctx, messageId, false);
                 break;
         }
     }
@@ -487,9 +499,11 @@ public class MqttMessageService {
 
     public void forceClose(ChannelHandlerContext ctx){
         Channel channel = ctx.channel();
+        Integer id = channel.attr(_id).get();
         String deviceId = channel.attr(_deviceId).get();
         MqttChannel mqttChannel = channels.get(deviceId);
         if( mqttChannel != null ) {
+            deviceService.doLogout(id);
             mqttChannel.getCtx().channel().close();
             channels.remove(deviceId);
         }
@@ -547,5 +561,9 @@ public class MqttMessageService {
 
     private String channelDeviceId(ChannelHandlerContext ctx){
         return ctx.channel().attr(_deviceId).get();
+    }
+
+    private Integer channelId(ChannelHandlerContext ctx){
+        return ctx.channel().attr(_id).get();
     }
 }

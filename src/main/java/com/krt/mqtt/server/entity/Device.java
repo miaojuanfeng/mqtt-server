@@ -8,6 +8,7 @@ public class Device {
     private String ip;
     private Integer port;
     private Date loginTime;
+    private Date logoutTime;
     private Date insertTime;
     private Date updateTime;
 
@@ -49,6 +50,14 @@ public class Device {
 
     public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
+    }
+
+    public Date getLogoutTime() {
+        return logoutTime;
+    }
+
+    public void setLogoutTime(Date logoutTime) {
+        this.logoutTime = logoutTime;
     }
 
     public Date getInsertTime() {

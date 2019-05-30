@@ -4,5 +4,8 @@ import com.krt.mqtt.server.entity.Device;
 
 public interface DeviceService {
 
-    public Device Sel(int id);
+    int doLogin(String deviceId, String ip, Integer port);
+
+    void doLogout(Integer id);
+
 }

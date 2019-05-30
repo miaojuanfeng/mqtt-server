@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.krt.mqtt.server.mapper.MessageMapper">
+
+    <resultMap id="BaseResultMap" type="com.krt.mqtt.server.entity.Message">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="device_id" jdbcType="INTEGER" property="deviceId" />
+        <result column="message_id" jdbcType="INTEGER" property="messageId" />
+        <result column="topic_name" jdbcType="VARCHAR" property="topicName" />
+        <result column="topic_message" jdbcType="VARCHAR" property="topicMessage" />
+        <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.krt.mqtt.server.entity.Message">
+        insert into message(device_id, message_id, topic_name, topic_message, insert_time, update_time)
+        values(#{deviceId}, #{messageId}, #{topicName}, #{topicMessage}, #{insertTime}, #{updateTime})
+    </insert>
+
+</mapper>
