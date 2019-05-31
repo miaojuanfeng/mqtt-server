@@ -6,8 +6,10 @@ import com.krt.mqtt.server.beans.MqttTopic;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
 import com.krt.mqtt.server.entity.Message;
+import com.krt.mqtt.server.entity.Subscribe;
 import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.service.MessageService;
+import com.krt.mqtt.server.service.SubscribeService;
 import com.krt.mqtt.server.utils.MessageIdUtil;
 import com.krt.mqtt.server.utils.MqttUtil;
 import io.netty.buffer.Unpooled;
@@ -35,6 +37,9 @@ public class MqttMessageService {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private SubscribeService subscribeService;
 
     public static final AttributeKey<Boolean> _login = AttributeKey.valueOf("login");
 
@@ -120,7 +125,7 @@ public class MqttMessageService {
     }
 
     public void updateActiveTime(ChannelHandlerContext ctx){
-        String deviceId = ctx.channel().attr(_deviceId).get();
+        String deviceId = channelDeviceId(ctx);
         MqttChannel mqttChannel = channels.get(deviceId);
         mqttChannel.setActiveTime(new Date().getTime());
     }
@@ -233,11 +238,13 @@ public class MqttMessageService {
     }
 
     public void replySubscribeMessage(ChannelHandlerContext ctx, MqttSubscribeMessage mqttSubscribeMessage){
-        String deviceId = ctx.channel().attr(_deviceId).get();
+        String deviceId = channelDeviceId(ctx);
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.SUBACK, mqttSubscribeMessage.fixedHeader().isDup(), MqttQoS.AT_MOST_ONCE, mqttSubscribeMessage.fixedHeader().isRetain(), 0);
         MqttMessageIdVariableHeader variableHeader = MqttMessageIdVariableHeader.from(mqttSubscribeMessage.variableHeader().messageId());
         int num = mqttSubscribeMessage.payload().topicSubscriptions().size();
         List<Integer> grantedQoSLevels = new ArrayList<>(num);
+        List<Subscribe> subscribes = new ArrayList<>();
+        Date date = new Date();
         for (int i = 0; i < num; i++) {
             grantedQoSLevels.add(mqttSubscribeMessage.payload().topicSubscriptions().get(i).qualityOfService().value());
             //
@@ -252,15 +259,26 @@ public class MqttMessageService {
             mqttTopic.setCtx(ctx);
             mqttTopics.put(deviceId, mqttTopic);
             topics.put(topicName, mqttTopics);
+            /**
+             * 持久化订阅主题
+             */
+            Subscribe subscribe = new Subscribe();
+            subscribe.setDeviceId(channelId(ctx));
+            subscribe.setTopicName(topicName);
+            subscribe.setInsertTime(date);
+            subscribe.setUpdateTime(date);
+            subscribes.add(subscribe);
         }
+        subscribeService.insertBatch(subscribes);
         MqttSubAckPayload payload = new MqttSubAckPayload(grantedQoSLevels);
         MqttSubAckMessage mqttSubAckMessage = new MqttSubAckMessage(mqttFixedHeader, variableHeader, payload);
         writeAndFlush(ctx, mqttSubAckMessage);
     }
 
     public void replyUnsubscribeMessage(ChannelHandlerContext ctx, MqttUnsubscribeMessage mqttUnsubscribeMessage){
-        String deviceId = ctx.channel().attr(_deviceId).get();
+        String deviceId = channelDeviceId(ctx);
         int num = mqttUnsubscribeMessage.payload().topics().size();
+        List<String> topicNames = new ArrayList<>();
         for (int i = 0; i < num; i++) {
             String topicName = mqttUnsubscribeMessage.payload().topics().get(i);
             ConcurrentHashMap<String, MqttTopic> mqttTopics = topics.get(topicName);
@@ -270,7 +288,12 @@ public class MqttMessageService {
             if( mqttTopics.size() == 0 ){
                 topics.remove(topicName);
             }
+            /**
+             * 持久化到数据库
+             */
+            topicNames.add(topicName);
         }
+        subscribeService.deleteBatch(channelId(ctx), topicNames);
 
         int messageId = mqttUnsubscribeMessage.variableHeader().messageId();
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.UNSUBACK, false, MqttQoS.AT_MOST_ONCE, false, 0x02);
@@ -280,7 +303,7 @@ public class MqttMessageService {
     }
 
     public void sendWillMessage(ChannelHandlerContext ctx){
-        String deviceId = ctx.channel().attr(_deviceId).get();
+        String deviceId = channelDeviceId(ctx);
         MqttChannel mqttChannel = channels.get(deviceId);
         if( mqttChannel != null ){
             MqttWill mqttWill = mqttChannel.getMqttWill();
@@ -339,7 +362,7 @@ public class MqttMessageService {
     }
 
     private void saveReplyMessage(ChannelHandlerContext ctx, int messageId, String topicName, byte[] payload, int state){
-        String deviceId = ctx.channel().attr(_deviceId).get();
+        String deviceId = channelDeviceId(ctx);
         ConcurrentHashMap<Integer, MqttSendMessage> replyMessages = channels.get(deviceId).getReplyMessages();
         MqttSendMessage mqttSendMessage = new MqttSendMessage();
         mqttSendMessage.setMessageId(messageId);
@@ -353,7 +376,7 @@ public class MqttMessageService {
     }
 
     private void saveSendMessage(ChannelHandlerContext ctx, int messageId, String topicName, byte[] payload, MqttQoS mqttQoS, int state){
-        String deviceId = ctx.channel().attr(_deviceId).get();
+        String deviceId = channelDeviceId(ctx);
         ConcurrentHashMap<Integer, MqttSendMessage> sendMessages = channels.get(deviceId).getSendMessages();
         MqttSendMessage mqttSendMessage = new MqttSendMessage();
         mqttSendMessage.setMessageId(messageId);
@@ -495,13 +518,13 @@ public class MqttMessageService {
     }
 
     private boolean checkResendTime(long sendTime, long interval) {
-        return System.currentTimeMillis()-sendTime>=interval*2*1000;
+        return System.currentTimeMillis()-sendTime>=interval*1000;
     }
 
     public void forceClose(ChannelHandlerContext ctx){
         Channel channel = ctx.channel();
         Integer id = channel.attr(_id).get();
-        String deviceId = channel.attr(_deviceId).get();
+        String deviceId = channelDeviceId(ctx);
         MqttChannel mqttChannel = channels.get(deviceId);
         if( mqttChannel != null ) {
             deviceService.doLogout(id);
@@ -509,13 +532,6 @@ public class MqttMessageService {
             channels.remove(deviceId);
         }
     }
-
-//    private void pushPublishTopic(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage){
-//        String topicName = mqttPublishMessage.variableHeader().topicName();
-//        byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
-//        System.out.println("topicMessage: "+new String(topicMessage));
-//        pushPublishTopic(ctx, topicName, topicMessage);
-//    }
 
     private void pushPublishTopic(ChannelHandlerContext ctx, String topicName, byte[] payload){
         /**
@@ -549,9 +565,9 @@ public class MqttMessageService {
             public void operationComplete(ChannelFuture future) throws Exception {
                 try {
                     if (future.isSuccess()) {
-                        log.info("服务器（" + ctx.channel().attr(_deviceId).get() + "）回写报文：" + mqttMessage);
+                        log.info("服务器（" + channelDeviceId(ctx) + "）回写报文：" + mqttMessage);
                     } else {
-                        log.error("服务器（" + ctx.channel().attr(_deviceId).get() + "）回写失败：" + mqttMessage);
+                        log.error("服务器（" + channelDeviceId(ctx) + "）回写失败：" + mqttMessage);
                     }
                 }catch (IllegalReferenceCountException e){
                     // Do nothing
