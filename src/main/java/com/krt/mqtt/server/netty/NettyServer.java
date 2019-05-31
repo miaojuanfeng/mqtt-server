@@ -9,10 +9,18 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class NettyServer {
+
+    private static Integer port;
+
+    @Value("${server.port}")
+    public void setPort(Integer port){
+        this.port = port;
+    }
 
     public static void start(){
         EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -34,7 +42,7 @@ public class NettyServer {
             SendMessageThread sendMessageThread = new SendMessageThread();
             sendMessageThread.start();
 
-            ChannelFuture channelFuture = serverBootstrap.bind(8088).sync();
+            ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
 
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
