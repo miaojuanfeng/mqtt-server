@@ -19,14 +19,14 @@ public class DeviceServiceImpl implements DeviceService {
         Date date = new Date();
         Device device = deviceMapper.selectByDeviceId(deviceId);
         if( device == null ) {
-            Device insertDevice = new Device();
-            insertDevice.setDeviceId(deviceId);
-            insertDevice.setIp(ip);
-            insertDevice.setPort(port);
-            insertDevice.setLoginTime(date);
-            insertDevice.setInsertTime(date);
-            insertDevice.setUpdateTime(date);
-            deviceMapper.insert(insertDevice);
+            device = new Device();
+            device.setDeviceId(deviceId);
+            device.setIp(ip);
+            device.setPort(port);
+            device.setLoginTime(date);
+            device.setInsertTime(date);
+            device.setUpdateTime(date);
+            deviceMapper.insert(device);
         }else {
             Device updateDevice = new Device();
             updateDevice.setId(device.getId());

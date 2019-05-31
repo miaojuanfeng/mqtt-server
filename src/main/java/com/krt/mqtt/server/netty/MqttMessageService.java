@@ -290,6 +290,7 @@ public class MqttMessageService {
                 MqttQoS mqttQoS = mqttWill.getMqttQoS();
                 ConcurrentHashMap<String, MqttTopic> mqttTopics = topics.get(willTopic);
                 for (String key : mqttTopics.keySet()){
+                    int messageId = MessageIdUtil.messageId();
                     MqttTopic mqttTopic = mqttTopics.get(key);
                     switch (mqttWill.getMqttQoS()){
                         case AT_MOST_ONCE:
@@ -299,15 +300,15 @@ public class MqttMessageService {
                          */
                         case AT_LEAST_ONCE:
                         case EXACTLY_ONCE:
-                            saveSendMessage(ctx,
-                                    MessageIdUtil.messageId(),
+                            saveSendMessage(mqttTopic.getCtx(),
+                                    messageId,
                                     mqttWill.getWillTopic(),
                                     mqttWill.getWillMessage(),
                                     mqttWill.getMqttQoS(),
                                     MqttMessageStateConst.PUB);
                             break;
                     }
-                    sendTopicMessage(mqttTopic.getCtx(), mqttWill.getWillTopic(), mqttWill.getWillMessage(), MessageIdUtil.messageId(), mqttWill.getMqttQoS(), false);
+                    sendTopicMessage(mqttTopic.getCtx(), mqttWill.getWillTopic(), mqttWill.getWillMessage(), messageId, mqttWill.getMqttQoS(), false);
                 }
             }else{
                 log.info("客户端（"+deviceId+"）遗愿未设置");
@@ -362,7 +363,7 @@ public class MqttMessageService {
         mqttSendMessage.setMqttQoS(mqttQoS);
         mqttSendMessage.setCtx(ctx);
         mqttSendMessage.setSendTime(new Date().getTime());
-        mqttSendMessage.setResendCount(0);
+        mqttSendMessage.setResendCount(1);
         sendMessages.put(messageId, mqttSendMessage);
     }
 
@@ -527,7 +528,7 @@ public class MqttMessageService {
                 if (mqttTopic.getCtx().channel().isActive() && mqttTopic.getCtx().channel().isWritable()) {
                     int messageId = MessageIdUtil.messageId();
                     if( mqttTopic.getMqttQoS().value() > MqttQoS.AT_MOST_ONCE.value() ) {
-                        saveSendMessage(ctx, messageId, topicName, payload, mqttTopic.getMqttQoS(), MqttMessageStateConst.PUB);
+                        saveSendMessage(mqttTopic.getCtx(), messageId, topicName, payload, mqttTopic.getMqttQoS(), MqttMessageStateConst.PUB);
                     }
                     sendTopicMessage(mqttTopic.getCtx(), topicName, payload, messageId, mqttTopic.getMqttQoS(), false);
                 }
