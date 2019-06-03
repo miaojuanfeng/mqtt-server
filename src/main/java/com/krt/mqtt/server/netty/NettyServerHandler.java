@@ -15,8 +15,16 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
     @Autowired
     private MqttMessageService mqttMessageService;
 
+    @Autowired
+    private MqttChannelApi mqttChannelApi;
+
+    @Autowired
+    private MqttMessageApi mqttMessageApi;
+
     public NettyServerHandler(){
         mqttMessageService = SpringUtil.getBean(MqttMessageService.class);
+        mqttChannelApi = SpringUtil.getBean(MqttChannelApi.class);
+        mqttMessageApi = SpringUtil.getBean(MqttMessageApi.class);
     }
 
     @Override
@@ -25,7 +33,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
          * 客户端到服务端的网络连接建立后，客户端发送给服务端的第一个报文必须是CONNECT报文
          * 否则断开与该客户端的链接
          */
-        if( !mqttMessage.fixedHeader().messageType().equals(MqttMessageType.CONNECT) && !mqttMessageService.checkLogin(ctx) ){
+        if( !mqttMessage.fixedHeader().messageType().equals(MqttMessageType.CONNECT) && !mqttChannelApi.checkLogin(ctx) ){
             /**
              * 如果客户端在未登录成功的状态下发送CONNECT以外的报文，
              * 该行为违反协议规定，服务器立即断开与该客户端的连接
@@ -37,8 +45,8 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
          * 输出报文日志
          */
         String deviceId = "";
-        if( ctx.channel().hasAttr(MqttMessageService._deviceId) ) {
-            deviceId = ctx.channel().attr(MqttMessageService._deviceId).get();
+        if( mqttChannelApi.hasAttr(ctx, MqttChannelApi._deviceId) ) {
+            deviceId = mqttChannelApi.getChannelDeviceId(ctx);
         }else{
             deviceId = ((MqttConnectMessage) mqttMessage).payload().clientIdentifier();
         }
@@ -54,7 +62,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
          * 收到客户端发来的任何报文，包括但不限于PINGREQ，
          * 则证明客户端存活，需要更新客户端活跃时间
          */
-        mqttMessageService.updateActiveTime(ctx);
+        mqttChannelApi.updateActiveTime(ctx);
         /**
          * 处理客户端发来的其他类型报文
          */
@@ -63,7 +71,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
                 mqttMessageService.replyDisConnectMessage(ctx);
                 break;
             case PINGREQ:
-                mqttMessageService.replyPingReqMessage(ctx);
+                mqttMessageApi.PINGRESP(ctx);
                 break;
             case PUBLISH:
                 mqttMessageService.replyPublishMessage(ctx, (MqttPublishMessage) mqttMessage);
@@ -142,7 +150,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
         log.error("捕获通道异常: "+cause);
         cause.printStackTrace();
         mqttMessageService.sendWillMessage(ctx);
-        mqttMessageService.forceClose(ctx);
+        mqttChannelApi.closeChannel(ctx);
 //        super.exceptionCaught(ctx, cause);
     }
 
