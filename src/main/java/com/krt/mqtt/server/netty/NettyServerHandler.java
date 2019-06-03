@@ -68,7 +68,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
          */
         switch (mqttMessage.fixedHeader().messageType()){
             case DISCONNECT:
-                mqttMessageService.replyDisConnectMessage(ctx);
+                mqttChannelApi.closeChannel(ctx);
                 break;
             case PINGREQ:
                 mqttMessageApi.PINGRESP(ctx);

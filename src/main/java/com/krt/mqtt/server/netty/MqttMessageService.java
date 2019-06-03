@@ -174,10 +174,6 @@ public class MqttMessageService {
         completeSendMessage(ctx, messageId);
     }
 
-    public void replyDisConnectMessage(ChannelHandlerContext ctx){
-        mqttChannelApi.closeChannel(ctx);
-    }
-
     public void replySubscribeMessage(ChannelHandlerContext ctx, MqttSubscribeMessage mqttSubscribeMessage){
         String deviceId = mqttChannelApi.getChannelDeviceId(ctx);
         Integer dbId = mqttChannelApi.getChannelDbId(ctx);
