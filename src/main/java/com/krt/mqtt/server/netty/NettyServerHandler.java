@@ -98,71 +98,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
     }
 
     @Override
-    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("channel注册");
-        super.channelRegistered(ctx);
-    }
-
-    @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("channel注销");
-        super.channelUnregistered(ctx);
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("客户端与服务端成功连接");
-        super.channelActive(ctx);
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("客户端与服务端断开连接");
-//        /**
-//         *  该事件与异常事件同时触发，会关闭2次通道
-//          */
-//        mqttMessageService.sendWillMessage(ctx);
-//        mqttMessageService.forceClose(ctx);
-        super.channelInactive(ctx);
-    }
-
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("channel读取数据完毕");
-        super.channelReadComplete(ctx);
-    }
-
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-//        System.out.println("用户事件触发");
-        super.userEventTriggered(ctx, evt);
-    }
-
-    @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("channel可写事件更改");
-        super.channelWritabilityChanged(ctx);
-    }
-
-    @Override
-    //channel发生异常，若不关闭，随着异常channel的逐渐增多，性能也就随之下降
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error("捕获通道异常: "+cause);
         cause.printStackTrace();
         mqttMessageService.sendWillMessage(ctx);
         mqttChannelApi.closeChannel(ctx);
 //        super.exceptionCaught(ctx, cause);
-    }
-
-    @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("助手类添加");
-        super.handlerAdded(ctx);
-    }
-
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-//        System.out.println("助手类移除");
-        super.handlerRemoved(ctx);
     }
 }
