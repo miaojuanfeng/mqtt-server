@@ -1,18 +1,20 @@
 package com.krt.mqtt.server.thread;
 
 import com.krt.mqtt.server.netty.MqttMessageService;
+import com.krt.mqtt.server.netty.MqttResendApi;
 import com.krt.mqtt.server.utils.SpringUtil;
 
 public class SendMessageThread extends Thread{
 
-    private MqttMessageService mqttMessageService;
+    private MqttResendApi mqttResendApi;
 
-    private byte[] lock = new byte[0];
+    private Object lock = new Object();
 
     private final long timeout = 1000;
 
     public SendMessageThread(){
-        mqttMessageService = SpringUtil.getBean(MqttMessageService.class);
+        mqttResendApi = SpringUtil.getBean(MqttResendApi.class);
+        this.start();
     }
 
     @Override
@@ -20,7 +22,7 @@ public class SendMessageThread extends Thread{
         while(true){
             synchronized (lock){
                 try {
-                    mqttMessageService.resendSendMessage();
+                    mqttResendApi.resendSendMessage();
                     lock.wait(timeout);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

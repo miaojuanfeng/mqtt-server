@@ -8,9 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeviceMapper {
 
-    int insert(Device device);
-
     Device selectByDeviceId(String deviceId);
-
-    int updateByPrimaryKey(Device device);
 }

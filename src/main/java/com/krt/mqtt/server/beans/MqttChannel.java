@@ -3,6 +3,8 @@ package com.krt.mqtt.server.beans;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class MqttChannel {
 
@@ -15,6 +17,11 @@ public class MqttChannel {
     private int keepAlive;
 
     private long activeTime;
+
+    /**
+     * 订阅的主题
+     */
+    private ConcurrentSkipListSet<String> topics = new ConcurrentSkipListSet<>();
 
     /**
      * 未完成的回复报文
@@ -64,6 +71,14 @@ public class MqttChannel {
 
     public void setActiveTime(long activeTime) {
         this.activeTime = activeTime;
+    }
+
+    public ConcurrentSkipListSet<String> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(ConcurrentSkipListSet<String> topics) {
+        this.topics = topics;
     }
 
     public ConcurrentHashMap<Integer, MqttSendMessage> getReplyMessages() {

@@ -1,11 +1,14 @@
 package com.krt.mqtt.server.service.impl;
 
+import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.entity.Device;
 import com.krt.mqtt.server.mapper.DeviceMapper;
 import com.krt.mqtt.server.service.DeviceService;
+import com.krt.mqtt.server.utils.AesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 
 @Service
@@ -15,35 +18,18 @@ public class DeviceServiceImpl implements DeviceService {
     private DeviceMapper deviceMapper;
 
     @Override
-    public int doLogin(String deviceId, String ip, Integer port) {
+    public boolean doLogin(String deviceId, String userName, String password) {
         Date date = new Date();
         Device device = deviceMapper.selectByDeviceId(deviceId);
-        if( device == null ) {
-            device = new Device();
-            device.setDeviceId(deviceId);
-            device.setIp(ip);
-            device.setPort(port);
-            device.setLoginTime(date);
-            device.setInsertTime(date);
-            device.setUpdateTime(date);
-            deviceMapper.insert(device);
-        }else {
-            Device updateDevice = new Device();
-            updateDevice.setId(device.getId());
-            updateDevice.setIp(ip);
-            updateDevice.setPort(port);
-            updateDevice.setLoginTime(date);
-            updateDevice.setUpdateTime(date);
-            deviceMapper.updateByPrimaryKey(updateDevice);
+        if( device != null ) {
+            if( userName.equals(device.getDeviceCode()) ){
+                try {
+                    return AesUtil.getAESDecrypt(password, CommonConst.AESKEY).equals(device.getVerifyCode());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return device.getId();
-    }
-
-    @Override
-    public void doLogout(Integer id) {
-        Device updateDevice = new Device();
-        updateDevice.setId(id);
-        updateDevice.setLogoutTime(new Date());
-        deviceMapper.updateByPrimaryKey(updateDevice);
+        return false;
     }
 }

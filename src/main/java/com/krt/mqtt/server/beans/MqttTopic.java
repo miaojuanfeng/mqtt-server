@@ -36,20 +36,4 @@ public class MqttTopic {
     public void setCtx(ChannelHandlerContext ctx) {
         this.ctx = ctx;
     }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        MqttTopic mqttTopic = (MqttTopic) object;
-        return Objects.equals(topicName, mqttTopic.topicName) &&
-                mqttQoS == mqttTopic.mqttQoS &&
-                Objects.equals(ctx, mqttTopic.ctx);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(topicName, mqttQoS, ctx);
-    }
 }

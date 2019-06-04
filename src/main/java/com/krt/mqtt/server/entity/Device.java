@@ -5,12 +5,8 @@ import java.util.Date;
 public class Device {
     private Integer id;
     private String deviceId;
-    private String ip;
-    private Integer port;
-    private Date loginTime;
-    private Date logoutTime;
-    private Date insertTime;
-    private Date updateTime;
+    private String deviceCode;
+    private String verifyCode;
 
     public Integer getId() {
         return id;
@@ -28,51 +24,19 @@ public class Device {
         this.deviceId = deviceId;
     }
 
-    public String getIp() {
-        return ip;
+    public String getDeviceCode() {
+        return deviceCode;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setDeviceCode(String deviceCode) {
+        this.deviceCode = deviceCode;
     }
 
-    public Integer getPort() {
-        return port;
+    public String getVerifyCode() {
+        return verifyCode;
     }
 
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    public Date getLoginTime() {
-        return loginTime;
-    }
-
-    public void setLoginTime(Date loginTime) {
-        this.loginTime = loginTime;
-    }
-
-    public Date getLogoutTime() {
-        return logoutTime;
-    }
-
-    public void setLogoutTime(Date logoutTime) {
-        this.logoutTime = logoutTime;
-    }
-
-    public Date getInsertTime() {
-        return insertTime;
-    }
-
-    public void setInsertTime(Date insertTime) {
-        this.insertTime = insertTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
     }
 }

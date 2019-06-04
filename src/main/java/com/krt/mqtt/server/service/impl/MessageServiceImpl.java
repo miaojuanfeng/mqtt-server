@@ -18,10 +18,10 @@ public class MessageServiceImpl implements MessageService {
     private MessageMapper messageMapper;
 
     @Override
-    public void insert(Integer deviceId, Integer messageId, String topicName, byte[] topicMessage) {
+    public void insert(String deviceId, Integer messageId, String topicName, byte[] topicMessage) {
         Date date = new Date();
         Message message = new Message();
-        message.setDeviceId(deviceId);
+//        message.setDeviceId(deviceId);
         message.setMessageId(messageId);
         message.setTopicName(topicName);
         message.setTopicMessage(new String(topicMessage));

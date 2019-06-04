@@ -2,6 +2,7 @@ package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
+import com.krt.mqtt.server.beans.MqttTopic;
 import com.krt.mqtt.server.service.DeviceService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 @Slf4j
 @Component
@@ -19,12 +21,10 @@ public class MqttChannelApi {
 
     public static final AttributeKey<Boolean> _login = AttributeKey.valueOf("login");
 
-    public static final AttributeKey<Integer> _dbId = AttributeKey.valueOf("dbId");
-
     public static final AttributeKey<String> _deviceId = AttributeKey.valueOf("deviceId");
 
     @Autowired
-    private DeviceService deviceService;
+    private MqttTopicApi mqttTopicApi;
 
     /**
      * 已连接到服务器端的通道
@@ -35,18 +35,17 @@ public class MqttChannelApi {
         return ctx.channel().attr(_deviceId).get();
     }
 
-    public Integer getChannelDbId(ChannelHandlerContext ctx){
-        return ctx.channel().attr(_dbId).get();
+    public void setChannelDeviceId(ChannelHandlerContext ctx, String deviceId){
+        ctx.channel().attr(_deviceId).set(deviceId);
     }
 
     public Boolean getIsLogin(ChannelHandlerContext ctx){
         return ctx.channel().attr(_login).get();
     }
 
-    public void setChannelAttr(ChannelHandlerContext ctx, String deviceId, Integer dbId){
+    public void setChannelAttr(ChannelHandlerContext ctx, String deviceId){
         Channel channel = ctx.channel();
         channel.attr(_login).set(true);
-        channel.attr(_dbId).set(dbId);
         channel.attr(_deviceId).set(deviceId);
     }
 
@@ -76,11 +75,14 @@ public class MqttChannelApi {
     }
 
     public void closeChannel(ChannelHandlerContext ctx){
-        Integer id = getChannelDbId(ctx);
         String deviceId = getChannelDeviceId(ctx);
         MqttChannel mqttChannel = channels.get(deviceId);
         if( mqttChannel != null ) {
-            deviceService.doLogout(id);
+            ConcurrentSkipListSet<String> topicNames = mqttChannel.getTopics();
+            for(String topicName : topicNames){
+                mqttTopicApi.remove(deviceId, topicName);
+            }
+            //
             mqttChannel.getCtx().channel().close();
             channels.remove(deviceId);
         }
@@ -118,4 +120,5 @@ public class MqttChannelApi {
     private boolean checkOvertime(long activeTime, long keepAlive) {
         return System.currentTimeMillis()-activeTime>=keepAlive*1.5*1000;
     }
+
 }

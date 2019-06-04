@@ -1,5 +1,8 @@
 package com.krt.mqtt.server.netty;
 
+import com.krt.mqtt.server.beans.MqttChannel;
+import com.krt.mqtt.server.entity.Device;
+import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.utils.SpringUtil;
 import io.netty.channel.*;
 import io.netty.handler.codec.mqtt.*;
@@ -12,19 +15,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage> {
 
-    @Autowired
     private MqttMessageService mqttMessageService;
 
-    @Autowired
     private MqttChannelApi mqttChannelApi;
 
-    @Autowired
     private MqttMessageApi mqttMessageApi;
+
+    private DeviceService deviceService;
 
     public NettyServerHandler(){
         mqttMessageService = SpringUtil.getBean(MqttMessageService.class);
         mqttChannelApi = SpringUtil.getBean(MqttChannelApi.class);
         mqttMessageApi = SpringUtil.getBean(MqttMessageApi.class);
+        deviceService = SpringUtil.getBean(DeviceService.class);
     }
 
     @Override
@@ -49,13 +52,33 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
             deviceId = mqttChannelApi.getChannelDeviceId(ctx);
         }else{
             deviceId = ((MqttConnectMessage) mqttMessage).payload().clientIdentifier();
+            mqttChannelApi.setChannelDeviceId(ctx, deviceId);
         }
         log.info("客户端（" + deviceId + "）发来报文: " + mqttMessage);
         /**
          * 处理客户端连接报文
          */
         if( mqttMessage.fixedHeader().messageType().equals(MqttMessageType.CONNECT) ){
-            mqttMessageService.replyConnectMessage(ctx, (MqttConnectMessage) mqttMessage);
+            MqttConnectMessage mqttConnectMessage = (MqttConnectMessage) mqttMessage;
+            if( mqttConnectMessage.variableHeader().version() != MqttVersion.MQTT_3_1_1.protocolLevel() ){
+                mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_REFUSED_UNACCEPTABLE_PROTOCOL_VERSION);
+                return;
+            }
+            if( !mqttConnectMessage.variableHeader().hasUserName() || !mqttConnectMessage.variableHeader().hasPassword() ){
+                mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_REFUSED_NOT_AUTHORIZED);
+                return;
+            }
+            if( "".equals(deviceId) ){
+                mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_REFUSED_IDENTIFIER_REJECTED);
+                return;
+            }
+            String userName = mqttConnectMessage.payload().userName();
+            String password = String.valueOf(mqttConnectMessage.payload().passwordInBytes());
+            if( !deviceService.doLogin(deviceId, userName, password) ){
+                mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD);
+                return;
+            }
+            mqttMessageService.replyCONNECT(ctx, (MqttConnectMessage) mqttMessage);
             return;
         }
         /**
@@ -74,25 +97,25 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
                 mqttMessageApi.PINGRESP(ctx);
                 break;
             case PUBLISH:
-                mqttMessageService.replyPublishMessage(ctx, (MqttPublishMessage) mqttMessage);
+                mqttMessageService.replyPUBLISH(ctx, (MqttPublishMessage) mqttMessage);
                 break;
             case PUBACK:
-                mqttMessageService.replyPubAckMessage(ctx, (MqttPubAckMessage) mqttMessage);
+                mqttMessageService.replyPUBACK(ctx, (MqttPubAckMessage) mqttMessage);
                 break;
             case PUBREC:
-                mqttMessageService.replyPubRecMessage(ctx, (MqttPubAckMessage) mqttMessage);
+                mqttMessageService.replyPUBREC(ctx, (MqttPubAckMessage) mqttMessage);
                 break;
             case PUBREL:
-                mqttMessageService.replyPubRelMessage(ctx, mqttMessage);
+                mqttMessageService.replyPUBREL(ctx, mqttMessage);
                 break;
             case PUBCOMP:
-                mqttMessageService.replyPubCompMessage(ctx, mqttMessage);
+                mqttMessageService.replyPUBCOMP(ctx, mqttMessage);
                 break;
             case SUBSCRIBE:
-                mqttMessageService.replySubscribeMessage(ctx, (MqttSubscribeMessage) mqttMessage);
+                mqttMessageService.replySUBSCRIBE(ctx, (MqttSubscribeMessage) mqttMessage);
                 break;
             case UNSUBSCRIBE:
-                mqttMessageService.replyUnsubscribeMessage(ctx, (MqttUnsubscribeMessage) mqttMessage);
+                mqttMessageService.replyUNSUBSCRIBE(ctx, (MqttUnsubscribeMessage) mqttMessage);
                 break;
         }
     }
@@ -101,7 +124,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error("捕获通道异常: "+cause);
         cause.printStackTrace();
-        mqttMessageService.sendWillMessage(ctx);
+        mqttMessageService.broadcastWILL(ctx);
         mqttChannelApi.closeChannel(ctx);
 //        super.exceptionCaught(ctx, cause);
     }

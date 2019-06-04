@@ -8,12 +8,13 @@ public class AliveThread extends Thread{
 
     private MqttChannelApi mqttChannelApi;
 
-    private byte[] lock = new byte[0];
+    private Object lock = new Object();
 
     private final long timeout = 5000;
 
     public AliveThread(){
         mqttChannelApi = SpringUtil.getBean(MqttChannelApi.class);
+        this.start();
     }
 
     @Override
@@ -21,7 +22,6 @@ public class AliveThread extends Thread{
         while (true) {
             synchronized (lock) {
                 try {
-//                    System.out.println("Alive check");
                     mqttChannelApi.checkAlive();
                     lock.wait(timeout);
                 } catch (InterruptedException e) {

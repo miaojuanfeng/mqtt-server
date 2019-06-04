@@ -19,9 +19,9 @@ public class MqttMessageApi {
     @Autowired
     private MqttChannelApi mqttChannelApi;
 
-    public void CONNACK(ChannelHandlerContext ctx, boolean isDup){
+    public void CONNACK(ChannelHandlerContext ctx, boolean isDup, MqttConnectReturnCode returnCode){
         MqttFixedHeader mqttFixedHeader = new MqttFixedHeader(MqttMessageType.CONNACK, isDup, MqttQoS.AT_MOST_ONCE, false, 0x02);
-        MqttConnAckVariableHeader mqttConnAckVariableHeader = new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_ACCEPTED, false);
+        MqttConnAckVariableHeader mqttConnAckVariableHeader = new MqttConnAckVariableHeader(returnCode, false);
         writeAndFlush(ctx, new MqttConnAckMessage(mqttFixedHeader, mqttConnAckVariableHeader));
     }
 
@@ -86,14 +86,15 @@ public class MqttMessageApi {
     }
 
     private void writeAndFlush(ChannelHandlerContext ctx, MqttMessage mqttMessage){
+        log.info("服务器（" + mqttChannelApi.getChannelDeviceId(ctx) + "）回写报文：" + mqttMessage);
         ctx.writeAndFlush(mqttMessage).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 try {
                     if (future.isSuccess()) {
-                        log.info("服务器（" + mqttChannelApi.getChannelDeviceId(ctx) + "）回写报文：" + mqttMessage);
+                        log.info("回写成功");
                     } else {
-                        log.error("服务器（" + mqttChannelApi.getChannelDeviceId(ctx) + "）回写失败：" + mqttMessage);
+                        log.error("回写失败");
                     }
                 }catch (IllegalReferenceCountException e){
                     // Do nothing

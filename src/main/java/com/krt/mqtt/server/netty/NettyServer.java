@@ -11,6 +11,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import sun.misc.Signal;
 
 @Component
 public class NettyServer {
@@ -35,12 +36,15 @@ public class NettyServer {
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            AliveThread aliveThread = new AliveThread();
-            aliveThread.start();
-            ReplyMessageThread replyMessageThread = new ReplyMessageThread();
-            replyMessageThread.start();
-            SendMessageThread sendMessageThread = new SendMessageThread();
-            sendMessageThread.start();
+//            AliveThread aliveThread = new AliveThread();
+//            ReplyMessageThread replyMessageThread = new ReplyMessageThread();
+//            SendMessageThread sendMessageThread = new SendMessageThread();
+            new AliveThread();
+            new ReplyMessageThread();
+            new SendMessageThread();
+
+//            Signal sig = new Signal(getOSSignalType());
+//            Signal.handle(sig, new NettyShutdownHandler());
 
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
 
@@ -53,4 +57,9 @@ public class NettyServer {
         }
 
     }
+
+//    private static String getOSSignalType() {
+//        return System.getProperties().getProperty("os.name").
+//                toLowerCase().startsWith("win") ? "INT" : "USR2";
+//    }
 }
