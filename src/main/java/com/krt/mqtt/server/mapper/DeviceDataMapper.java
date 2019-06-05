@@ -1,13 +1,12 @@
 package com.krt.mqtt.server.mapper;
 
-import com.krt.mqtt.server.entity.Device;
-import com.krt.mqtt.server.entity.Message;
+import com.krt.mqtt.server.entity.DeviceData;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 @Mapper
 @Repository
-public interface MessageMapper {
+public interface DeviceDataMapper {
 
-    int insert(Message message);
+    int insert(DeviceData message);
 }

@@ -19,12 +19,12 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public boolean doLogin(String deviceId, String userName, String password) {
-        Date date = new Date();
+        System.out.println(password);
         Device device = deviceMapper.selectByDeviceId(deviceId);
         if( device != null ) {
-            if( userName.equals(device.getDeviceCode()) ){
+            if( userName.equals(device.getDeviceCode()) && password.equals(device.getVerifyCode()) ){
                 try {
-                    return AesUtil.getAESDecrypt(password, CommonConst.AESKEY).equals(device.getVerifyCode());
+                    return AesUtil.getAESDecrypt(deviceId, CommonConst.AESKEY).equals(device.getVerifyCode());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

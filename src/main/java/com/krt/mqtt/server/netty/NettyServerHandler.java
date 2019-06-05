@@ -6,6 +6,7 @@ import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.utils.SpringUtil;
 import io.netty.channel.*;
 import io.netty.handler.codec.mqtt.*;
+import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -73,7 +74,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
                 return;
             }
             String userName = mqttConnectMessage.payload().userName();
-            String password = String.valueOf(mqttConnectMessage.payload().passwordInBytes());
+            String password = new String(mqttConnectMessage.payload().passwordInBytes(), CharsetUtil.UTF_8);
             if( !deviceService.doLogin(deviceId, userName, password) ){
                 mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD);
                 return;

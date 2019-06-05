@@ -5,10 +5,8 @@ import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.beans.MqttTopic;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
-import com.krt.mqtt.server.entity.Subscribe;
+import com.krt.mqtt.server.service.DeviceDataService;
 import com.krt.mqtt.server.service.DeviceService;
-import com.krt.mqtt.server.service.MessageService;
-import com.krt.mqtt.server.service.SubscribeService;
 import com.krt.mqtt.server.utils.MessageIdUtil;
 import com.krt.mqtt.server.utils.MqttUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,10 +29,7 @@ public class MqttMessageService {
     private DeviceService deviceService;
 
     @Autowired
-    private MessageService messageService;
-
-    @Autowired
-    private SubscribeService subscribeService;
+    private DeviceDataService messageService;
 
     @Autowired
     private MqttChannelApi mqttChannelApi;
@@ -103,7 +97,7 @@ public class MqttMessageService {
         /**
          * 持久化发布报文
          */
-        messageService.insert(mqttChannelApi.getChannelDeviceId(ctx), messageId, topicName, topicMessage);
+        messageService.insert(mqttChannelApi.getChannelDeviceId(ctx), topicMessage);
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
@@ -164,7 +158,6 @@ public class MqttMessageService {
         ConcurrentSkipListSet<String> channelTopics = mqttChannelApi.getChannel(ctx).getTopics();
         int num = mqttSubscribeMessage.payload().topicSubscriptions().size();
         List<Integer> grantedQoSLevels = new ArrayList<>(num);
-        List<Subscribe> subscribes = new ArrayList<>();
         Date date = new Date();
         for (int i = 0; i < num; i++) {
             grantedQoSLevels.add(mqttSubscribeMessage.payload().topicSubscriptions().get(i).qualityOfService().value());
@@ -181,20 +174,10 @@ public class MqttMessageService {
             mqttTopics.put(deviceId, mqttTopic);
             mqttTopicApi.put(topicName, mqttTopics);
             /**
-             * 持久化订阅主题
-             */
-            Subscribe subscribe = new Subscribe();
-//            subscribe.setDeviceId(dbId);
-            subscribe.setTopicName(topicName);
-            subscribe.setInsertTime(date);
-            subscribe.setUpdateTime(date);
-            subscribes.add(subscribe);
-            /**
              * 通道中保存订阅的主题
              */
             channelTopics.add(topicName);
         }
-        subscribeService.insertBatch(subscribes);
         mqttMessageApi.SUBACK(ctx, grantedQoSLevels, mqttSubscribeMessage.variableHeader().messageId(), mqttSubscribeMessage.fixedHeader().isDup());
     }
 
