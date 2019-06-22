@@ -92,9 +92,9 @@ public class MqttMessageApi {
             public void operationComplete(ChannelFuture future) throws Exception {
                 try {
                     if (future.isSuccess()) {
-                        log.info("回写成功");
+                        log.info("回写成功（" + mqttChannelApi.getDeviceId(ctx) + "）");
                     } else {
-                        log.error("回写失败");
+                        log.error("回写失败（" + mqttChannelApi.getDeviceId(ctx) + "）");
                     }
                 }catch (IllegalReferenceCountException e){
                     // Do nothing
