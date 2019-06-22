@@ -2,9 +2,10 @@ package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.thread.AliveThread;
-import com.krt.mqtt.server.thread.DataThread;
+import com.krt.mqtt.server.thread.MessageThread;
 import com.krt.mqtt.server.thread.ReplyMessageThread;
 import com.krt.mqtt.server.thread.SendMessageThread;
+import com.krt.mqtt.server.utils.SignalUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -13,7 +14,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import sun.misc.Signal;
 
 @Component
 public class NettyServer {
@@ -38,18 +38,14 @@ public class NettyServer {
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-//            AliveThread aliveThread = new AliveThread();
-//            ReplyMessageThread replyMessageThread = new ReplyMessageThread();
-//            SendMessageThread sendMessageThread = new SendMessageThread();
             for(int i = 0; i<CommonConst.DEVICE_DATA_THREAD_SIZE; i++) {
-                CommonConst.DEVICE_DATA_THREAD_ARRAY[i] = new DataThread(i);
+                CommonConst.DEVICE_DATA_THREAD_ARRAY[i] = new MessageThread(i);
             }
             new AliveThread();
             new ReplyMessageThread();
             new SendMessageThread();
 
-//            Signal sig = new Signal(getOSSignalType());
-//            Signal.handle(sig, new NettyShutdownHandler());
+            SignalUtil.initSignal(new NettyShutdownHandler());
 
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
 
@@ -62,9 +58,4 @@ public class NettyServer {
         }
 
     }
-
-//    private static String getOSSignalType() {
-//        return System.getProperties().getProperty("os.name").
-//                toLowerCase().startsWith("win") ? "INT" : "USR2";
-//    }
 }

@@ -4,11 +4,13 @@ import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.entity.Message;
 import com.krt.mqtt.server.service.MessageService;
 import com.krt.mqtt.server.utils.SpringUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataThread extends Thread{
+@Slf4j
+public class MessageThread extends Thread{
     /**
      * 同步锁，防止脏读
      */
@@ -25,7 +27,7 @@ public class DataThread extends Thread{
     /**
      * 初始化线程容器 无参构造函数
      */
-    public DataThread() {
+    public MessageThread() {
         super();
     }
 
@@ -33,9 +35,9 @@ public class DataThread extends Thread{
      * 初始化线程容器
      * @param i 指定线程数
      */
-    public DataThread(int i) {
+    public MessageThread(int i) {
         super();
-        this.setName("messageThread- " + i);
+        this.setName("MessageThread-" + i);
         this.messageService = SpringUtil.getBean(MessageService.class);
         messageQueues = new ArrayList<>();
         this.start();
@@ -43,20 +45,24 @@ public class DataThread extends Thread{
 
     @Override
     public void run() {
-        while (true) {
+        while (!CommonConst.threadStop) {
             synchronized (lock) {
                 try {
                     persistData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    log.info("线程（"+this.getName()+"）接收中断信号立即持久数据：" + messageQueues.size());
+                    insertBatch();
+                    log.info("线程（"+this.getName()+"）接收中断信号结束持久数据：" + messageQueues.size());
                 }
             }
         }
+        log.info("线程（"+this.getName()+"）退出");
     }
 
     /**
      * 将数据缓存到数据库中
-     * @param deviceData 需要缓存的数据
+     * @param message 需要缓存的数据
      */
     public void insertMessage(Message message) {
         synchronized (lock) {
@@ -72,14 +78,18 @@ public class DataThread extends Thread{
      * @throws InterruptedException
      */
     private void persistData() throws InterruptedException {
+        insertBatch();
+        // 阻塞线程，直到线程超时或者被唤醒
+        lock.wait(CommonConst.DEVICE_DATA_THREAD_TIMEOUT);
+    }
+
+    private void insertBatch(){
         if( messageQueues.size() > 0 ) {
             // 将缓存的数据保存到数据库中
             messageService.insertBatch(messageQueues);
             // 清空缓存内容
             messageQueues.clear();
         }
-        // 阻塞线程，直到线程超时或者被唤醒
-        lock.wait(CommonConst.DEVICE_DATA_THREAD_TIMEOUT);
     }
 
 }

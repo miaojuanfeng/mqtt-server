@@ -1,6 +1,6 @@
 package com.krt.mqtt.server.constant;
 
-import com.krt.mqtt.server.thread.DataThread;
+import com.krt.mqtt.server.thread.MessageThread;
 
 public class CommonConst {
 
@@ -15,5 +15,7 @@ public class CommonConst {
 
     public static final int DEVICE_DATA_FULL_SIZE = 20;
 
-    public static final DataThread[] DEVICE_DATA_THREAD_ARRAY = new DataThread[DEVICE_DATA_THREAD_SIZE];
+    public static final MessageThread[] DEVICE_DATA_THREAD_ARRAY = new MessageThread[DEVICE_DATA_THREAD_SIZE];
+
+    public static volatile boolean threadStop = false;
 }
