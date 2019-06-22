@@ -1,8 +1,8 @@
 package com.krt.mqtt.server.thread;
 
 import com.krt.mqtt.server.constant.CommonConst;
-import com.krt.mqtt.server.entity.DeviceData;
-import com.krt.mqtt.server.service.DeviceDataService;
+import com.krt.mqtt.server.entity.Message;
+import com.krt.mqtt.server.service.MessageService;
 import com.krt.mqtt.server.utils.SpringUtil;
 
 import java.util.ArrayList;
@@ -16,11 +16,11 @@ public class DataThread extends Thread{
     /**
      * 缓存数据的容器
      */
-    private List<DeviceData> deviceDataQueues;
+    private List<Message> messageQueues;
     /**
      * 数据的最小单元
      */
-    private DeviceDataService deviceDataService;
+    private MessageService messageService;
 
     /**
      * 初始化线程容器 无参构造函数
@@ -35,9 +35,9 @@ public class DataThread extends Thread{
      */
     public DataThread(int i) {
         super();
-        this.setName("deviceDataThread- " + i);
-        this.deviceDataService = SpringUtil.getBean(DeviceDataService.class);
-        deviceDataQueues = new ArrayList<>();
+        this.setName("messageThread- " + i);
+        this.messageService = SpringUtil.getBean(MessageService.class);
+        messageQueues = new ArrayList<>();
         this.start();
     }
 
@@ -58,10 +58,10 @@ public class DataThread extends Thread{
      * 将数据缓存到数据库中
      * @param deviceData 需要缓存的数据
      */
-    public void addDeviceData(DeviceData deviceData) {
+    public void insertMessage(Message message) {
         synchronized (lock) {
-            deviceDataQueues.add(deviceData);
-            if( deviceDataQueues.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
+            messageQueues.add(message);
+            if( messageQueues.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
                 lock.notify();
             }
         }
@@ -72,11 +72,11 @@ public class DataThread extends Thread{
      * @throws InterruptedException
      */
     private void persistData() throws InterruptedException {
-        if( deviceDataQueues.size() > 0 ) {
+        if( messageQueues.size() > 0 ) {
             // 将缓存的数据保存到数据库中
-            deviceDataService.insertBatch(deviceDataQueues);
+            messageService.insertBatch(messageQueues);
             // 清空缓存内容
-            deviceDataQueues.clear();
+            messageQueues.clear();
         }
         // 阻塞线程，直到线程超时或者被唤醒
         lock.wait(CommonConst.DEVICE_DATA_THREAD_TIMEOUT);

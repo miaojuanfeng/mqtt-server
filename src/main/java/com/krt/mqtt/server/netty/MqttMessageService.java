@@ -6,8 +6,7 @@ import com.krt.mqtt.server.beans.MqttTopic;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
-import com.krt.mqtt.server.entity.DeviceData;
-import com.krt.mqtt.server.service.DeviceDataService;
+import com.krt.mqtt.server.entity.Message;
 import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.utils.MessageIdUtil;
 import com.krt.mqtt.server.utils.MqttUtil;
@@ -80,10 +79,6 @@ public class MqttMessageService {
         }
         mqttChannelApi.setChannel(deviceId, mqttChannel);
         /**
-         * 设置客户端通道属性
-         */
-        mqttChannelApi.setChannelAttr(ctx, deviceId);
-        /**
          * 回写连接确认报文
          */
         mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_ACCEPTED);
@@ -96,7 +91,7 @@ public class MqttMessageService {
         /**
          * 持久化发布报文
          */
-        cacheData(ctx, new DeviceData(mqttChannelApi.getDeviceId(ctx), MqttUtil.byteToString(topicMessage)));
+        cacheData(ctx, new Message(mqttChannelApi.getDeviceId(ctx), messageId, topicName, MqttUtil.byteToString(topicMessage), mqttChannelApi.getDbId(ctx)));
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
@@ -253,7 +248,7 @@ public class MqttMessageService {
         }
     }
 
-    private void cacheData(ChannelHandlerContext ctx, DeviceData deviceData){
-        CommonConst.DEVICE_DATA_THREAD_ARRAY[mqttChannelApi.getIndex(ctx)].addDeviceData(deviceData);
+    private void cacheData(ChannelHandlerContext ctx, Message message){
+        CommonConst.DEVICE_DATA_THREAD_ARRAY[mqttChannelApi.getIndex(ctx)].insertMessage(message);
     }
 }

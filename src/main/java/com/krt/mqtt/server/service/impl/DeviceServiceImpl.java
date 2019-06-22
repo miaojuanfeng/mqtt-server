@@ -18,17 +18,20 @@ public class DeviceServiceImpl implements DeviceService {
     private DeviceMapper deviceMapper;
 
     @Override
-    public boolean doLogin(String deviceId, String userName, String password) {
+    public Integer doLogin(String deviceId, String userName, String password) {
         Device device = deviceMapper.selectByDeviceId(deviceId);
         if( device != null ) {
             if( userName.equals(device.getDeviceCode()) && password.equals(device.getVerifyCode()) ){
                 try {
-                    return AesUtil.getAESEncrypt(deviceId, CommonConst.AESKEY).equals(device.getVerifyCode());
+                    if( AesUtil.getAESEncrypt(deviceId, CommonConst.AESKEY).equals(device.getVerifyCode()) ) {
+                        return device.getId();
+                    }
+                    return null;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return false;
+        return null;
     }
 }

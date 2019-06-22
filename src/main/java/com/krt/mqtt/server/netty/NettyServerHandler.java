@@ -75,10 +75,16 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
             }
             String userName = mqttConnectMessage.payload().userName();
             String password = new String(mqttConnectMessage.payload().passwordInBytes(), CharsetUtil.UTF_8);
-            if( !deviceService.doLogin(deviceId, userName, password) ){
+            Integer dbId = deviceService.doLogin(deviceId, userName, password);
+            if( dbId == null ){
                 mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_REFUSED_BAD_USER_NAME_OR_PASSWORD);
                 return;
             }
+            /**
+             * 设置客户端通道属性
+             */
+            mqttChannelApi.setChannelAttr(ctx, deviceId, dbId);
+
             mqttMessageService.replyCONNECT(ctx, (MqttConnectMessage) mqttMessage);
             return;
         }

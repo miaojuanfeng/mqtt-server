@@ -26,6 +26,8 @@ public class MqttChannelApi {
 
     public static final AttributeKey<Integer> _INDEX = AttributeKey.valueOf("index");
 
+    public static final AttributeKey<Integer> _DB_ID = AttributeKey.valueOf("dbId");
+
     @Autowired
     private MqttTopicApi mqttTopicApi;
 
@@ -40,9 +42,15 @@ public class MqttChannelApi {
 
     public void setDeviceId(ChannelHandlerContext ctx, String deviceId){ ctx.channel().attr(_DEVICE_ID).set(deviceId); }
 
+    public Integer getDbId(ChannelHandlerContext ctx){
+        return ctx.channel().attr(_DB_ID).get();
+    }
+
+    public void setDbId(ChannelHandlerContext ctx, Integer dbId){ ctx.channel().attr(_DB_ID).set(dbId); }
+
     public Integer getIndex(ChannelHandlerContext ctx){ return ctx.channel().attr(_INDEX).get(); }
 
-    public Boolean getIsLogin(ChannelHandlerContext ctx){
+    public Boolean isLogin(ChannelHandlerContext ctx){
         return ctx.channel().attr(_LOGIN).get();
     }
 
@@ -50,10 +58,11 @@ public class MqttChannelApi {
         return channels.get(deviceId);
     }
 
-    public void setChannelAttr(ChannelHandlerContext ctx, String deviceId){
+    public void setChannelAttr(ChannelHandlerContext ctx, String deviceId, Integer dbId){
         Channel channel = ctx.channel();
         channel.attr(_LOGIN).set(true);
         channel.attr(_DEVICE_ID).set(deviceId);
+        channel.attr(_DB_ID).set(dbId);
         channel.attr(_INDEX).set(((int)System.currentTimeMillis()/1000) % CommonConst.DEVICE_DATA_THREAD_SIZE);
     }
 
@@ -94,7 +103,7 @@ public class MqttChannelApi {
         if( !hasAttr(ctx, _LOGIN) ) {
             return false;
         }
-        return getIsLogin(ctx);
+        return isLogin(ctx);
     }
 
     public void checkAlive(){
