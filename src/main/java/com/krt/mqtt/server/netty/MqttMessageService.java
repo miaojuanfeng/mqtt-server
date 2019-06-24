@@ -2,7 +2,7 @@ package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
-import com.krt.mqtt.server.beans.MqttTopic;
+import com.krt.mqtt.server.beans.MqttSubject;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
@@ -91,7 +91,9 @@ public class MqttMessageService {
         /**
          * 持久化发布报文
          */
-        cacheData(ctx, new Message(mqttChannelApi.getDeviceId(ctx), messageId, topicName, MqttUtil.byteToString(topicMessage), mqttChannelApi.getDbId(ctx)));
+        String topicContent = MqttUtil.byteToString(topicMessage);
+        CommonConst.PROCESS_MANAGE_THREAD.insertSubject(topicName, topicContent);
+        cacheData(ctx, new Message(mqttChannelApi.getDeviceId(ctx), messageId, topicName, topicContent, mqttChannelApi.getDbId(ctx)));
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
@@ -157,12 +159,12 @@ public class MqttMessageService {
             grantedQoSLevels.add(mqttSubscribeMessage.payload().topicSubscriptions().get(i).qualityOfService().value());
             //
             String topicName = mqttSubscribeMessage.payload().topicSubscriptions().get(i).topicName();
-            ConcurrentHashMap<String, MqttTopic> mqttTopics = mqttTopicApi.get(topicName);
+            ConcurrentHashMap<String, MqttSubject> mqttTopics = mqttTopicApi.get(topicName);
             if( mqttTopics == null ){
                 mqttTopics = new ConcurrentHashMap<>();
             }
-            MqttTopic mqttTopic = new MqttTopic();
-            mqttTopic.setTopicName(topicName);
+            MqttSubject mqttTopic = new MqttSubject();
+            mqttTopic.setSubjectName(topicName);
             mqttTopic.setMqttQoS(mqttSubscribeMessage.payload().topicSubscriptions().get(i).qualityOfService());
             mqttTopic.setCtx(ctx);
             mqttTopics.put(deviceId, mqttTopic);
@@ -199,10 +201,10 @@ public class MqttMessageService {
                 String willTopic = mqttWill.getWillTopic();
                 byte[] willMessage = mqttWill.getWillMessage();
                 MqttQoS mqttQoS = mqttWill.getMqttQoS();
-                ConcurrentHashMap<String, MqttTopic> mqttTopics = mqttTopicApi.get(willTopic);
+                ConcurrentHashMap<String, MqttSubject> mqttTopics = mqttTopicApi.get(willTopic);
                 for (String key : mqttTopics.keySet()){
                     int messageId = MessageIdUtil.messageId();
-                    MqttTopic mqttTopic = mqttTopics.get(key);
+                    MqttSubject mqttTopic = mqttTopics.get(key);
                     switch (mqttWill.getMqttQoS()){
                         case AT_MOST_ONCE:
                             break;
@@ -233,10 +235,10 @@ public class MqttMessageService {
         /**
          * 遍历所有订阅了该主题的客户端
          */
-        ConcurrentHashMap<String, MqttTopic> mqttTopics = mqttTopicApi.get(topicName);
+        ConcurrentHashMap<String, MqttSubject> mqttTopics = mqttTopicApi.get(topicName);
         if( mqttTopics != null ) {
             for (String deviceId : mqttTopics.keySet()) {
-                MqttTopic mqttTopic = mqttTopics.get(deviceId);
+                MqttSubject mqttTopic = mqttTopics.get(deviceId);
                 if (mqttTopic.getCtx().channel().isActive() && mqttTopic.getCtx().channel().isWritable()) {
                     int messageId = MessageIdUtil.messageId();
                     if( mqttTopic.getMqttQoS().value() > MqttQoS.AT_MOST_ONCE.value() ) {

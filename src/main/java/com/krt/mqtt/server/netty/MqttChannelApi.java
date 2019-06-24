@@ -2,9 +2,7 @@ package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
-import com.krt.mqtt.server.beans.MqttTopic;
 import com.krt.mqtt.server.constant.CommonConst;
-import com.krt.mqtt.server.service.DeviceService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -63,7 +61,7 @@ public class MqttChannelApi {
         channel.attr(_LOGIN).set(true);
         channel.attr(_DEVICE_ID).set(deviceId);
         channel.attr(_DB_ID).set(dbId);
-        channel.attr(_INDEX).set(((int)System.currentTimeMillis()/1000) % CommonConst.DEVICE_DATA_THREAD_SIZE);
+        channel.attr(_INDEX).set(dbId % CommonConst.DEVICE_DATA_THREAD_SIZE);
     }
 
     public MqttChannel getChannel(ChannelHandlerContext ctx){ return channels.get(getDeviceId(ctx)); }

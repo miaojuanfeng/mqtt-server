@@ -5,20 +5,20 @@ import io.netty.handler.codec.mqtt.MqttQoS;
 
 import java.util.Objects;
 
-public class MqttTopic {
+public class MqttSubject {
 
-    private String topicName;
+    private String subjectName;
 
     private MqttQoS mqttQoS;
 
     private ChannelHandlerContext ctx;
 
-    public String getTopicName() {
-        return topicName;
+    public String getSubjectName() {
+        return subjectName;
     }
 
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 
     public MqttQoS getMqttQoS() {

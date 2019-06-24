@@ -65,6 +65,7 @@ public class MessageThread extends Thread{
      * @param message 需要缓存的数据
      */
     public void insertMessage(Message message) {
+        // 还可以优化的地方
         synchronized (lock) {
             messageQueues.add(message);
             if( messageQueues.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {

@@ -6,16 +6,16 @@ public class Message {
     private Integer id;
     private String deviceId;
     private Integer messageId;
-    private String topicName;
-    private String topicContent;
+    private String subjectName;
+    private String subjectContent;
     private Integer inserter;
     private Date insertTime;
 
-    public Message(String deviceId, Integer messageId, String topicName, String topicContent, Integer inserter) {
+    public Message(String deviceId, Integer messageId, String subjectName, String subjectContent, Integer inserter) {
         this.deviceId = deviceId;
         this.messageId = messageId;
-        this.topicName = topicName;
-        this.topicContent = topicContent;
+        this.subjectName = subjectName;
+        this.subjectContent = subjectContent;
         this.inserter = inserter;
         this.insertTime = new Date();
     }
@@ -44,20 +44,20 @@ public class Message {
         this.messageId = messageId;
     }
 
-    public String getTopicName() {
-        return topicName;
+    public String getSubjectName() {
+        return subjectName;
     }
 
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 
-    public String getTopicContent() {
-        return topicContent;
+    public String getSubjectContent() {
+        return subjectContent;
     }
 
-    public void setTopicContent(String topicContent) {
-        this.topicContent = topicContent;
+    public void setSubjectContent(String subjectContent) {
+        this.subjectContent = subjectContent;
     }
 
     public Integer getInserter() {
