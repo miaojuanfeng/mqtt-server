@@ -52,11 +52,11 @@ public class ProcessThread extends Thread{
                         case SubjectConst.SUBJECT_SHADOW:
                             JSONObject obj = JSONObject.parseObject(subjectContent);
                             System.out.println(obj);
-                            try {
-                                Thread.sleep(10000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+//                            try {
+//                                Thread.sleep(10000);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
                             break;
                     }
                 }
