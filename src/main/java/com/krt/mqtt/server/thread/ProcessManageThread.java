@@ -48,6 +48,7 @@ public class ProcessManageThread extends Thread{
     }
 
     public boolean insertThread(ProcessThread processThread) {
+        log.info("usedThreadQueue("+processThread.getName()+") remove.");
         usedThreadQueue.remove(processThread);
         freeThreadQueue.add(processThread);
         return true;

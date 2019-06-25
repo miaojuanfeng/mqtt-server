@@ -51,7 +51,7 @@ public class ProcessThread extends Thread{
                     switch (subjectName){
                         case SubjectConst.SUBJECT_SHADOW:
                             JSONObject obj = JSONObject.parseObject(subjectContent);
-                            System.out.println(obj);
+                            System.out.println(this.getName()+": "+obj);
 //                            try {
 //                                Thread.sleep(10000);
 //                            } catch (InterruptedException e) {
