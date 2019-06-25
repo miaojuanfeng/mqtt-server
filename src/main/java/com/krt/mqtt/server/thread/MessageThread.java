@@ -45,7 +45,7 @@ public class MessageThread extends Thread{
 
     @Override
     public void run() {
-        while (!CommonConst.threadStop) {
+        while (!CommonConst.messageThreadStop) {
             synchronized (lock) {
                 try {
                     persistData();

@@ -20,8 +20,8 @@ public class NettyShutdownHandler implements SignalHandler {
         log.info("接收中断信号: "+signal.getName());
 //        java.lang.Runtime.getRuntime().addShutdownHook(new Thread(){
 //            public void run(){
-                CommonConst.threadStop = true;
-                log.info("threadStop: " + CommonConst.threadStop);
+                CommonConst.messageThreadStop = true;
+                log.info("messageThreadStop: " + CommonConst.messageThreadStop);
                 try {
                     for(int i = 0; i<CommonConst.DEVICE_DATA_THREAD_SIZE; i++) {
                         MessageThread thread = CommonConst.DEVICE_DATA_THREAD_ARRAY[i];
@@ -30,6 +30,10 @@ public class NettyShutdownHandler implements SignalHandler {
                         }
                         thread.join();
                     }
+                    if( !CommonConst.PROCESS_MANAGE_THREAD.isInterrupted() ) {
+                        CommonConst.PROCESS_MANAGE_THREAD.interrupt();
+                    }
+                    CommonConst.PROCESS_MANAGE_THREAD.join();
                 } catch (InterruptedException e) {
                     log.info("Join等待线程退出发生中断");
                     e.printStackTrace();

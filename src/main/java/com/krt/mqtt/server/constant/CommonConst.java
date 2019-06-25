@@ -18,7 +18,9 @@ public class CommonConst {
 
     public static final MessageThread[] DEVICE_DATA_THREAD_ARRAY = new MessageThread[DEVICE_DATA_THREAD_SIZE];
 
-    public static volatile boolean threadStop = false;
+    public static volatile boolean messageThreadStop = false;
+
+    public static volatile boolean processThreadStop = false;
 
     public static final ProcessManageThread PROCESS_MANAGE_THREAD = new ProcessManageThread();
 }

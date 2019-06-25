@@ -36,9 +36,16 @@ public class ProcessThread extends Thread{
         log.info(this.getName()+" restart.");
     }
 
+    public void notifyThread(){
+        log.info(this.getName()+" notifyThread.");
+        synchronized (lock){
+            lock.notify();
+        }
+    }
+
     @Override
     public void run() {
-        while (!CommonConst.threadStop) {
+        while (!CommonConst.processThreadStop) {
             synchronized (lock) {
                 if( subjectName != null && subjectContent != null ){
                     switch (subjectName){
@@ -46,7 +53,7 @@ public class ProcessThread extends Thread{
                             JSONObject obj = JSONObject.parseObject(subjectContent);
                             System.out.println(obj);
                             try {
-                                Thread.sleep(4000);
+                                Thread.sleep(10000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
