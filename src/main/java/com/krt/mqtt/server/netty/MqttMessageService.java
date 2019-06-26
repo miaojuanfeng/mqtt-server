@@ -41,6 +41,9 @@ public class MqttMessageService {
     @Autowired
     private MqttResendApi mqttResendApi;
 
+    @Autowired
+    private NettyProcessHandler nettyProcessHandler;
+
     public void replyCONNECT(ChannelHandlerContext ctx, MqttConnectMessage mqttConnectMessage){
         /**
          * Mqtt协议规定，相同Client ID客户端已连接到服务器，
@@ -92,7 +95,7 @@ public class MqttMessageService {
          * 持久化发布报文
          */
         String topicContent = MqttUtil.byteToString(topicMessage);
-        CommonConst.PROCESS_MANAGE_THREAD.insertSubject(topicName, topicContent);
+        nettyProcessHandler.publish(topicName, topicContent);
         cacheData(ctx, new Message(mqttChannelApi.getDeviceId(ctx), messageId, topicName, topicContent, mqttChannelApi.getDbId(ctx)));
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
@@ -115,6 +118,10 @@ public class MqttMessageService {
                 mqttMessageApi.PUBREC(ctx, messageId, false);
                 break;
         }
+        /**
+         * 释放引用计数
+         */
+        mqttPublishMessage.release();
     }
 
     public void replyPUBACK(ChannelHandlerContext ctx, MqttPubAckMessage mqttPubAckMessage){

@@ -3,7 +3,6 @@ package com.krt.mqtt.server.thread;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.entity.Message;
 import com.krt.mqtt.server.service.MessageService;
-import com.krt.mqtt.server.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -38,14 +37,14 @@ public class MessageThread extends Thread{
     public MessageThread(int i) {
         super();
         this.setName("MessageThread-" + i);
-        this.messageService = SpringUtil.getBean(MessageService.class);
+        this.messageService = CommonConst.APPLICATION_CONTEXT.getBean(MessageService.class);
         messageQueues = new ArrayList<>();
         this.start();
     }
 
     @Override
     public void run() {
-        while (!CommonConst.messageThreadStop) {
+        while (!CommonConst.MESSAGE_THREAD_STOP) {
             synchronized (lock) {
                 try {
                     persistData();
@@ -53,7 +52,6 @@ public class MessageThread extends Thread{
                     e.printStackTrace();
                     log.info("线程（"+this.getName()+"）接收中断信号立即持久数据：" + messageQueues.size());
                     insertBatch();
-                    log.info("线程（"+this.getName()+"）接收中断信号结束持久数据：" + messageQueues.size());
                 }
             }
         }

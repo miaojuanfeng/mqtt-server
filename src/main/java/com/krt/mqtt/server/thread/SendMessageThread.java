@@ -1,8 +1,8 @@
 package com.krt.mqtt.server.thread;
 
+import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.netty.MqttMessageService;
 import com.krt.mqtt.server.netty.MqttResendApi;
-import com.krt.mqtt.server.utils.SpringUtil;
 
 public class SendMessageThread extends Thread{
 
@@ -13,7 +13,7 @@ public class SendMessageThread extends Thread{
     private final long timeout = 1000;
 
     public SendMessageThread(){
-        mqttResendApi = SpringUtil.getBean(MqttResendApi.class);
+        mqttResendApi = CommonConst.APPLICATION_CONTEXT.getBean(MqttResendApi.class);
         this.start();
     }
 

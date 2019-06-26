@@ -2,6 +2,7 @@ package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
+import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.MqttQoS;
@@ -24,8 +25,6 @@ public class MqttResendApi {
 
     @Autowired
     private MqttMessageService mqttMessageService;
-
-    private static final int maxResendCount = 10;
 
     public void saveReplyMessage(ChannelHandlerContext ctx, int messageId, String topicName, byte[] payload, int state){
         MqttChannel mqttChannel = mqttChannelApi.getChannel(ctx);
@@ -113,7 +112,7 @@ public class MqttResendApi {
                 MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
                 if (mqttSendMessage.getState() == MqttMessageStateConst.REC) {
                     if (mqttSendMessage.getCtx().channel().isActive() && mqttSendMessage.getCtx().channel().isWritable()) {
-                        if ( mqttSendMessage.getResendCount() > maxResendCount ){
+                        if ( mqttSendMessage.getResendCount() > CommonConst.MAX_RESEND_COUNT){
                             log.error("客户端（"+deviceId+"）未回复消息（"+messageId+"）超过最大重发次数，已忽略该消息");
                             replyMessages.remove(messageId);
                             continue;
@@ -142,7 +141,7 @@ public class MqttResendApi {
                 MqttSendMessage mqttSendMessage = sendMessages.get(messageId);
                 if (mqttSendMessage.getCtx().channel().isActive() && mqttSendMessage.getCtx().channel().isWritable()) {
                     if (mqttSendMessage.getState() == MqttMessageStateConst.PUB) {
-                        if ( mqttSendMessage.getResendCount() > maxResendCount ){
+                        if ( mqttSendMessage.getResendCount() > CommonConst.MAX_RESEND_COUNT ){
                             log.error("客户端（"+deviceId+"）未发送消息（"+messageId+"）超过最大重发次数，已忽略该消息");
                             sendMessages.remove(messageId);
                             continue;

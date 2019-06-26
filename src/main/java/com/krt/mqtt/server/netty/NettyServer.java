@@ -12,11 +12,15 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class NettyServer {
+
+    @Autowired
+    private NettyServerInitializer nettyServerInitializer;
 
     private static Integer port;
 
@@ -25,7 +29,7 @@ public class NettyServer {
         this.port = port;
     }
 
-    public static void start(){
+    public void start(){
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -33,7 +37,7 @@ public class NettyServer {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new NettyServerInitializer())
+                    .childHandler(nettyServerInitializer)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);

@@ -3,8 +3,10 @@ package com.krt.mqtt.server.thread;
 import com.alibaba.fastjson.JSONObject;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.SubjectConst;
+import com.krt.mqtt.server.netty.NettyProcessHandler;
 import com.krt.mqtt.server.service.MessageService;
-import com.krt.mqtt.server.utils.SpringUtil;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -12,53 +14,46 @@ import java.util.ArrayList;
 @Slf4j
 public class ProcessThread extends Thread{
 
-    private String subjectName = null;
+    private NettyProcessHandler nettyProcessHandler;
 
-    private String subjectContent = null;
+    private ChannelHandlerContext ctx;
+
+    private MqttMessage mqttMessage;
 
     private Object lock = new Object();
 
-    public ProcessThread(int i, String subjectName, String subjectContent) {
+    private static int threadInitNumber;
+
+    private static synchronized int nextThreadNum() {
+        return threadInitNumber++;
+    }
+
+    public ProcessThread(ChannelHandlerContext ctx, MqttMessage mqttMessage) {
         super();
-        this.setName("ProcessThread-" + i);
-        this.subjectName = subjectName;
-        this.subjectContent = subjectContent;
+        this.nettyProcessHandler = CommonConst.APPLICATION_CONTEXT.getBean(NettyProcessHandler.class);
+        this.setName("ProcessThread-" + nextThreadNum());
+        this.ctx = ctx;
+        this.mqttMessage = mqttMessage;
         this.start();
-        log.info(this.getName()+" ProcessThread.");
+        log.info("线程（" + this.getName() + "）创建运行");
     }
 
-    public void restart(String subjectName, String subjectContent) {
+    public void restart(ChannelHandlerContext ctx, MqttMessage mqttMessage) {
+        this.ctx = ctx;
+        this.mqttMessage = mqttMessage;
         synchronized (lock) {
-            this.subjectName = subjectName;
-            this.subjectContent = subjectContent;
             lock.notify();
         }
-        log.info(this.getName()+" restart.");
-    }
-
-    public void notifyThread(){
-        log.info(this.getName()+" notifyThread.");
-        synchronized (lock){
-            lock.notify();
-        }
+        log.info("线程（" + this.getName() + "）唤醒运行");
     }
 
     @Override
     public void run() {
-        while (!CommonConst.processThreadStop) {
+        while (!CommonConst.PROCESS_THREAD_STOP) {
             synchronized (lock) {
-                if( subjectName != null && subjectContent != null ){
-                    switch (subjectName){
-                        case SubjectConst.SUBJECT_SHADOW:
-                            JSONObject obj = JSONObject.parseObject(subjectContent);
-                            System.out.println(this.getName()+": "+obj);
-//                            try {
-//                                Thread.sleep(10000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-                            break;
-                    }
+                nettyProcessHandler.process(ctx, mqttMessage);
+                if( CommonConst.PROCESS_THREAD_STOP ){
+                    break;
                 }
                 if( CommonConst.PROCESS_MANAGE_THREAD.insertThread(this) ) {
                     try {

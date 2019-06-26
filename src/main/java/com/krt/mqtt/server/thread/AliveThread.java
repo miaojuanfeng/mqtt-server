@@ -1,8 +1,8 @@
 package com.krt.mqtt.server.thread;
 
+import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.netty.MqttChannelApi;
 import com.krt.mqtt.server.netty.MqttMessageService;
-import com.krt.mqtt.server.utils.SpringUtil;
 
 public class AliveThread extends Thread{
 
@@ -13,7 +13,7 @@ public class AliveThread extends Thread{
     private final long timeout = 5000;
 
     public AliveThread(){
-        mqttChannelApi = SpringUtil.getBean(MqttChannelApi.class);
+        mqttChannelApi = CommonConst.APPLICATION_CONTEXT.getBean(MqttChannelApi.class);
         this.start();
     }
 

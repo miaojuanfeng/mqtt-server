@@ -1,16 +1,15 @@
 package com.krt.mqtt.server.thread;
 
 import com.krt.mqtt.server.constant.CommonConst;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.security.auth.Subject;
-import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 public class ProcessManageThread extends Thread{
 
-    private final ConcurrentLinkedQueue<Subject> subjectQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<NettyMessage> subjectQueue = new ConcurrentLinkedQueue<>();
 
     private final ConcurrentLinkedQueue<ProcessThread> freeThreadQueue = new ConcurrentLinkedQueue<>();
 
@@ -18,48 +17,64 @@ public class ProcessManageThread extends Thread{
 
     private Object lock = new Object();
 
-    private int threadCount = 0;
+    private final int maximumPoolSize = 36;
+
+    private final int corePoolSize = 24;
+
+    private int poolSize = 0;
+
+    private int largestPoolSize = 0;
 
     public ProcessManageThread(){
         this.setName("ProcessManageThread");
         this.start();
-        log.info(this.getName()+" start.");
+        log.info("线程（" + this.getName()+"）开始运行");
     }
 
-    public void insertSubject(String subjectName, String subjectContent){
-        subjectQueue.add(new Subject(subjectName, subjectContent, new Date()));
-        log.info("插入处理队列");
-//        synchronized (lock) {
-//            lock.notify();
-//        }
-    }
-
-    public void doProcess(){
-        log.info(this.getName()+" doProcess.");
-        ProcessThread processThread = freeThreadQueue.poll();
-        Subject subject = subjectQueue.poll();
-        if( processThread == null ){
-            processThread = new ProcessThread(threadCount, subject.getSubjectName(), subject.getSubjectContent());
-            threadCount++;
-        }else {
-            processThread.restart(subject.getSubjectName(), subject.getSubjectContent());
-        }
-        usedThreadQueue.add(processThread);
+    public void insertSubject(ChannelHandlerContext ctx, MqttMessage mqttMessage){
+        subjectQueue.add(new NettyMessage(ctx, mqttMessage));
     }
 
     public boolean insertThread(ProcessThread processThread) {
-        log.info("usedThreadQueue("+processThread.getName()+") remove.");
         usedThreadQueue.remove(processThread);
-        freeThreadQueue.add(processThread);
+        if( poolSize <= corePoolSize ) {
+            freeThreadQueue.add(processThread);
+            log.info("线程（"+processThread.getName()+"）进入休眠");
+            return true;
+        }
+        poolSize--;
+        return false;
+    }
+
+    private boolean doProcess(){
+        if( freeThreadQueue.size() == 0 && poolSize >= maximumPoolSize ){
+            log.info("线程数达最大值无法新建：" + poolSize + "/" + maximumPoolSize);
+            return false;
+        }
+        ProcessThread processThread = freeThreadQueue.poll();
+        NettyMessage nettyMessage = subjectQueue.poll();
+        if( processThread == null ){
+            processThread = new ProcessThread(nettyMessage.getCtx(), nettyMessage.getMqttMessage());
+            poolSize++;
+            if( poolSize > largestPoolSize ){
+                largestPoolSize = poolSize;
+                log.info("更新最大线程数量：" + largestPoolSize);
+            }
+        }else {
+            processThread.restart(nettyMessage.getCtx(), nettyMessage.getMqttMessage());
+        }
+        usedThreadQueue.add(processThread);
         return true;
     }
 
     @Override
     public void run() {
-        while (!CommonConst.processThreadStop){
+        while (!CommonConst.PROCESS_THREAD_STOP){
             synchronized (lock){
                 while ( subjectQueue.size() > 0 ){
-                    doProcess();
+                    if( !doProcess() ){
+                        break;
+                    }
                 }
                 try {
                     lock.wait(10);
@@ -67,64 +82,51 @@ public class ProcessManageThread extends Thread{
                     while ( subjectQueue.size() > 0 ){
                         doProcess();
                     }
-                    CommonConst.processThreadStop = true;
-                    log.info("processThreadStop: " + CommonConst.processThreadStop);
-                    log.info("usedThreadQueue.size: " + usedThreadQueue.size());
+                    CommonConst.PROCESS_THREAD_STOP = true;
+                    log.info("工作中Process线程数量: " + usedThreadQueue.size());
                     while( usedThreadQueue.size() > 0 ) {
                         ProcessThread processThread = usedThreadQueue.poll();
-                        log.info("线程（" + processThread.getName() + "）xxx");
+                        log.info("线程（" + processThread.getName() + "）工作中，等待其结束");
                         try {
-                            processThread.notifyThread();
                             processThread.join();
                         } catch (InterruptedException ee) {
-                            log.info("Join等待线程（" + processThread.getName() + "）退出发生中断");
+                            log.info("线程（" + this.getName() + "）等待线程（" + processThread.getName() + "）退出发生中断");
                             e.printStackTrace();
                         }
                     }
-                    e.printStackTrace();
                     log.info("线程（"+this.getName()+"）接收中断信号");
+                    e.printStackTrace();
                 }
             }
         }
-        log.info("线程（"+this.getName()+"）结束");
+        log.info("线程（"+this.getName()+"）退出");
     }
 
-    public class Subject {
+    public class NettyMessage {
 
-        private String subjectName;
+        private ChannelHandlerContext ctx;
 
-        private String subjectContent;
+        private MqttMessage mqttMessage;
 
-        private Date date;
-
-        public Subject(String subjectName, String subjectContent, Date date) {
-            this.subjectName = subjectName;
-            this.subjectContent = subjectContent;
-            this.date = date;
+        public NettyMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage) {
+            this.ctx = ctx;
+            this.mqttMessage = mqttMessage;
         }
 
-        public String getSubjectName() {
-            return subjectName;
+        public ChannelHandlerContext getCtx() {
+            return ctx;
         }
 
-        public void setSubjectName(String subjectName) {
-            this.subjectName = subjectName;
+        public void setCtx(ChannelHandlerContext ctx) {
+            this.ctx = ctx;
         }
 
-        public String getSubjectContent() {
-            return subjectContent;
+        public MqttMessage getMqttMessage() {
+            return mqttMessage;
         }
 
-        public void setSubjectContent(String subjectContent) {
-            this.subjectContent = subjectContent;
-        }
-
-        public Date getDate() {
-            return date;
-        }
-
-        public void setDate(Date date) {
-            this.date = date;
+        public void setMqttMessage(MqttMessage mqttMessage) {
+            this.mqttMessage = mqttMessage;
         }
     }
 }
