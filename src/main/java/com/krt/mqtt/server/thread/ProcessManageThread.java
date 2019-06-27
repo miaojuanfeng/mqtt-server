@@ -31,7 +31,7 @@ public class ProcessManageThread extends Thread{
         log.info("线程（" + this.getName()+"）开始运行");
     }
 
-    public void insertSubject(ChannelHandlerContext ctx, MqttMessage mqttMessage){
+    public void insertMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage){
         subjectQueue.add(new NettyMessage(ctx, mqttMessage));
     }
 
