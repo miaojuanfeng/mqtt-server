@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 public class MessageThread extends Thread{
@@ -17,7 +18,8 @@ public class MessageThread extends Thread{
     /**
      * 缓存数据的容器
      */
-    private List<Message> messageQueues;
+//    private List<Message> messageQueues;
+    private final ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<>();
     /**
      * 数据的最小单元
      */
@@ -38,7 +40,6 @@ public class MessageThread extends Thread{
         super();
         this.setName("MessageThread-" + i);
         this.messageService = CommonConst.APPLICATION_CONTEXT.getBean(MessageService.class);
-        messageQueues = new ArrayList<>();
         this.start();
     }
 
@@ -50,7 +51,7 @@ public class MessageThread extends Thread{
                     persistData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    log.info("线程（"+this.getName()+"）接收中断信号立即持久数据：" + messageQueues.size());
+                    log.info("线程（"+this.getName()+"）接收中断信号立即持久数据：" + messageQueue.size());
                     insertBatch();
                 }
             }
@@ -63,13 +64,20 @@ public class MessageThread extends Thread{
      * @param message 需要缓存的数据
      */
     public void insertMessage(Message message) {
-        // 还可以优化的地方
-        synchronized (lock) {
-            messageQueues.add(message);
-            if( messageQueues.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
+        messageQueue.add(message);
+        // 限制单次插入数量
+        if( messageQueue.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
+            synchronized (lock) {
                 lock.notify();
             }
         }
+        // 还可以优化的地方
+//        synchronized (lock) {
+//            messageQueues.add(message);
+//            if( messageQueues.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
+//                lock.notify();
+//            }
+//        }
     }
 
     /**
@@ -83,11 +91,11 @@ public class MessageThread extends Thread{
     }
 
     private void insertBatch(){
-        if( messageQueues.size() > 0 ) {
+        if( messageQueue.size() > 0 ) {
             // 将缓存的数据保存到数据库中
-            messageService.insertBatch(messageQueues);
+            messageService.insertBatch(messageQueue);
             // 清空缓存内容
-            messageQueues.clear();
+            messageQueue.clear();
         }
     }
 

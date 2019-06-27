@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Slf4j
 public class ProcessManageThread extends Thread{
 
-    private final ConcurrentLinkedQueue<NettyMessage> subjectQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<NettyMessage> messageQueue = new ConcurrentLinkedQueue<>();
 
     private final ConcurrentLinkedQueue<ProcessThread> freeThreadQueue = new ConcurrentLinkedQueue<>();
 
@@ -32,7 +32,7 @@ public class ProcessManageThread extends Thread{
     }
 
     public void insertMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage){
-        subjectQueue.add(new NettyMessage(ctx, mqttMessage));
+        messageQueue.add(new NettyMessage(ctx, mqttMessage));
     }
 
     public boolean insertThread(ProcessThread processThread) {
@@ -52,7 +52,7 @@ public class ProcessManageThread extends Thread{
             return false;
         }
         ProcessThread processThread = freeThreadQueue.poll();
-        NettyMessage nettyMessage = subjectQueue.poll();
+        NettyMessage nettyMessage = messageQueue.poll();
         if( processThread == null ){
             processThread = new ProcessThread(nettyMessage.getCtx(), nettyMessage.getMqttMessage());
             poolSize++;
@@ -71,7 +71,7 @@ public class ProcessManageThread extends Thread{
     public void run() {
         while (!CommonConst.PROCESS_THREAD_STOP){
             synchronized (lock){
-                while ( subjectQueue.size() > 0 ){
+                while ( messageQueue.size() > 0 ){
                     if( !doProcess() ){
                         break;
                     }
@@ -79,7 +79,7 @@ public class ProcessManageThread extends Thread{
                 try {
                     lock.wait(10);
                 } catch (InterruptedException e) {
-                    while ( subjectQueue.size() > 0 ){
+                    while ( messageQueue.size() > 0 ){
                         doProcess();
                     }
                     CommonConst.PROCESS_THREAD_STOP = true;

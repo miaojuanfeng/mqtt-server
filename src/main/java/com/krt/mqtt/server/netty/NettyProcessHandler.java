@@ -107,7 +107,9 @@ public class NettyProcessHandler {
             switch (subjectName){
                 case SubjectConst.SUBJECT_SHADOW:
                     JSONObject obj = JSONObject.parseObject(subjectContent);
-                    log.info(obj.toString());
+                    if( obj != null ) {
+                        log.info(obj.toString());
+                    }
                     break;
             }
         }
