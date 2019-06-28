@@ -12,11 +12,11 @@ public class CommonConst {
      */
     public static final String AESKEY = "b0qk7cqwntc0ttqx";
 
-    public static final byte DEVICE_DATA_THREAD_SIZE = 10;
+    public static final byte DEVICE_DATA_THREAD_SIZE = 1<<3;
 
     public static final long DEVICE_DATA_THREAD_TIMEOUT = 5*1000L;
 
-    public static final int DEVICE_DATA_FULL_SIZE = 512;
+    public static final int DEVICE_DATA_FULL_SIZE = 1<<9;
 
     public static final MessageThread[] DEVICE_DATA_THREAD_ARRAY = new MessageThread[DEVICE_DATA_THREAD_SIZE];
 
