@@ -4,6 +4,8 @@ import com.krt.mqtt.server.constant.CommonConst;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
@@ -31,8 +33,8 @@ public class ProcessManageThread extends Thread{
         log.info("线程（" + this.getName()+"）开始运行");
     }
 
-    public void insertMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage){
-        messageQueue.add(new NettyMessage(ctx, mqttMessage));
+    public void insertMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage, Date insertTime){
+        messageQueue.add(new NettyMessage(ctx, mqttMessage, insertTime));
     }
 
     public boolean insertThread(ProcessThread processThread) {
@@ -54,14 +56,14 @@ public class ProcessManageThread extends Thread{
         ProcessThread processThread = freeThreadQueue.poll();
         NettyMessage nettyMessage = messageQueue.poll();
         if( processThread == null ){
-            processThread = new ProcessThread(nettyMessage.getCtx(), nettyMessage.getMqttMessage());
+            processThread = new ProcessThread(nettyMessage.getCtx(), nettyMessage.getMqttMessage(), nettyMessage.insertTime);
             poolSize++;
             if( poolSize > largestPoolSize ){
                 largestPoolSize = poolSize;
                 log.info("更新最大线程数量：" + largestPoolSize);
             }
         }else {
-            processThread.restart(nettyMessage.getCtx(), nettyMessage.getMqttMessage());
+            processThread.restart(nettyMessage.getCtx(), nettyMessage.getMqttMessage(), nettyMessage.insertTime);
         }
         usedThreadQueue.add(processThread);
         return true;
@@ -108,9 +110,12 @@ public class ProcessManageThread extends Thread{
 
         private MqttMessage mqttMessage;
 
-        public NettyMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage) {
+        private Date insertTime;
+
+        public NettyMessage(ChannelHandlerContext ctx, MqttMessage mqttMessage, Date insertTime) {
             this.ctx = ctx;
             this.mqttMessage = mqttMessage;
+            this.insertTime = insertTime;
         }
 
         public ChannelHandlerContext getCtx() {
@@ -127,6 +132,14 @@ public class ProcessManageThread extends Thread{
 
         public void setMqttMessage(MqttMessage mqttMessage) {
             this.mqttMessage = mqttMessage;
+        }
+
+        public Date getInsertTime() {
+            return insertTime;
+        }
+
+        public void setInsertTime(Date insertTime) {
+            this.insertTime = insertTime;
         }
     }
 }

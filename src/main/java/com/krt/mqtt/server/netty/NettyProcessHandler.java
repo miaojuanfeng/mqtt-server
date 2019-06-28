@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Slf4j
 @Component
 public class NettyProcessHandler {
@@ -26,7 +28,7 @@ public class NettyProcessHandler {
     @Autowired
     private DeviceService deviceService;
 
-    public void process(ChannelHandlerContext ctx, MqttMessage mqttMessage){
+    public void process(ChannelHandlerContext ctx, MqttMessage mqttMessage, Date insertTime){
         /**
          * 通道deviceId
          */
@@ -79,7 +81,7 @@ public class NettyProcessHandler {
                 mqttMessageApi.PINGRESP(ctx);
                 break;
             case PUBLISH:
-                mqttMessageService.replyPUBLISH(ctx, (MqttPublishMessage) mqttMessage);
+                mqttMessageService.replyPUBLISH(ctx, (MqttPublishMessage) mqttMessage, insertTime);
                 break;
             case PUBACK:
                 mqttMessageService.replyPUBACK(ctx, (MqttPubAckMessage) mqttMessage);

@@ -22,8 +22,6 @@ public class MqttChannelApi {
 
     public static final AttributeKey<String> _DEVICE_ID = AttributeKey.valueOf("deviceId");
 
-    public static final AttributeKey<Integer> _INDEX = AttributeKey.valueOf("index");
-
     public static final AttributeKey<Integer> _DB_ID = AttributeKey.valueOf("dbId");
 
     @Autowired
@@ -46,8 +44,6 @@ public class MqttChannelApi {
 
     public void setDbId(ChannelHandlerContext ctx, Integer dbId){ ctx.channel().attr(_DB_ID).set(dbId); }
 
-    public Integer getIndex(ChannelHandlerContext ctx){ return ctx.channel().attr(_INDEX).get(); }
-
     public Boolean isLogin(ChannelHandlerContext ctx){
         return ctx.channel().attr(_LOGIN).get();
     }
@@ -61,7 +57,6 @@ public class MqttChannelApi {
         channel.attr(_LOGIN).set(true);
         channel.attr(_DEVICE_ID).set(deviceId);
         channel.attr(_DB_ID).set(dbId);
-        channel.attr(_INDEX).set(dbId % CommonConst.DEVICE_DATA_THREAD_SIZE);
     }
 
     public MqttChannel getChannel(ChannelHandlerContext ctx){ return channels.get(getDeviceId(ctx)); }

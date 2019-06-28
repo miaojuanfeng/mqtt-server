@@ -15,6 +15,7 @@ import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,7 +88,7 @@ public class MqttMessageService {
         mqttMessageApi.CONNACK(ctx, mqttConnectMessage.fixedHeader().isDup(), MqttConnectReturnCode.CONNECTION_ACCEPTED);
     }
 
-    public void replyPUBLISH(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage){
+    public void replyPUBLISH(ChannelHandlerContext ctx, MqttPublishMessage mqttPublishMessage, Date insertTime){
         int messageId = mqttPublishMessage.variableHeader().packetId();
         String topicName = mqttPublishMessage.variableHeader().topicName();
         byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
@@ -96,7 +97,7 @@ public class MqttMessageService {
          */
         String topicContent = MqttUtil.byteToString(topicMessage);
         nettyProcessHandler.publish(topicName, topicContent);
-        cacheData(ctx, new Message(mqttChannelApi.getDeviceId(ctx), messageId, topicName, topicContent, mqttChannelApi.getDbId(ctx)));
+        cacheData(ctx, new Message(mqttChannelApi.getDeviceId(ctx), messageId, topicName, topicContent, mqttChannelApi.getDbId(ctx), insertTime));
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
@@ -258,6 +259,10 @@ public class MqttMessageService {
     }
 
     private void cacheData(ChannelHandlerContext ctx, Message message){
-        CommonConst.DEVICE_DATA_THREAD_ARRAY[mqttChannelApi.getIndex(ctx)].insertMessage(message);
+        long time = message.getInsertTime().getTime();
+//        log.info("time: "+time);
+//        log.info("time: "+(time&(1<<10)-1));
+//        log.info("time: "+((int)(time&(1<<10)-1)%CommonConst.DEVICE_DATA_THREAD_SIZE));
+        CommonConst.DEVICE_DATA_THREAD_ARRAY[((int)(time&(1<<10)-1)%CommonConst.DEVICE_DATA_THREAD_SIZE)].insertMessage(message);
     }
 }

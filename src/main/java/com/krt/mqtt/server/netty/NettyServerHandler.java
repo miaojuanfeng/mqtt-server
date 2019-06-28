@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @ChannelHandler.Sharable
 @Slf4j
 @Component
@@ -56,7 +58,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
         /**
          * 处理器线程处理
          */
-        CommonConst.PROCESS_MANAGE_THREAD.insertMessage(ctx, mqttMessage);
+        CommonConst.PROCESS_MANAGE_THREAD.insertMessage(ctx, mqttMessage, new Date());
     }
 
     @Override

@@ -10,6 +10,7 @@ import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Slf4j
 public class ProcessThread extends Thread{
@@ -20,6 +21,8 @@ public class ProcessThread extends Thread{
 
     private MqttMessage mqttMessage;
 
+    private Date insertTime;
+
     private Object lock = new Object();
 
     private static int threadInitNumber;
@@ -28,19 +31,21 @@ public class ProcessThread extends Thread{
         return threadInitNumber++;
     }
 
-    public ProcessThread(ChannelHandlerContext ctx, MqttMessage mqttMessage) {
+    public ProcessThread(ChannelHandlerContext ctx, MqttMessage mqttMessage, Date insertTime) {
         super();
         this.nettyProcessHandler = CommonConst.APPLICATION_CONTEXT.getBean(NettyProcessHandler.class);
         this.setName("ProcessThread-" + nextThreadNum());
         this.ctx = ctx;
         this.mqttMessage = mqttMessage;
+        this.insertTime = insertTime;
         this.start();
         log.info("线程（" + this.getName() + "）创建运行");
     }
 
-    public void restart(ChannelHandlerContext ctx, MqttMessage mqttMessage) {
+    public void restart(ChannelHandlerContext ctx, MqttMessage mqttMessage, Date insertTime) {
         this.ctx = ctx;
         this.mqttMessage = mqttMessage;
+        this.insertTime = insertTime;
         synchronized (lock) {
             lock.notify();
         }
@@ -51,7 +56,7 @@ public class ProcessThread extends Thread{
     public void run() {
         while (!CommonConst.PROCESS_THREAD_STOP) {
             synchronized (lock) {
-                nettyProcessHandler.process(ctx, mqttMessage);
+                nettyProcessHandler.process(ctx, mqttMessage, insertTime);
                 if( CommonConst.PROCESS_THREAD_STOP ){
                     break;
                 }

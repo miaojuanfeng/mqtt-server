@@ -11,13 +11,13 @@ public class Message {
     private Integer inserter;
     private Date insertTime;
 
-    public Message(String deviceId, Integer messageId, String subjectName, String subjectContent, Integer inserter) {
+    public Message(String deviceId, Integer messageId, String subjectName, String subjectContent, Integer inserter, Date insertTime) {
         this.deviceId = deviceId;
         this.messageId = messageId;
         this.subjectName = subjectName;
         this.subjectContent = subjectContent;
         this.inserter = inserter;
-        this.insertTime = new Date();
+        this.insertTime = insertTime;
     }
 
     public Integer getId() {
