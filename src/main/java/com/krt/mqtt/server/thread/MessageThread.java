@@ -11,31 +11,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 public class MessageThread extends Thread{
-    /**
-     * 同步锁，防止脏读
-     */
+
     private Object lock = new Object();
-    /**
-     * 缓存数据的容器
-     */
-//    private List<Message> messageQueues;
+
     private final ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<>();
-    /**
-     * 数据的最小单元
-     */
+
     private MessageService messageService;
 
-    /**
-     * 初始化线程容器 无参构造函数
-     */
     public MessageThread() {
         super();
     }
 
-    /**
-     * 初始化线程容器
-     * @param i 指定线程数
-     */
     public MessageThread(int i) {
         super();
         this.setName("MessageThread-" + i);
@@ -59,10 +45,6 @@ public class MessageThread extends Thread{
         log.info("线程（"+this.getName()+"）退出");
     }
 
-    /**
-     * 将数据缓存到数据库中
-     * @param message 需要缓存的数据
-     */
     public void insertMessage(Message message) {
         messageQueue.add(message);
         // 限制单次插入数量
@@ -71,30 +53,16 @@ public class MessageThread extends Thread{
                 lock.notify();
             }
         }
-        // 还可以优化的地方
-//        synchronized (lock) {
-//            messageQueues.add(message);
-//            if( messageQueues.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
-//                lock.notify();
-//            }
-//        }
     }
 
-    /**
-     * 持久化数据方法，将数据保存到数据
-     * @throws InterruptedException
-     */
     private void persistData() throws InterruptedException {
         insertBatch();
-        // 阻塞线程，直到线程超时或者被唤醒
         lock.wait(CommonConst.DEVICE_DATA_THREAD_TIMEOUT);
     }
 
     private void insertBatch(){
         if( messageQueue.size() > 0 ) {
-            // 将缓存的数据保存到数据库中
             messageService.insertBatch(messageQueue);
-            // 清空缓存内容
             messageQueue.clear();
         }
     }
