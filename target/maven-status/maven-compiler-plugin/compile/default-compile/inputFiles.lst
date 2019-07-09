@@ -11,7 +11,6 @@ E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\NettyServer.ja
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\utils\MqttUtil.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\service\impl\MessageServiceImpl.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\thread\MessageThread.java
-E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\utils\SpringUtil.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\constant\CommonConst.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\utils\Base64Util.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\MqttTopicApi.java
@@ -27,6 +26,7 @@ E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\service\DeviceServic
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\MqttServerApplication.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\MqttResendApi.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\MqttChannelApi.java
+E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\NettyProcessHandler.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\utils\SignalUtil.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\mapper\DeviceMapper.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\beans\MqttSendMessage.java
