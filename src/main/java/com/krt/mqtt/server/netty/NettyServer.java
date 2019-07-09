@@ -12,28 +12,53 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
 @Component
+@Slf4j
 public class NettyServer {
 
     @Autowired
     private NettyServerInitializer nettyServerInitializer;
 
-    private static Integer port;
-
     @Value("${server.port}")
-    public void setPort(Integer port){
-        this.port = port;
-    }
+    private Integer port;
+
+    @Value("${server.jks.path}")
+    private String jksPath;
+
+    @Value("${server.jks.password}")
+    private String jksPassword;
 
     public void start(){
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
+            KeyManagerFactory keyManagerFactory = null;
+            KeyStore keyStore = KeyStore.getInstance("JKS");
+            keyStore.load(new FileInputStream(jksPath), jksPassword.toCharArray());
+            keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+            keyManagerFactory.init(keyStore, jksPassword.toCharArray());
+            SslContext sslContext = SslContextBuilder.forServer(keyManagerFactory).build();
+            nettyServerInitializer.setSslContext(sslContext);
+
             ServerBootstrap serverBootstrap = new ServerBootstrap();
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
@@ -54,7 +79,8 @@ public class NettyServer {
             ChannelFuture channelFuture = serverBootstrap.bind(port).sync();
 
             channelFuture.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
+            log.info("服务器初始化失败："+e.getMessage());
             e.printStackTrace();
         } finally {
             bossGroup.shutdownGracefully();
