@@ -89,7 +89,9 @@ public class MqttChannelApi {
 
     public void updateActiveTime(ChannelHandlerContext ctx){
         MqttChannel mqttChannel = getChannel(ctx);
-        mqttChannel.setActiveTime(new Date().getTime());
+        if( mqttChannel != null ) {
+            mqttChannel.setActiveTime(new Date().getTime());
+        }
     }
 
     public Boolean checkLogin(ChannelHandlerContext ctx){

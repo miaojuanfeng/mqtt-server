@@ -50,6 +50,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
         }
         log.info("客户端（" + deviceId + "）发来报文: " + mqttMessage);
         /**
+         * 收到客户端发来的任何报文，包括但不限于PINGREQ，
+         * 则证明客户端存活，需要更新客户端活跃时间
+         */
+        mqttChannelApi.updateActiveTime(ctx);
+        /**
          * 处理引用计数问题
          */
         if( mqttMessage.fixedHeader().messageType() == MqttMessageType.PUBLISH ){

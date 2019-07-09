@@ -1,7 +1,7 @@
 package com.krt.mqtt.server.netty;
 
 import com.alibaba.fastjson.JSONObject;
-import com.krt.mqtt.server.constant.SubjectConst;
+import com.krt.mqtt.server.constant.SystemTopicConst;
 import com.krt.mqtt.server.service.DeviceService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
@@ -66,11 +66,6 @@ public class NettyProcessHandler {
             return;
         }
         /**
-         * 收到客户端发来的任何报文，包括但不限于PINGREQ，
-         * 则证明客户端存活，需要更新客户端活跃时间
-         */
-        mqttChannelApi.updateActiveTime(ctx);
-        /**
          * 处理客户端发来的其他类型报文
          */
         switch (mqttMessage.fixedHeader().messageType()){
@@ -106,9 +101,33 @@ public class NettyProcessHandler {
 
     public void publish(String subjectName, String subjectContent){
         if( subjectName != null && subjectContent != null ){
-            switch (subjectName){
-                case SubjectConst.SUBJECT_SHADOW:
-                    JSONObject obj = JSONObject.parseObject(subjectContent);
+            String[] segmentName = subjectName.split("/");
+            if( segmentName.length < 5 ){
+                log.info("主题名称格式错误："+subjectName);
+                return;
+            }
+            JSONObject obj = null;
+            switch (segmentName[1]){
+                case SystemTopicConst.PREFIX_SYS:
+                    obj = JSONObject.parseObject(subjectContent);
+                    if( obj != null ) {
+                        log.info(obj.toString());
+                    }
+                    break;
+                case SystemTopicConst.PREFIX_DATA:
+                    obj = JSONObject.parseObject(subjectContent);
+                    if( obj != null ) {
+                        log.info(obj.toString());
+                    }
+                    break;
+                case SystemTopicConst.PREFIX_OTA:
+                    obj = JSONObject.parseObject(subjectContent);
+                    if( obj != null ) {
+                        log.info(obj.toString());
+                    }
+                    break;
+                case SystemTopicConst.PREFIX_SHADOW:
+                    obj = JSONObject.parseObject(subjectContent);
                     if( obj != null ) {
                         log.info(obj.toString());
                     }
