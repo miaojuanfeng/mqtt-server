@@ -9,7 +9,8 @@ import sun.rmi.runtime.Log;
 public class SignalUtil {
 
 //    private static final String[] LINUX_SIGNAL = {"TERM", "USR1", "USR2"};
-    private static final String[] LINUX_SIGNAL = {"SEGV", "ILL", "FPE", "BUS", "SYS", "CPU", "FSZ", "ABRT", "INT", "TERM", "HUP", "USR1", "USR2", "QUIT", "BREAK", "TRAP", "PIPE"};
+//    private static final String[] LINUX_SIGNAL = {"SEGV", "ILL", "FPE", "BUS", "SYS", "CPU", "FSZ", "ABRT", "INT", "TERM", "HUP", "USR1", "USR2", "QUIT", "BREAK", "TRAP", "PIPE"};
+    private static final String[] LINUX_SIGNAL = {"TERM", "USR2"};
 
 //    private static final String[] WINDOWS_SIGNAL = {"INT"};
 //    private static final String[] WINDOWS_SIGNAL = {"SEGV", "ILL", "FPE", "ABRT", "INT", "TERM", "BREAK"};
