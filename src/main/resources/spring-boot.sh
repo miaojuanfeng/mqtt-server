@@ -5,9 +5,9 @@ export JAVA_HOME=/usr/local/java/jdk1.8.0_211
 export JRE_HOME=$JAVA_HOME/jre
 
 ## 项目路径
-SERVICE_DIR=/home/krt/iot/iot-mqttserver-32001
+SERVICE_DIR=/home/krt/iot/iot-mqttsev-32001
 ## 服务名称
-SERVICE_NAME=iot-mqttserver-32001
+SERVICE_NAME=iot-mqttsev-32001
 ## jar名称
 JAR_NAME=$SERVICE_NAME\.jar
 ## 进程名称
