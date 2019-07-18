@@ -31,7 +31,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         SSLEngine engine = sslContext.newEngine(socketChannel.alloc());
         engine.setUseClientMode(false);
         ChannelPipeline channelPipeline = socketChannel.pipeline();
-        channelPipeline.addFirst("ssl", new SslHandler(engine));
+//        channelPipeline.addFirst("ssl", new SslHandler(engine));
         channelPipeline.addLast("decoder", new MqttDecoder());
         channelPipeline.addLast("encoder", MqttEncoder.INSTANCE);
         channelPipeline.addLast("handler", nettyServerHandler);
