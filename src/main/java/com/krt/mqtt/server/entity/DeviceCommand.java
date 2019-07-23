@@ -1,21 +1,23 @@
 package com.krt.mqtt.server.entity;
 
+
 import java.util.Date;
 
-public class Message {
+public class DeviceCommand {
+
     private Integer id;
+
     private String deviceId;
-    private Integer messageId;
-    private String subjectName;
-    private String subjectContent;
+
+    private String command;
+
     private Integer inserter;
+
     private Date insertTime;
 
-    public Message(String deviceId, Integer messageId, String subjectName, String subjectContent, Integer inserter, Date insertTime) {
+    public DeviceCommand(String deviceId, String command, Integer inserter, Date insertTime) {
         this.deviceId = deviceId;
-        this.messageId = messageId;
-        this.subjectName = subjectName;
-        this.subjectContent = subjectContent;
+        this.command = command;
         this.inserter = inserter;
         this.insertTime = insertTime;
     }
@@ -36,28 +38,12 @@ public class Message {
         this.deviceId = deviceId;
     }
 
-    public Integer getMessageId() {
-        return messageId;
+    public String getCommand() {
+        return command;
     }
 
-    public void setMessageId(Integer messageId) {
-        this.messageId = messageId;
-    }
-
-    public String getSubjectName() {
-        return subjectName;
-    }
-
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
-
-    public String getSubjectContent() {
-        return subjectContent;
-    }
-
-    public void setSubjectContent(String subjectContent) {
-        this.subjectContent = subjectContent;
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     public Integer getInserter() {

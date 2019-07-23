@@ -18,6 +18,8 @@ public class CommonConst {
 
     public static final int DEVICE_DATA_FULL_SIZE = 1<<9;
 
+    public static final int DEVICE_COMMAND_FULL_SIZE = 1<<6;
+
     public static final MessageThread[] DEVICE_DATA_THREAD_ARRAY = new MessageThread[DEVICE_DATA_THREAD_SIZE];
 
     public static volatile boolean MESSAGE_THREAD_STOP = false;

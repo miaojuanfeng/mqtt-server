@@ -1,7 +1,10 @@
 package com.krt.mqtt.server.netty;
 
 import com.alibaba.fastjson.JSONObject;
+import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.SystemTopicConst;
+import com.krt.mqtt.server.entity.DeviceCommand;
+import com.krt.mqtt.server.entity.DeviceData;
 import com.krt.mqtt.server.service.DeviceService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
@@ -99,40 +102,72 @@ public class NettyProcessHandler {
         }
     }
 
-    public void publish(String subjectName, String subjectContent){
+    public void publish(ChannelHandlerContext ctx, String subjectName, String subjectContent, Date insertTime){
         if( subjectName != null && subjectContent != null ){
             String[] segmentName = subjectName.split("/");
-            if( segmentName.length < 5 ){
-                log.info("主题名称格式错误："+subjectName);
+            if( segmentName.length < 7 ){
+                log.error("主题名称格式错误："+subjectName);
                 return;
             }
             JSONObject obj = null;
-            switch (segmentName[1]){
-                case SystemTopicConst.PREFIX_SYS:
-                    obj = JSONObject.parseObject(subjectContent);
-                    if( obj != null ) {
-                        log.info(obj.toString());
-                    }
-                    break;
-                case SystemTopicConst.PREFIX_DATA:
-                    obj = JSONObject.parseObject(subjectContent);
-                    if( obj != null ) {
-                        log.info(obj.toString());
-                    }
-                    break;
-                case SystemTopicConst.PREFIX_OTA:
-                    obj = JSONObject.parseObject(subjectContent);
-                    if( obj != null ) {
-                        log.info(obj.toString());
-                    }
-                    break;
-                case SystemTopicConst.PREFIX_SHADOW:
-                    obj = JSONObject.parseObject(subjectContent);
-                    if( obj != null ) {
-                        log.info(obj.toString());
-                    }
-                    break;
+            try {
+                switch (segmentName[1]){
+                    case SystemTopicConst.PREFIX_SYS:
+                        // 这里用位移掩码来做
+                        switch (segmentName[5]){
+                            case "data":
+                                switch (segmentName[6]){
+                                    case "post":
+                                        cacheData(new DeviceData(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+                                        break;
+                                }
+                                break;
+                            case "cmd":
+                                switch (segmentName[6]){
+                                    case "set":
+                                        cacheCommand(new DeviceCommand(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+//                    case SystemTopicConst.PREFIX_DATA:
+//                        obj = JSONObject.parseObject(subjectContent);
+//                        if( obj != null ) {
+//                            log.info(obj.toString());
+//                        }
+//                        break;
+//                    case SystemTopicConst.PREFIX_OTA:
+//                        obj = JSONObject.parseObject(subjectContent);
+//                        if( obj != null ) {
+//                            log.info(obj.toString());
+//                        }
+//                        break;
+//                    case SystemTopicConst.PREFIX_SHADOW:
+//                        obj = JSONObject.parseObject(subjectContent);
+//                        if( obj != null ) {
+//                            log.info(obj.toString());
+//                        }
+//                        break;
+                }
+            }catch (Exception e){
+                log.error("捕获异常："+e.getMessage());
+                e.printStackTrace();
             }
         }
+    }
+
+    private void cacheData(DeviceData deviceData){
+        long time = deviceData.getInsertTime().getTime();
+        CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceData(deviceData);
+    }
+
+    private void cacheCommand(DeviceCommand deviceCommand){
+        long time = deviceCommand.getInsertTime().getTime();
+        CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceCommand(deviceCommand);
+    }
+
+    private int getIndex(long time){
+        return ((int)(time&(1<<10)-1)%CommonConst.DEVICE_DATA_THREAD_SIZE);
     }
 }

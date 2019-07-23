@@ -1,12 +1,13 @@
 package com.krt.mqtt.server.netty;
 
+
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.beans.MqttSubject;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
-import com.krt.mqtt.server.entity.Message;
+import com.krt.mqtt.server.entity.DeviceData;
 import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.utils.MessageIdUtil;
 import com.krt.mqtt.server.utils.MqttUtil;
@@ -15,7 +16,6 @@ import io.netty.handler.codec.mqtt.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,8 +96,7 @@ public class MqttMessageService {
          * 持久化发布报文
          */
         String topicContent = MqttUtil.byteToString(topicMessage);
-        nettyProcessHandler.publish(topicName, topicContent);
-        cacheData(ctx, new Message(mqttChannelApi.getDeviceId(ctx), messageId, topicName, topicContent, mqttChannelApi.getDbId(ctx), insertTime));
+        nettyProcessHandler.publish(ctx, topicName, topicContent, insertTime);
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
@@ -256,13 +255,5 @@ public class MqttMessageService {
                 }
             }
         }
-    }
-
-    private void cacheData(ChannelHandlerContext ctx, Message message){
-        long time = message.getInsertTime().getTime();
-//        log.info("time: "+time);
-//        log.info("time: "+(time&(1<<10)-1));
-//        log.info("time: "+((int)(time&(1<<10)-1)%CommonConst.DEVICE_DATA_THREAD_SIZE));
-        CommonConst.DEVICE_DATA_THREAD_ARRAY[((int)(time&(1<<10)-1)%CommonConst.DEVICE_DATA_THREAD_SIZE)].insertMessage(message);
     }
 }

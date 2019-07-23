@@ -1,12 +1,12 @@
 package com.krt.mqtt.server.thread;
 
 import com.krt.mqtt.server.constant.CommonConst;
-import com.krt.mqtt.server.entity.Message;
-import com.krt.mqtt.server.service.MessageService;
+import com.krt.mqtt.server.entity.DeviceCommand;
+import com.krt.mqtt.server.entity.DeviceData;
+import com.krt.mqtt.server.service.DeviceCommandService;
+import com.krt.mqtt.server.service.DeviceDataService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
@@ -14,9 +14,13 @@ public class MessageThread extends Thread{
 
     private Object lock = new Object();
 
-    private final ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<DeviceData> dataQueue = new ConcurrentLinkedQueue<>();
 
-    private MessageService messageService;
+    private final ConcurrentLinkedQueue<DeviceCommand> commandQueue = new ConcurrentLinkedQueue<>();
+
+    private DeviceDataService deviceDataService;
+
+    private DeviceCommandService deviceCommandService;
 
     public MessageThread() {
         super();
@@ -25,7 +29,8 @@ public class MessageThread extends Thread{
     public MessageThread(int i) {
         super();
         this.setName("MessageThread-" + i);
-        this.messageService = CommonConst.APPLICATION_CONTEXT.getBean(MessageService.class);
+        this.deviceDataService = CommonConst.APPLICATION_CONTEXT.getBean(DeviceDataService.class);
+        this.deviceCommandService = CommonConst.APPLICATION_CONTEXT.getBean(DeviceCommandService.class);
         this.start();
     }
 
@@ -37,7 +42,7 @@ public class MessageThread extends Thread{
                     persistData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    log.info("线程（"+this.getName()+"）接收中断信号立即持久数据：" + messageQueue.size());
+                    log.info("线程（"+this.getName()+"）接收中断信号立即持久数据：" + dataQueue.size());
                     insertBatch();
                 }
             }
@@ -45,10 +50,20 @@ public class MessageThread extends Thread{
         log.info("线程（"+this.getName()+"）退出");
     }
 
-    public void insertMessage(Message message) {
-        messageQueue.add(message);
+    public void insertDeviceData(DeviceData deviceData) {
+        dataQueue.add(deviceData);
         // 限制单次插入数量
-        if( messageQueue.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
+        if( dataQueue.size() >= CommonConst.DEVICE_DATA_FULL_SIZE ) {
+            synchronized (lock) {
+                lock.notify();
+            }
+        }
+    }
+
+    public void insertDeviceCommand(DeviceCommand deviceCommand) {
+        commandQueue.add(deviceCommand);
+        // 限制单次插入数量
+        if( commandQueue.size() >= CommonConst.DEVICE_COMMAND_FULL_SIZE ) {
             synchronized (lock) {
                 lock.notify();
             }
@@ -61,9 +76,13 @@ public class MessageThread extends Thread{
     }
 
     private void insertBatch(){
-        if( messageQueue.size() > 0 ) {
-            messageService.insertBatch(messageQueue);
-            messageQueue.clear();
+        if( dataQueue.size() > 0 ) {
+            deviceDataService.insertBatch(dataQueue);
+            dataQueue.clear();
+        }
+        if( commandQueue.size() > 0 ) {
+            deviceCommandService.insertBatch(commandQueue);
+            commandQueue.clear();
         }
     }
 
