@@ -1,0 +1,30 @@
+package com.krt.entity;
+
+import com.krt.common.base.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+* @author LiXiang
+* @version 1.0
+* @Description: 云回复命令实体类
+* @date 2019-04-12 10:52:59
+*/
+@Getter
+@Setter
+@ToString(callSuper = true)
+public class DeviceCommand extends BaseEntity {
+
+    /**
+     * device_id
+     */
+    private Integer deviceId;
+
+    /**
+     * 命令
+     */
+    private String command;
+
+
+}
