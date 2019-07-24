@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.krt.mqtt.server.mapper.ExistLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.krt.mqtt.server.entity.ExistLog">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+            <result column="device_id" jdbcType="VARCHAR" property="deviceId"/>
+            <result column="state" jdbcType="VARCHAR" property="state"/>
+            <result column="time" jdbcType="TIMESTAMP" property="time"/>
+    </resultMap>
+
+    <!-- 批量设备上下线日志 -->
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into t_exist_logs
+        (device_id,state,time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.deviceId},#{item.state},#{item.time})
+        </foreach>
+    </insert>
+
+</mapper>
+

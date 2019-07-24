@@ -5,6 +5,7 @@ import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.SystemTopicConst;
 import com.krt.mqtt.server.entity.DeviceCommand;
 import com.krt.mqtt.server.entity.DeviceData;
+import com.krt.mqtt.server.entity.ExistLog;
 import com.krt.mqtt.server.service.DeviceService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
@@ -64,7 +65,13 @@ public class NettyProcessHandler {
              * 设置客户端通道属性
              */
             mqttChannelApi.setChannelAttr(ctx, deviceId, dbId);
-
+            /**
+             * 上下线日志
+             */
+            cacheExistLog(new ExistLog(deviceId, CommonConst.DEVICE_ONLINE, insertTime));
+            /**
+             * 回复登录确认
+             */
             mqttMessageService.replyCONNECT(ctx, (MqttConnectMessage) mqttMessage);
             return;
         }
@@ -167,7 +174,12 @@ public class NettyProcessHandler {
         CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceCommand(deviceCommand);
     }
 
-    private int getIndex(long time){
+    public static void cacheExistLog(ExistLog existLog){
+        long time = existLog.getTime().getTime();
+        CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertExistLog(existLog);
+    }
+
+    private static int getIndex(long time){
         return ((int)(time&(1<<10)-1)%CommonConst.DEVICE_DATA_THREAD_SIZE);
     }
 }

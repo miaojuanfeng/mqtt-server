@@ -16,9 +16,7 @@ public class CommonConst {
 
     public static final long DEVICE_DATA_THREAD_TIMEOUT = 5*1000L;
 
-    public static final int DEVICE_DATA_FULL_SIZE = 1<<9;
-
-    public static final int DEVICE_COMMAND_FULL_SIZE = 1<<6;
+    public static final int THREAD_DATA_FULL_SIZE = 1<<9;
 
     public static final MessageThread[] DEVICE_DATA_THREAD_ARRAY = new MessageThread[DEVICE_DATA_THREAD_SIZE];
 
@@ -29,4 +27,8 @@ public class CommonConst {
     public static final ProcessManageThread PROCESS_MANAGE_THREAD = new ProcessManageThread();
 
     public static final int MAX_RESEND_COUNT = 10;
+
+    public static final byte DEVICE_ONLINE = 1;
+
+    public static final byte DEVICE_OFFLINE = 0;
 }

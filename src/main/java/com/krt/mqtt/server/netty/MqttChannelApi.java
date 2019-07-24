@@ -3,6 +3,7 @@ package com.krt.mqtt.server.netty;
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.constant.CommonConst;
+import com.krt.mqtt.server.entity.ExistLog;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -85,6 +86,7 @@ public class MqttChannelApi {
             mqttChannel.getCtx().channel().close();
             channels.remove(deviceId);
         }
+        NettyProcessHandler.cacheExistLog(new ExistLog(deviceId, CommonConst.DEVICE_OFFLINE, new Date()));
     }
 
     public void updateActiveTime(ChannelHandlerContext ctx){
