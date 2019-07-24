@@ -1,13 +1,16 @@
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\beans\MqttWill.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\MqttMessageService.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\service\impl\DeviceServiceImpl.java
+E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\entity\ExistLog.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\thread\ProcessThread.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\service\DeviceCommandService.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\NettyServerInitializer.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\beans\MqttSubject.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\thread\ProcessManageThread.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\service\impl\DeviceDataServiceImpl.java
+E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\mapper\ExistLogMapper.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\constant\SystemTopicConst.java
+E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\service\ExistLogService.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\NettyShutdownHandler.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\NettyServer.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\utils\MqttUtil.java
@@ -19,6 +22,7 @@ E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\entity\Device.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\constant\MqttMessageStateConst.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\utils\AesUtil.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\beans\MqttChannel.java
+E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\service\impl\ExistLogServiceImpl.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\thread\ReplyMessageThread.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\utils\MessageIdUtil.java
 E:\workspace-iot\IOT_MQTT\src\main\java\com\krt\mqtt\server\netty\NettyServerHandler.java
