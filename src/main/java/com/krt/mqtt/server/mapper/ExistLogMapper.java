@@ -12,4 +12,5 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Mapper
 public interface ExistLogMapper {
     void insertBatch(@Param("list") ConcurrentLinkedQueue<ExistLog> existLogs);
+    void insert(ExistLog existLog);
 }

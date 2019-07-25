@@ -71,7 +71,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
         log.error("捕获通道异常: "+cause);
         cause.printStackTrace();
         mqttMessageService.broadcastWILL(ctx);
-        mqttChannelApi.closeChannel(ctx);
+        mqttChannelApi.closeChannel(ctx, new Date());
 //        super.exceptionCaught(ctx, cause);
     }
 }

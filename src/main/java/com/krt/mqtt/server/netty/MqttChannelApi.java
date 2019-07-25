@@ -4,6 +4,7 @@ import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.entity.ExistLog;
+import com.krt.mqtt.server.service.ExistLogService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
@@ -27,6 +28,9 @@ public class MqttChannelApi {
 
     @Autowired
     private MqttTopicApi mqttTopicApi;
+
+    @Autowired
+    private ExistLogService existLogService;
 
     /**
      * 已连接到服务器端的通道
@@ -74,7 +78,7 @@ public class MqttChannelApi {
         return channels;
     }
 
-    public void closeChannel(ChannelHandlerContext ctx){
+    public void closeChannel(ChannelHandlerContext ctx, Date insertTime){
         String deviceId = getDeviceId(ctx);
         MqttChannel mqttChannel = channels.get(deviceId);
         if( mqttChannel != null ) {
@@ -86,7 +90,7 @@ public class MqttChannelApi {
             mqttChannel.getCtx().channel().close();
             channels.remove(deviceId);
         }
-        NettyProcessHandler.cacheExistLog(new ExistLog(deviceId, CommonConst.DEVICE_OFFLINE, new Date()));
+        existLogService.insert(new ExistLog(deviceId, CommonConst.DEVICE_OFFLINE, insertTime));
     }
 
     public void updateActiveTime(ChannelHandlerContext ctx){
@@ -111,7 +115,7 @@ public class MqttChannelApi {
                  * 在1.5个心跳周期内没有收到心跳包，则断开与客户端的链接
                  */
                 log.info("客户端（"+mqttChannel.getDeviceId()+"）心跳超时，强制断开链接");
-                closeChannel(mqttChannel.getCtx());
+                closeChannel(mqttChannel.getCtx(), new Date());
             }
         }
     }

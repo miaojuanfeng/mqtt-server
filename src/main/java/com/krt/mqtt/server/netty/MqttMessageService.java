@@ -45,7 +45,7 @@ public class MqttMessageService {
     @Autowired
     private NettyProcessHandler nettyProcessHandler;
 
-    public void replyCONNECT(ChannelHandlerContext ctx, MqttConnectMessage mqttConnectMessage){
+    public void replyCONNECT(ChannelHandlerContext ctx, MqttConnectMessage mqttConnectMessage, Date insertTime){
         /**
          * Mqtt协议规定，相同Client ID客户端已连接到服务器，
          * 先前客户端必须断开连接后，服务器才能完成新的客户端CONNECT连接
@@ -58,7 +58,7 @@ public class MqttMessageService {
         if( existChannel != null ){
             log.info("客户端（"+deviceId+"）已连接上服务器，断开该客户端之前的连接");
             mqttMessageApi.DISCONNECT(existChannel.getCtx());
-            mqttChannelApi.closeChannel(existChannel.getCtx());
+            mqttChannelApi.closeChannel(existChannel.getCtx(), insertTime);
         }
         /**
          * 创建一个新的客户端实例

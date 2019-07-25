@@ -20,7 +20,7 @@ public class MessageThread extends Thread{
 
     private final ConcurrentLinkedQueue<DeviceCommand> commandQueue = new ConcurrentLinkedQueue<>();
 
-    private final ConcurrentLinkedQueue<ExistLog> existLogQueue = new ConcurrentLinkedQueue<>();
+//    private final ConcurrentLinkedQueue<ExistLog> existLogQueue = new ConcurrentLinkedQueue<>();
 
     private DeviceDataService deviceDataService;
 
@@ -77,15 +77,15 @@ public class MessageThread extends Thread{
         }
     }
 
-    public void insertExistLog(ExistLog existLog) {
-        existLogQueue.add(existLog);
-        // 限制单次插入数量
-        if( existLogQueue.size() >= CommonConst.THREAD_DATA_FULL_SIZE ) {
-            synchronized (lock) {
-                lock.notify();
-            }
-        }
-    }
+//    public void insertExistLog(ExistLog existLog) {
+//        existLogQueue.add(existLog);
+//        // 限制单次插入数量
+//        if( existLogQueue.size() >= CommonConst.THREAD_DATA_FULL_SIZE ) {
+//            synchronized (lock) {
+//                lock.notify();
+//            }
+//        }
+//    }
 
     private void persistData() throws InterruptedException {
         insertBatch();
@@ -101,10 +101,10 @@ public class MessageThread extends Thread{
             deviceCommandService.insertBatch(commandQueue);
             commandQueue.clear();
         }
-        if( existLogQueue.size() > 0 ) {
-            existLogService.insertBatch(existLogQueue);
-            existLogQueue.clear();
-        }
+//        if( existLogQueue.size() > 0 ) {
+//            existLogService.insertBatch(existLogQueue);
+//            existLogQueue.clear();
+//        }
     }
 
 }

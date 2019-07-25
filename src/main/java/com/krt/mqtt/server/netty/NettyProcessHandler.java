@@ -7,6 +7,7 @@ import com.krt.mqtt.server.entity.DeviceCommand;
 import com.krt.mqtt.server.entity.DeviceData;
 import com.krt.mqtt.server.entity.ExistLog;
 import com.krt.mqtt.server.service.DeviceService;
+import com.krt.mqtt.server.service.ExistLogService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
 import io.netty.util.CharsetUtil;
@@ -31,6 +32,9 @@ public class NettyProcessHandler {
 
     @Autowired
     private DeviceService deviceService;
+
+    @Autowired
+    private ExistLogService existLogService;
 
     public void process(ChannelHandlerContext ctx, MqttMessage mqttMessage, Date insertTime){
         /**
@@ -66,13 +70,13 @@ public class NettyProcessHandler {
              */
             mqttChannelApi.setChannelAttr(ctx, deviceId, dbId);
             /**
-             * 上下线日志
+             * 上线日志
              */
-            cacheExistLog(new ExistLog(deviceId, CommonConst.DEVICE_ONLINE, insertTime));
+            existLogService.insert(new ExistLog(deviceId, CommonConst.DEVICE_ONLINE, insertTime));
             /**
              * 回复登录确认
              */
-            mqttMessageService.replyCONNECT(ctx, (MqttConnectMessage) mqttMessage);
+            mqttMessageService.replyCONNECT(ctx, (MqttConnectMessage) mqttMessage, insertTime);
             return;
         }
         /**
@@ -80,7 +84,7 @@ public class NettyProcessHandler {
          */
         switch (mqttMessage.fixedHeader().messageType()){
             case DISCONNECT:
-                mqttChannelApi.closeChannel(ctx);
+                mqttChannelApi.closeChannel(ctx, insertTime);
                 break;
             case PINGREQ:
                 mqttMessageApi.PINGRESP(ctx);
@@ -174,10 +178,10 @@ public class NettyProcessHandler {
         CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceCommand(deviceCommand);
     }
 
-    public static void cacheExistLog(ExistLog existLog){
-        long time = existLog.getTime().getTime();
-        CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertExistLog(existLog);
-    }
+//    public static void cacheExistLog(ExistLog existLog){
+//        long time = existLog.getTime().getTime();
+//        CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertExistLog(existLog);
+//    }
 
     private static int getIndex(long time){
         return ((int)(time&(1<<10)-1)%CommonConst.DEVICE_DATA_THREAD_SIZE);

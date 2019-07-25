@@ -20,4 +20,9 @@ public class ExistLogServiceImpl implements ExistLogService {
     public void insertBatch(ConcurrentLinkedQueue<ExistLog> existLogs) {
         existLogMapper.insertBatch(existLogs);
     }
+
+    @Override
+    public void insert(ExistLog existLog) {
+        existLogMapper.insert(existLog);
+    }
 }

@@ -19,5 +19,20 @@
         </foreach>
     </insert>
 
+    <!-- 添加设备上下线日志 -->
+    <insert id="insert" parameterType="com.krt.mqtt.server.entity.ExistLog" useGeneratedKeys="true" keyProperty="id">
+        insert into t_exist_logs
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null"> device_id,</if>
+            <if test="state != null"> state,</if>
+            <if test="time != null"> time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null"> #{deviceId,jdbcType=VARCHAR},</if>
+            <if test="state != null"> #{state,jdbcType=TINYINT},</if>
+            <if test="time != null"> #{time,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+
 </mapper>
 
