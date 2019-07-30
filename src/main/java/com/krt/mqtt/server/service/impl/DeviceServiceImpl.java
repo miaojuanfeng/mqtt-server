@@ -31,6 +31,9 @@ public class DeviceServiceImpl implements DeviceService {
                     e.printStackTrace();
                 }
             }
+            // 开始模拟数据
+            //return device.getId();
+            // 结束模拟数据
         }
         return null;
     }
