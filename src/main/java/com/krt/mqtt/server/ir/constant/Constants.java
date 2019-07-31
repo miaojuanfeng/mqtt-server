@@ -1,6 +1,11 @@
 package com.krt.mqtt.server.ir.constant;
 
 public class Constants {
+    public static final String BASE_PATH = "/home/krt/iot/test/";
+    public static final String CODE_PATH = BASE_PATH + "";
+    public static final String LIB_PATH  = BASE_PATH + "";
+    public static final String LIB_FILE = LIB_PATH + "libirda_decoder.so";
+
     public static final int ERROR_CODE_SUCCESS = 0;
     public static final int ERROR_CODE_NETWORK_ERROR = -1;
 

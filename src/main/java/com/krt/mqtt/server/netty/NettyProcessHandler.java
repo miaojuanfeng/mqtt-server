@@ -1,13 +1,20 @@
 package com.krt.mqtt.server.netty;
 
 import com.alibaba.fastjson.JSONObject;
+import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.constant.CommonConst;
+import com.krt.mqtt.server.constant.MqttMessageStateConst;
 import com.krt.mqtt.server.constant.SystemTopicConst;
 import com.krt.mqtt.server.entity.DeviceCommand;
 import com.krt.mqtt.server.entity.DeviceData;
 import com.krt.mqtt.server.entity.ExistLog;
+import com.krt.mqtt.server.ir.constant.Constants;
+import com.krt.mqtt.server.ir.core.IRDecode;
+import com.krt.mqtt.server.ir.entity.ACStatus;
 import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.service.ExistLogService;
+import com.krt.mqtt.server.utils.MessageIdUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
 import io.netty.util.CharsetUtil;
@@ -35,6 +42,9 @@ public class NettyProcessHandler {
 
     @Autowired
     private ExistLogService existLogService;
+
+    @Autowired
+    private MqttResendApi mqttResendApi;
 
     public void process(ChannelHandlerContext ctx, MqttMessage mqttMessage, Date insertTime){
         /**
@@ -137,6 +147,48 @@ public class NettyProcessHandler {
                                 switch (segmentName[6]){
                                     case "set":
                                         cacheCommand(new DeviceCommand(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+                                        break;
+                                }
+                            case "ir":
+                                switch (segmentName[6]){
+                                    case "set":
+//                                        cacheCommand(new DeviceCommand(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+                                        obj = JSONObject.parseObject(subjectContent);
+                                        if( null == obj ) {
+                                            log.error("主题内容错误：" + subjectContent);
+                                            return;
+                                        }
+                                        Integer categoryID = obj.getInteger("ci");
+                                        Integer BinaryType = obj.getInteger("bt");
+                                        String fileName = obj.getString("fn");
+                                        Integer keyCode = obj.getInteger("kc");
+
+                                        String irContent = IRDecode.decode(
+                                                categoryID,
+                                                BinaryType,
+                                                //"irda_new_ac_25071.bin",
+                                                fileName,
+                                                keyCode,
+                                                new ACStatus(),
+                                                Constants.ACSwing.SWING_ON.getValue());
+                                        log.info(irContent);
+                                        /**
+                                         * 默认采用AT_LEAST_ONCE服务级别
+                                         */
+                                        MqttChannel channel = mqttChannelApi.getChannel(segmentName[3]);
+                                        if( null == channel ){
+                                            log.info("设备不在线：" + segmentName[3]);
+                                            return;
+                                        }
+                                        Integer messageId = MessageIdUtil.messageId();
+                                        String cmdSubjectName = "/sys/productId/"+segmentName[3]+"/thing/cmd/set";
+                                        mqttResendApi.saveSendMessage(channel.getCtx(),
+                                                messageId,
+                                                cmdSubjectName,
+                                                irContent.getBytes(),
+                                                MqttQoS.AT_LEAST_ONCE,
+                                                MqttMessageStateConst.PUB);
+                                        mqttMessageApi.PUBLISH(channel.getCtx(), cmdSubjectName, irContent.getBytes(), messageId, MqttQoS.AT_LEAST_ONCE, false);
                                         break;
                                 }
                                 break;
