@@ -158,15 +158,14 @@ public class NettyProcessHandler {
                                             log.error("主题内容错误：" + subjectContent);
                                             return;
                                         }
-                                        Integer categoryID = obj.getInteger("ci");
-                                        Integer BinaryType = obj.getInteger("bt");
-                                        String fileName = obj.getString("fn");
-                                        Integer keyCode = obj.getInteger("kc");
+                                        Integer categoryID = obj.getInteger("cI");
+                                        Integer BinaryType = obj.getInteger("bT");
+                                        String fileName = obj.getString("fN");
+                                        Integer keyCode = obj.getInteger("kC");
 
                                         String irContent = IRDecode.decode(
                                                 categoryID,
                                                 BinaryType,
-                                                //"irda_new_ac_25071.bin",
                                                 fileName,
                                                 keyCode,
                                                 new ACStatus(),
