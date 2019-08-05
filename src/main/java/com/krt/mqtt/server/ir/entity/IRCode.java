@@ -7,4 +7,6 @@ public class IRCode {
     public int[] ir;
 
     public int[] dup;
+
+    public int crc;
 }

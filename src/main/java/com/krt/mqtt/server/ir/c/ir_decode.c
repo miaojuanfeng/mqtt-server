@@ -3,6 +3,17 @@
 #include "ir_decode.h"
 #include "include/ir_decode.h"
 
+unsigned int crc32( const unsigned int *buf, unsigned int size)
+{
+	unsigned int i, crc;
+	crc = 0xFFFFFFFF;
+
+	for (i = 0; i < size; i++)
+		crc = crc32tab[(crc ^ buf[i]) & 0xff] ^ (crc >> 8);
+
+	return crc^0xFFFFFFFF;
+}
+
 JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpen (JNIEnv *env, jobject this_obj, jint category_id, jint sub_cate, jstring file_name)
 {
     const char *n_file_name = (*env)->GetStringUTFChars(env, file_name, 0);
@@ -86,6 +97,10 @@ JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (
 	if( NULL == n_code ) return NULL;
 	jsize n_len = (*env)->GetArrayLength(env, code);
 	ir_printf("code n_len: %d\n", n_len);
+	
+	unsigned int crc = crc32(n_code, n_len);
+	ir_printf("xxx: %u\n", crc);
+	
 	jint code_array[USER_DATA_SIZE] = { 0 };
 	jint dup_array[USER_DATA_SIZE] = { 0 };
 	jint array_len = 0;
@@ -113,6 +128,7 @@ JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (
 	dup_array[array_len] = d;
 	array_len++;
 	
+	(*env)->ReleaseIntArrayElements(env, code, n_code, 0);
 	
 	
 	jclass cls_ircode = (*env)->FindClass(env, "com/krt/mqtt/server/ir/entity/IRCode");
@@ -123,7 +139,7 @@ JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (
 		ir_printf("len_fid is null");
 		return NULL;
 	}
-	(*env)->SetIntField(env, obj_ircode, len_fid, array_len);
+	(*env)->SetIntField(env, obj_ircode, len_fid, n_len);
 	
 	jfieldID ir_fid = (*env)->GetFieldID(env, cls_ircode, "ir", "[I");
 	if( NULL == ir_fid ){

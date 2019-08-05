@@ -158,18 +158,31 @@ public class NettyProcessHandler {
                                             log.error("主题内容错误：" + subjectContent);
                                             return;
                                         }
-                                        Integer categoryID = obj.getInteger("cI");
-                                        Integer BinaryType = obj.getInteger("bT");
-                                        String fileName = obj.getString("fN");
-                                        Integer keyCode = obj.getInteger("kC");
+                                        Integer categoryID = obj.getInteger("CI");
+                                        Integer BinaryType = obj.getInteger("BT");
+                                        String fileName = obj.getString("FN");
+                                        Integer keyCode = obj.getInteger("KC");
+                                        JSONObject acObj = obj.getJSONObject("AC");
+                                        ACStatus acStatus = new ACStatus(
+                                                acObj.getInteger("PW"),
+                                                acObj.getInteger("MD"),
+                                                acObj.getInteger("TP"),
+                                                acObj.getInteger("WS"),
+                                                acObj.getInteger("WD"),
+                                                0,
+                                                0,
+                                                0
+                                        );
+                                        Integer acSwing = acObj.getInteger("WD");
 
                                         String irContent = IRDecode.decode(
                                                 categoryID,
                                                 BinaryType,
                                                 fileName,
                                                 keyCode,
-                                                new ACStatus(),
-                                                Constants.ACSwing.SWING_ON.getValue());
+                                                acStatus,
+                                                acSwing
+                                        );
                                         log.info(irContent);
                                         /**
                                          * 默认采用AT_LEAST_ONCE服务级别

@@ -31,6 +31,7 @@ public class IRDecode {
         retval.add(irCode.len);
         retval.add(irCode.ir);
         retval.add(irCode.dup);
+        retval.add(irCode.crc);
         return retval.toString();
     }
 
