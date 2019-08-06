@@ -402,7 +402,7 @@ INT8 ir_ac_lib_parse()
     /* in case of running with test - begin */
 #if (defined BOARD_PC || defined BOARD_PC_DLL)
     ir_lib_free_inner_buffer();
-    ir_printf("AC parse done\n");
+    //ir_printf("AC parse done\n");
 #endif
     /* in case of running with test - end */
 
