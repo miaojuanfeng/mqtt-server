@@ -6,27 +6,28 @@ import com.krt.mqtt.server.ir.constant.Constants;
 import com.krt.mqtt.server.ir.entity.ACStatus;
 import com.krt.mqtt.server.ir.entity.IRCode;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 @Slf4j
 public class IRDecode {
 
-    public static native int irOpen(int category, int subCate, String fileName);
+    private static native int irOpen(Logger log, int category, int subCate, String fileName);
 
-    public static native int[] irDecode(int keyCode, ACStatus acStatus, int changeWindDirection);
+    private static native int[] irDecode(Logger log, int keyCode, ACStatus acStatus, int changeWindDirection);
 
-    public static native IRCode mqttEncode(int[] code);
+    private static native IRCode mqttEncode(Logger log, int[] code);
 
     static {
         System.load(Constants.LIB_FILE);
     }
 
     public static String decode(Integer categoryID, Integer subCate, String fileName, Integer keyCode, ACStatus acStatus, Integer cwd){
-        if( Constants.ERROR_CODE_SUCCESS != irOpen(categoryID, subCate, Constants.CODE_PATH + fileName) ){
+        if( Constants.ERROR_CODE_SUCCESS != irOpen(log, categoryID, subCate, Constants.CODE_PATH + fileName) ){
             log.error("红外码库文件打开失败：" + Constants.CODE_PATH + fileName);
             return null;
         }
-        int[] code = irDecode(keyCode, acStatus, cwd);
-        IRCode irCode = mqttEncode(code);
+        int[] code = irDecode(log, keyCode, acStatus, cwd);
+        IRCode irCode = mqttEncode(log, code);
         JSONArray retval = new JSONArray();
         retval.add(irCode.len);
         retval.add(irCode.ir);

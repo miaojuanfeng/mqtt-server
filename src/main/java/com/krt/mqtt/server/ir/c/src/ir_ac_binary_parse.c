@@ -124,7 +124,7 @@ void binary_tags_info()
         {
             continue;
         }
-        ir_printf("tag(%d).len = %d\n", tags[i].tag, tags[i].len);
+        //ir_printf("tag(%d).len = %d\n", tags[i].tag, tags[i].len);
     }
 #endif
 }

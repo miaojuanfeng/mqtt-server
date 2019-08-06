@@ -190,13 +190,13 @@ UINT16 ir_decode(UINT8 key_code, UINT16* user_data,
         {
             return 0;
         }
-        ir_printf("ac status is not null in decode core : power = %d, mode = %d, "
+        /*ir_printf("ac status is not null in decode core : power = %d, mode = %d, "
                   "temp = %d, wind_dir = %d, wind_speed = %d, "
                   "keycode = %d, change_wind_direction = %d\n",
                   ac_status->ac_power, ac_status->ac_mode,
                   ac_status->ac_temp, ac_status->ac_wind_dir,
                   ac_status->ac_wind_speed,
-                  key_code, change_wind_direction);
+                  key_code, change_wind_direction);*/
         return ir_ac_control(*ac_status, user_data, key_code, change_wind_direction);
     }
 }
@@ -419,12 +419,12 @@ static UINT16 ir_ac_control(t_remote_ac_status ac_status, UINT16 *user_data, UIN
 #if (defined BOARD_PC_JNI)
     ir_printf("code count = %d\n", context->code_cnt);
 #else
-    for (i = 0; i < context->code_cnt; i++)
+    /*for (i = 0; i < context->code_cnt; i++)
     {
         ir_printf("%d ", context->time[i]);
-    }
+    }*/
 #endif
-    ir_printf("\n");
+    //ir_printf("\n");
 #endif
 
     return time_length;
