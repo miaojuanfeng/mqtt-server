@@ -21,18 +21,20 @@ public class IRDecode {
         System.load(Constants.LIB_FILE);
     }
 
-    public static String decode(Integer categoryID, Integer subCate, String fileName, Integer keyCode, ACStatus acStatus, Integer cwd){
+    public static String decode(Integer categoryID, Integer subCate, String fileName, Integer keyCode, ACStatus acStatus, Integer cwd, String ID){
         if( Constants.ERROR_CODE_SUCCESS != irOpen(log, categoryID, subCate, Constants.CODE_PATH + fileName) ){
             log.error("红外码库文件打开失败：" + Constants.CODE_PATH + fileName);
             return null;
         }
         int[] code = irDecode(log, keyCode, acStatus, cwd);
         IRCode irCode = mqttEncode(log, code);
-        JSONArray retval = new JSONArray();
-        retval.add(irCode.len);
-        retval.add(irCode.ir);
-        retval.add(irCode.dup);
-        retval.add(irCode.crc);
+        JSONObject retval = new JSONObject();
+        retval.put("CMD", Constants.IR_CMD);
+        retval.put("LEN", irCode.len);
+        retval.put("DATA", irCode.ir);
+        retval.put("REP", irCode.dup);
+        retval.put("CRC", irCode.crc);
+        retval.put("ID", ID);
         return retval.toString();
     }
 

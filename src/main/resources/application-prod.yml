@@ -1,5 +1,5 @@
 server:
-  port: 32018
+  port: 32001
   jks:
     path: /home/krt/iot/iot-mqttsev-32001/SHA256withRSA_iot.krtyun.com.jks
     password: az8TMPQ78S1f

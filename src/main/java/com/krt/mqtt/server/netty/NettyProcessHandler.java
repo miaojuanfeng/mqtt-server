@@ -160,7 +160,7 @@ public class NettyProcessHandler {
                                         }
                                         Integer categoryID = obj.getInteger("CI");
                                         Integer BinaryType = obj.getInteger("BT");
-                                        String fileName = obj.getString("FN");
+                                        String fileName = obj.getString("FN") + Constants.FILE_SUFFIX;
                                         Integer keyCode = obj.getInteger("KC");
                                         JSONObject acObj = obj.getJSONObject("AC");
                                         ACStatus acStatus = new ACStatus(
@@ -174,6 +174,7 @@ public class NettyProcessHandler {
                                                 0
                                         );
                                         Integer acSwing = acObj.getInteger("WD");
+                                        String ID = obj.getString("ID");
 
                                         String irContent = IRDecode.decode(
                                                 categoryID,
@@ -181,7 +182,8 @@ public class NettyProcessHandler {
                                                 fileName,
                                                 keyCode,
                                                 acStatus,
-                                                acSwing
+                                                acSwing,
+                                                ID
                                         );
                                         log.info(irContent);
                                         /**
