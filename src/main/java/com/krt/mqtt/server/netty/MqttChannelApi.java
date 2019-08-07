@@ -112,7 +112,7 @@ public class MqttChannelApi {
             MqttChannel mqttChannel = channels.get(deviceId);
             if( checkOvertime(mqttChannel.getActiveTime(), mqttChannel.getKeepAlive()) ){
                 /**
-                 * 在1.5个心跳周期内没有收到心跳包，则断开与客户端的链接
+                 * 在4个心跳周期内没有收到心跳包，则断开与客户端的链接
                  */
                 log.info("客户端（"+mqttChannel.getDeviceId()+"）心跳超时，强制断开链接");
                 closeChannel(mqttChannel.getCtx(), new Date());
@@ -124,6 +124,6 @@ public class MqttChannelApi {
         return ctx.channel().hasAttr(attr);
     }
 
-    private boolean checkOvertime(long activeTime, long keepAlive) { return System.currentTimeMillis()-activeTime>=keepAlive*1.5*1000; }
+    private boolean checkOvertime(long activeTime, long keepAlive) { return System.currentTimeMillis()-activeTime>=keepAlive*4*1000; }
 
 }
