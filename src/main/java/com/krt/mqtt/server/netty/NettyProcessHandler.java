@@ -152,7 +152,7 @@ public class NettyProcessHandler {
                             case "ir":
                                 switch (segmentName[6]){
                                     case "set":
-                                        cacheCommand(new DeviceCommand(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+                                        cacheData(new DeviceData(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
                                         obj = JSONObject.parseObject(subjectContent);
                                         if( null == obj ) {
                                             log.error("主题内容错误：" + subjectContent);
@@ -203,7 +203,7 @@ public class NettyProcessHandler {
                                                 MqttQoS.AT_LEAST_ONCE,
                                                 MqttMessageStateConst.PUB);
                                         mqttMessageApi.PUBLISH(channel.getCtx(), cmdSubjectName, irContent.getBytes(), messageId, MqttQoS.AT_LEAST_ONCE, false);
-                                        cacheCommand(new DeviceCommand(mqttChannelApi.getDeviceId(ctx), irContent, mqttChannelApi.getDbId(ctx), insertTime));
+                                        cacheCommand(new DeviceCommand(segmentName[3], irContent, mqttChannelApi.getDbId(ctx), insertTime));
                                         break;
                                 }
                                 break;
