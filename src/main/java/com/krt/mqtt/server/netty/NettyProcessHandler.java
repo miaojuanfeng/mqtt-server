@@ -176,7 +176,7 @@ public class NettyProcessHandler {
                                     );
                                     Integer acSwing = acObj.getInteger("WD");
                                     String ID = obj.getString("ID");
-                                    String VER = obj.getString("VER");
+                                    Integer VER = obj.getInteger("VER");
 
                                     String irContent = IRDecode.decode(
                                             categoryID,

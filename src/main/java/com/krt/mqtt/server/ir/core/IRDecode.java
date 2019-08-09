@@ -21,7 +21,7 @@ public class IRDecode {
         System.load(Constants.LIB_FILE);
     }
 
-    public static String decode(Integer categoryID, Integer subCate, String fileName, Integer keyCode, ACStatus acStatus, Integer cwd, String ID, String VER){
+    public static String decode(Integer categoryID, Integer subCate, String fileName, Integer keyCode, ACStatus acStatus, Integer cwd, String ID, Integer VER){
         if( Constants.ERROR_CODE_SUCCESS != irOpen(log, categoryID, subCate, Constants.CODE_PATH + fileName) ){
             log.error("红外码库文件打开失败：" + Constants.CODE_PATH + fileName);
             return null;
