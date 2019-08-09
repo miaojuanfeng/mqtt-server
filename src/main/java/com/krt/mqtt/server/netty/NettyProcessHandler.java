@@ -147,6 +147,7 @@ public class NettyProcessHandler {
                                     cacheCommand(new DeviceCommand(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
                                     break;
                             }
+                            break;
                         case "ir":
                             switch (segmentName[6]){
                                 case "set":
