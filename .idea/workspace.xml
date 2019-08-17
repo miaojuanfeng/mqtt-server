@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list id="f1a375f3-3b37-4013-bd48-26c9bfac5a87" name="Ignore changelist" comment="Ignore changelist">
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/core/IRDecode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/core/IRDecode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.krt.mqtt.server.MqttServerApplicationTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.krt.mqtt.server.MqttServerApplicationTests.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.krt.mqtt.server.MqttServerApplicationTests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.krt.mqtt.server.MqttServerApplicationTests.txt" afterDir="false" />
-    </list>
     <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="xx">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
+    <list id="f1a375f3-3b37-4013-bd48-26c9bfac5a87" name="Ignore changelist" comment="Ignore changelist" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path=".idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -45,8 +36,8 @@
       <file leaf-file-name="NettyProcessHandler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="461">
-              <caret line="147" column="43" selection-start-line="147" selection-start-column="43" selection-end-line="147" selection-end-column="43" />
+            <state relative-caret-position="441">
+              <caret line="243" selection-start-line="243" selection-end-line="243" />
             </state>
           </provider>
         </entry>
@@ -75,7 +66,7 @@
       <file leaf-file-name="MqttMessageService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttMessageService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
+            <state relative-caret-position="2640">
               <caret line="140" selection-start-line="140" selection-end-line="140" />
             </state>
           </provider>
@@ -443,8 +434,8 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="PackagesPane" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -598,7 +589,9 @@
       <workItem from="1565834582800" duration="1214000" />
       <workItem from="1565849878881" duration="1575000" />
       <workItem from="1565941362049" duration="352000" />
-      <workItem from="1565941830496" duration="2260000" />
+      <workItem from="1565941830496" duration="2345000" />
+      <workItem from="1566006082862" duration="3013000" />
+      <workItem from="1566025113734" duration="10000" />
     </task>
     <task id="LOCAL-00001" summary="xx">
       <created>1561192051337</created>
@@ -870,7 +863,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="219769000" />
+    <option name="totallyTimeSpent" value="222877000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -879,8 +872,8 @@
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50053304" side_tool="true" weight="0.5210811" />
       <window_info anchor="bottom" id="JRebel Console" order="7" sideWeight="0.5021322" side_tool="true" weight="0.22702703" />
       <window_info anchor="right" id="Maven Projects" order="3" visible="true" weight="0.12153518" />
-      <window_info anchor="bottom" id="JRebel Executor" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="JRebel Executor" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
       <window_info anchor="right" id="Database" order="3" weight="0.14498934" />
@@ -892,19 +885,19 @@
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.25945947" />
       <window_info active="true" anchor="bottom" id="Version Control" order="7" sideWeight="0.4978678" visible="true" weight="0.1545946" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.25945947" />
       <window_info anchor="bottom" id="Spring" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32972974" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26918977" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27452025" />
       <window_info anchor="bottom" id="Problems" order="7" />
       <window_info id="JRebel" order="2" side_tool="true" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.32972974" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32972974" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -1259,15 +1252,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttMessageService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
+        <state relative-caret-position="2640">
           <caret line="140" selection-start-line="140" selection-end-line="140" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="147" column="43" selection-start-line="147" selection-start-column="43" selection-end-line="147" selection-end-column="43" />
+        <state relative-caret-position="441">
+          <caret line="243" selection-start-line="243" selection-end-line="243" />
         </state>
       </provider>
     </entry>

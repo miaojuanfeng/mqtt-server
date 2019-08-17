@@ -178,7 +178,6 @@ public class NettyProcessHandler {
                                             0
                                     );
                                     Integer acSwing = acObj.getInteger("WD");
-                                    String ID = obj.getString("ID");
                                     Integer VER = obj.getInteger("VER");
 
                                     String irContent = IRDecode.decode(
@@ -188,7 +187,6 @@ public class NettyProcessHandler {
                                             keyCode,
                                             acStatus,
                                             acSwing,
-                                            ID,
                                             VER
                                     );
                                     log.info(irContent);
