@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface DeviceMapper {
 
     Device selectByDeviceId(String deviceId);
+
+    int update(Device device);
 }

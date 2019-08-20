@@ -5,6 +5,7 @@ import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
 import com.krt.mqtt.server.constant.SystemTopicConst;
+import com.krt.mqtt.server.entity.Device;
 import com.krt.mqtt.server.entity.DeviceCommand;
 import com.krt.mqtt.server.entity.DeviceData;
 import com.krt.mqtt.server.entity.ExistLog;
@@ -86,6 +87,7 @@ public class NettyProcessHandler {
             /**
              * 上线日志
              */
+            mqttChannelApi.updateDeviceState(dbId, CommonConst.DEVICE_STATE_ONLINE);
             existLogService.insert(new ExistLog(deviceId, CommonConst.DEVICE_ONLINE, insertTime));
             return;
         }

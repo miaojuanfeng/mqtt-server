@@ -3,12 +3,15 @@ package com.krt.mqtt.server.netty;
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.constant.CommonConst;
+import com.krt.mqtt.server.entity.Device;
 import com.krt.mqtt.server.entity.ExistLog;
+import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.service.ExistLogService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +34,9 @@ public class MqttChannelApi {
 
     @Autowired
     private ExistLogService existLogService;
+
+    @Autowired
+    private DeviceService deviceService;
 
     /**
      * 已连接到服务器端的通道
@@ -90,7 +96,15 @@ public class MqttChannelApi {
             mqttChannel.getCtx().channel().close();
             channels.remove(deviceId);
         }
+        updateDeviceState(getDbId(ctx), CommonConst.DEVICE_STATE_OFFLINE);
         existLogService.insert(new ExistLog(deviceId, CommonConst.DEVICE_OFFLINE, insertTime));
+    }
+
+    public void updateDeviceState(Integer id, Integer state){
+        Device device = new Device();
+        device.setId(id);
+        device.setState(state);
+        deviceService.update(device);
     }
 
     public void updateActiveTime(ChannelHandlerContext ctx){

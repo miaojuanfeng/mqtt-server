@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="xx">
+    <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/constant/CommonConst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/constant/CommonConst.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/entity/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/entity/Device.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/mapper/DeviceMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/mapper/DeviceMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/DeviceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/DeviceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mapping/DeviceMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapping/DeviceMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/core/IRDecode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/core/IRDecode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" beforeDir="false" />
     </list>
     <list id="f1a375f3-3b37-4013-bd48-26c9bfac5a87" name="Ignore changelist" comment="Ignore changelist" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -33,47 +43,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="NettyProcessHandler.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="NettyProcessHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="243" selection-start-line="243" selection-end-line="243" />
+            <state relative-caret-position="198">
+              <caret line="89" column="84" lean-forward="true" selection-start-line="89" selection-start-column="84" selection-end-line="89" selection-end-column="84" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MqttTopicApi.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttTopicApi.java">
+      <file leaf-file-name="DeviceService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/DeviceService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
-              <folding>
-                <element signature="e#500#501#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="176">
+              <caret line="8" column="30" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NettyServer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyServer.java">
+      <file leaf-file-name="DeviceMapper.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/mapping/DeviceMapper.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="35" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="396">
+              <caret line="18" column="50" selection-start-line="18" selection-start-column="50" selection-end-line="18" selection-end-column="50" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MqttMessageService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttMessageService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2640">
-              <caret line="140" selection-start-line="140" selection-end-line="140" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MqttUtil.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/utils/MqttUtil.java">
+      <file leaf-file-name="ReplyMessageThread.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/thread/ReplyMessageThread.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="88">
               <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
@@ -81,38 +79,29 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MqttResendApi.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3630">
-              <caret line="176" selection-start-line="176" selection-end-line="176" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="NettyServerHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyServerHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1210">
-              <caret line="66" column="5" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
+            <state relative-caret-position="486">
+              <caret line="56" column="10" selection-start-line="56" selection-start-column="10" selection-end-line="56" selection-end-column="10" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MqttMessageApi.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttMessageApi.java">
+      <file leaf-file-name="MqttChannel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/beans/MqttChannel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1232">
-              <caret line="66" column="19" selection-start-line="66" selection-start-column="19" selection-end-line="66" selection-end-column="19" />
+            <state relative-caret-position="88">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MqttChannelApi.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MqttChannelApi.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="132">
-              <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+              <caret line="97" column="9" lean-forward="true" selection-start-line="97" selection-start-column="9" selection-end-line="97" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -140,10 +129,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/resources/application-test.yml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/utils/SignalUtil.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/resources/spring-boot.sh" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyServerInitializer.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.yml" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/mapper/DeviceCommandMapper.java" />
@@ -161,7 +146,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/ExistLogsServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/resources/mapping/ExistLogsMapper.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/mapper/ExistLogsMapper.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/constant/CommonConst.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/entity/ExistLog.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/thread/MessageThread.java" />
         <option value="$PROJECT_DIR$/src/main/resources/mapping/ExistLogMapper.xml" />
@@ -177,7 +161,6 @@
         <option value="$USER_HOME$/Documents/NetSarang/Temporary/Hello [5].h" />
         <option value="$USER_HOME$/Documents/NetSarang/Temporary/Hello [4].java" />
         <option value="$USER_HOME$/Documents/NetSarang/Temporary/IRDecode.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/IRCode.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/ACStatus.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application-dev.yml" />
@@ -185,12 +168,18 @@
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/c/ir_decode.c" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/entity/ACStatus.java" />
         <option value="$USER_HOME$/Documents/NetSarang/Temporary/ir_decode.h" />
-        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application-prod.yml" />
         <option value="$PROJECT_DIR$/src/main/resources/log4j.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/constant/Constants.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/core/IRDecode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/entity/Device.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/constant/CommonConst.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/mapper/DeviceMapper.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/mapping/DeviceMapper.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/DeviceService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java" />
       </list>
     </option>
   </component>
@@ -592,6 +581,10 @@
       <workItem from="1565941830496" duration="2345000" />
       <workItem from="1566006082862" duration="3013000" />
       <workItem from="1566025113734" duration="10000" />
+      <workItem from="1566032718246" duration="1617000" />
+      <workItem from="1566185258464" duration="2783000" />
+      <workItem from="1566262693158" duration="662000" />
+      <workItem from="1566292900909" duration="1602000" />
     </task>
     <task id="LOCAL-00001" summary="xx">
       <created>1561192051337</created>
@@ -859,14 +852,22 @@
       <option name="project" value="LOCAL" />
       <updated>1565945149897</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="xx">
+      <created>1566032941146</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1566032941146</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="222877000" />
+    <option name="totallyTimeSpent" value="229541000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50053304" side_tool="true" weight="0.5210811" />
@@ -880,16 +881,17 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946696" weight="0.3610811" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946696" visible="true" weight="0.36972973" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32972974" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="7" sideWeight="0.4978678" visible="true" weight="0.1545946" />
+      <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.4978678" weight="0.22918919" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.25945947" />
       <window_info anchor="bottom" id="Spring" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32972974" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27452025" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28731343" />
       <window_info anchor="bottom" id="Problems" order="7" />
       <window_info id="JRebel" order="2" side_tool="true" />
       <window_info anchor="right" id="Theme Preview" order="3" />
@@ -897,7 +899,6 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.32972974" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -960,28 +961,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DIa5196.49359/ir_decode.h" />
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/Rar$DIa8032.4511/ir_decode.h" />
-    <entry file="file://$USER_HOME$/Desktop/ir_decoder/jni/src/ir_decode_jni.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Desktop/ir_decoder/include/ir_ac_control.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-330" />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Documents/NetSarang/Temporary/IRDecode [2].h" />
-    <entry file="file://$USER_HOME$/Desktop/ir_decoder/include/ir_defs.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-498">
-          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Documents/NetSarang/Temporary/IRDecode [3].h" />
     <entry file="file://$USER_HOME$/Desktop/ir_decoder/include/ir_decode.h">
       <provider selected="true" editor-type-id="text-editor">
@@ -1001,13 +980,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="110">
           <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/DeviceService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="6" column="12" selection-start-line="6" selection-start-column="12" selection-end-line="6" selection-end-column="12" />
         </state>
       </provider>
     </entry>
@@ -1034,13 +1006,6 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/Documents/NetSarang/Temporary/ir_decode [2].h" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/c/ir_decode.h">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1143,9 +1108,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/mapping/DeviceMapper.xml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/mapping/DeviceCommandMapper.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1153,20 +1115,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="242">
           <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/core/IRDecode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="968">
-          <caret line="44" column="42" selection-start-line="44" selection-start-column="42" selection-end-line="44" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/beans/MqttChannel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="23" column="42" selection-start-line="23" selection-start-column="42" selection-end-line="23" selection-end-column="42" />
         </state>
       </provider>
     </entry>
@@ -1184,13 +1132,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/thread/SendMessageThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="22" column="32" lean-forward="true" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://D:/maven/maven-dependcies/io/netty/netty-all/4.1.31.Final/netty-all-4.1.31.Final.jar!/io/netty/handler/codec/mqtt/MqttMessageType.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
@@ -1202,9 +1143,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="16" selection-start-line="16" selection-end-line="16" />
-          <folding>
-            <element signature="e#500#501#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1212,34 +1150,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
           <caret line="35" selection-start-line="35" selection-end-line="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyServerHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1210">
-          <caret line="66" column="5" selection-start-line="66" selection-start-column="5" selection-end-line="66" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttMessageApi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1232">
-          <caret line="66" column="19" selection-start-line="66" selection-start-column="19" selection-end-line="66" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3630">
-          <caret line="176" selection-start-line="176" selection-end-line="176" />
         </state>
       </provider>
     </entry>
@@ -1257,10 +1167,135 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/ir/core/IRDecode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="638">
+          <caret line="35" column="38" selection-start-line="35" selection-start-column="38" selection-end-line="35" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttMessageApi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="40" column="16" selection-start-line="40" selection-start-column="16" selection-end-line="40" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/ExistLogServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="24" column="16" selection-start-line="24" selection-start-column="16" selection-end-line="24" selection-end-column="16" />
+          <folding>
+            <element signature="e#727#728#0" expanded="true" />
+            <element signature="e#774#775#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/ExistLogService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/entity/Device.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="43" column="31" selection-start-line="43" selection-start-column="31" selection-end-line="43" selection-end-column="31" />
+          <folding>
+            <element signature="e#890#891#0" expanded="true" />
+            <element signature="e#933#934#0" expanded="true" />
+            <element signature="e#967#968#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/constant/CommonConst.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="536">
+          <caret line="36" column="27" selection-start-line="36" selection-start-column="27" selection-end-line="36" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/mapping/DeviceMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="18" column="50" selection-start-line="18" selection-start-column="50" selection-end-line="18" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="448">
+          <caret line="42" column="41" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
+          <folding>
+            <element signature="e#1372#1373#0" expanded="true" />
+            <element signature="e#1396#1397#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/mapper/DeviceMapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="12" column="4" lean-forward="true" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/DeviceService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="8" column="30" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2640">
+          <caret line="131" column="9" lean-forward="true" selection-start-line="131" selection-start-column="9" selection-end-line="131" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/thread/SendMessageThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="484">
+          <caret line="24" column="46" selection-start-line="24" selection-start-column="46" selection-end-line="24" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/thread/ReplyMessageThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="243" selection-start-line="243" selection-end-line="243" />
+        <state relative-caret-position="198">
+          <caret line="89" column="84" lean-forward="true" selection-start-line="89" selection-start-column="84" selection-end-line="89" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/beans/MqttChannel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyServerHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="56" column="10" selection-start-line="56" selection-start-column="10" selection-end-line="56" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="97" column="9" lean-forward="true" selection-start-line="97" selection-start-column="9" selection-end-line="97" selection-end-column="9" />
         </state>
       </provider>
     </entry>

@@ -7,6 +7,7 @@ public class Device {
     private String deviceId;
     private String deviceCode;
     private String verifyCode;
+    private Integer state;
 
     public Integer getId() {
         return id;
@@ -38,5 +39,13 @@ public class Device {
 
     public void setVerifyCode(String verifyCode) {
         this.verifyCode = verifyCode;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
     }
 }

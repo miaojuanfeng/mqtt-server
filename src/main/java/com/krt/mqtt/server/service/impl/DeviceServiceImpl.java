@@ -37,4 +37,9 @@ public class DeviceServiceImpl implements DeviceService {
         }
         return null;
     }
+
+    @Override
+    public int update(Device device) {
+        return deviceMapper.update(device);
+    }
 }

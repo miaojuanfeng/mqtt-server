@@ -31,4 +31,8 @@ public class CommonConst {
     public static final byte DEVICE_ONLINE = 1;
 
     public static final byte DEVICE_OFFLINE = 0;
+
+    public static final int DEVICE_STATE_ONLINE = 2;
+
+    public static final int DEVICE_STATE_OFFLINE = 0;
 }

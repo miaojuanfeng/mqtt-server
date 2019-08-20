@@ -6,4 +6,6 @@ public interface DeviceService {
 
     Integer doLogin(String deviceId, String userName, String password);
 
+    int update(Device device);
+
 }
