@@ -10,7 +10,15 @@
     </resultMap>
 
     <select id="selectByDeviceId" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select * from t_device where device_id = #{deviceId} limit 1
+        select * from t_device where state != 1 and device_id = #{deviceId} limit 1
     </select>
+
+    <update id="update" parameterType="com.krt.mqtt.server.entity.Device">
+        update t_device
+        <set>
+            <if test="state != null">state=#{state}</if>
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>
