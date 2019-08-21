@@ -37,6 +37,23 @@ JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpen (JNIEnv 
 	return IR_DECODE_SUCCEEDED;
 }
 
+JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpenBinary
+          (JNIEnv *env, jobject this_obj, jobject log_obj, jint category_id, jint sub_cate,
+           jbyteArray binaries, jint bin_length)
+{
+    jbyte* j_buffer = (*env)->GetByteArrayElements(env, binaries, 0);
+    unsigned char* buffer = (unsigned char*)j_buffer;
+
+    if (IR_DECODE_FAILED == ir_binary_open(category_id, sub_cate, buffer, bin_length))
+    {
+        ir_close();
+        (*env)->ReleaseByteArrayElements(env, binaries, j_buffer, JNI_ABORT);
+        return IR_DECODE_FAILED;
+    }
+
+    return IR_DECODE_SUCCEEDED;
+}
+
 JNIEXPORT jintArray JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irDecode (JNIEnv *env, jobject this_obj, jobject log_obj, jint key_code, jobject jni_ac_status, jint change_wind_direction)
 {
     UINT16 user_data[USER_DATA_SIZE] = { 0 };
