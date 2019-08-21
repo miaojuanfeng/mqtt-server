@@ -107,6 +107,10 @@ public class MqttChannelApi {
         deviceService.update(device);
     }
 
+    public void offLineAllDevice(){
+        deviceService.offLineAllDevice();
+    }
+
     public void updateActiveTime(ChannelHandlerContext ctx){
         MqttChannel mqttChannel = getChannel(ctx);
         if( mqttChannel != null ) {

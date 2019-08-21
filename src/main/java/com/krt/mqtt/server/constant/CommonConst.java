@@ -24,7 +24,7 @@ public class CommonConst {
 
     public static volatile boolean PROCESS_THREAD_STOP = false;
 
-    public static final ProcessManageThread PROCESS_MANAGE_THREAD = new ProcessManageThread();
+    public static ProcessManageThread PROCESS_MANAGE_THREAD;
 
     public static final int MAX_RESEND_COUNT = 10;
 

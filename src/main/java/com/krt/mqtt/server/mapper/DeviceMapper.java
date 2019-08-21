@@ -11,4 +11,6 @@ public interface DeviceMapper {
     Device selectByDeviceId(String deviceId);
 
     int update(Device device);
+
+    int offLineAllDevice();
 }

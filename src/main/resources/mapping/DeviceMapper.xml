@@ -21,4 +21,10 @@
         where id = #{id}
     </update>
 
+    <update id="offLineAllDevice" parameterType="com.krt.mqtt.server.entity.Device">
+        update t_device
+        set state = 0
+        where state = 2
+    </update>
+
 </mapper>

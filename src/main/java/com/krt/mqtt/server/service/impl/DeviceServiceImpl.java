@@ -42,4 +42,9 @@ public class DeviceServiceImpl implements DeviceService {
     public int update(Device device) {
         return deviceMapper.update(device);
     }
+
+    @Override
+    public int offLineAllDevice() {
+        return deviceMapper.offLineAllDevice();
+    }
 }

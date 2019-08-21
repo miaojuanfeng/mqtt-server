@@ -8,4 +8,5 @@ public interface DeviceService {
 
     int update(Device device);
 
+    int offLineAllDevice();
 }

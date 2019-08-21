@@ -1,10 +1,7 @@
 package com.krt.mqtt.server.netty;
 
 import com.krt.mqtt.server.constant.CommonConst;
-import com.krt.mqtt.server.thread.AliveThread;
-import com.krt.mqtt.server.thread.MessageThread;
-import com.krt.mqtt.server.thread.ReplyMessageThread;
-import com.krt.mqtt.server.thread.SendMessageThread;
+import com.krt.mqtt.server.thread.*;
 import com.krt.mqtt.server.utils.SignalUtil;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -70,6 +67,7 @@ public class NettyServer {
             for(int i = 0; i<CommonConst.DEVICE_DATA_THREAD_SIZE; i++) {
                 CommonConst.DEVICE_DATA_THREAD_ARRAY[i] = new MessageThread(i);
             }
+            CommonConst.PROCESS_MANAGE_THREAD = new ProcessManageThread();
             new AliveThread();
             new ReplyMessageThread();
             new SendMessageThread();

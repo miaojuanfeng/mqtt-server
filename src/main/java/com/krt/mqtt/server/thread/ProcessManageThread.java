@@ -1,6 +1,9 @@
 package com.krt.mqtt.server.thread;
 
 import com.krt.mqtt.server.constant.CommonConst;
+import com.krt.mqtt.server.netty.MqttChannelApi;
+import com.krt.mqtt.server.netty.MqttResendApi;
+import com.krt.mqtt.server.service.DeviceService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.MqttMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 public class ProcessManageThread extends Thread{
+
+    private MqttChannelApi mqttChannelApi;
 
     private final ConcurrentLinkedQueue<NettyMessage> messageQueue = new ConcurrentLinkedQueue<>();
 
@@ -29,6 +34,7 @@ public class ProcessManageThread extends Thread{
 
     public ProcessManageThread(){
         this.setName("ProcessManageThread");
+        mqttChannelApi = CommonConst.APPLICATION_CONTEXT.getBean(MqttChannelApi.class);
         this.start();
         log.info("线程（" + this.getName()+"）开始运行");
     }
@@ -90,6 +96,9 @@ public class ProcessManageThread extends Thread{
                         ProcessThread processThread = usedThreadQueue.poll();
                         log.info("线程（" + processThread.getName() + "）工作中，等待其结束");
                         try {
+                            if( !processThread.isInterrupted() ) {
+                                processThread.interrupt();
+                            }
                             processThread.join();
                         } catch (InterruptedException ee) {
                             log.info("线程（" + this.getName() + "）等待线程（" + processThread.getName() + "）退出发生中断");
@@ -101,6 +110,10 @@ public class ProcessManageThread extends Thread{
                 }
             }
         }
+        /**
+         * MQTT退出，下线所有在线设备
+         */
+        mqttChannelApi.offLineAllDevice();
         log.info("线程（"+this.getName()+"）退出");
     }
 
