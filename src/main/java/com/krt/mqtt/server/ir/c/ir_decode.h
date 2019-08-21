@@ -77,9 +77,9 @@ const unsigned int crc32tab[] = {
      0xb40bbe37L, 0xc30c8ea1L, 0x5a05df1bL, 0x2d02ef8dL
 };
 
-JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpen (JNIEnv *env, jobject, jint, jint, jstring);
-JNIEXPORT jintArray JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irDecode (JNIEnv *env, jclass, jint, jobject, jint);
-JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (JNIEnv *env, jobject, jintArray);
+JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpen (JNIEnv *env, jobject, jobject, jint, jint, jstring);
+JNIEXPORT jintArray JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irDecode (JNIEnv *env, jobject, jobject, jint, jobject, jint);
+JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (JNIEnv *env, jobject, jobject, jintArray);
 
 #ifdef __cplusplus
 }

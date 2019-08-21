@@ -166,7 +166,7 @@ public class NettyProcessHandler {
                                     }
                                     Integer categoryID = obj.getInteger("CI");
                                     Integer BinaryType = obj.getInteger("BT");
-                                    String fileName = obj.getString("FN") + Constants.FILE_SUFFIX;
+                                    String fileName = obj.getString("FN");
                                     Integer keyCode = obj.getInteger("KC");
                                     JSONObject acObj = obj.getJSONObject("AC");
                                     ACStatus acStatus = new ACStatus(

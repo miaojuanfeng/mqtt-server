@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "ir_decode.h"
 #include "include/ir_decode.h"
 
@@ -7,14 +8,23 @@ unsigned int crc32( const unsigned int *buf, unsigned int size)
 {
 	unsigned int i, crc;
 	crc = 0xFFFFFFFF;
-
-	for (i = 0; i < size; i++)
+	for (i = 0; i < size; i++){
 		crc = crc32tab[(crc ^ buf[i]) & 0xff] ^ (crc >> 8);
-
+	}
 	return crc^0xFFFFFFFF;
 }
 
-JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpen (JNIEnv *env, jobject this_obj, jint category_id, jint sub_cate, jstring file_name)
+void log_info(JNIEnv *env, jobject log_obj, const char* msg){
+	jclass cls_log = (*env)->GetObjectClass(env, log_obj);
+	jmethodID mid_info = (*env)->GetMethodID(env, cls_log, "info", "(Ljava/lang/String;)V");
+	if (NULL == mid_info){
+		ir_printf("logger info is null");
+		return;
+	}
+	(*env)->CallVoidMethod(env, log_obj, mid_info, (*env)->NewStringUTF(env, msg));
+}
+
+JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpen (JNIEnv *env, jobject this_obj, jobject log_obj, jint category_id, jint sub_cate, jstring file_name)
 {
     const char *n_file_name = (*env)->GetStringUTFChars(env, file_name, 0);
     if (IR_DECODE_FAILED == ir_file_open(category_id, sub_cate, n_file_name))
@@ -23,12 +33,11 @@ JNIEXPORT jint JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irOpen (JNIEnv 
         (*env)->ReleaseStringUTFChars(env, file_name, n_file_name);
         return IR_DECODE_FAILED;
     }
-
-    (*env)->ReleaseStringUTFChars(env, file_name, n_file_name);
-    return IR_DECODE_SUCCEEDED;
+	(*env)->ReleaseStringUTFChars(env, file_name, n_file_name);
+	return IR_DECODE_SUCCEEDED;
 }
 
-JNIEXPORT jintArray JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irDecode (JNIEnv *env, jclass this_obj, jint key_code, jobject jni_ac_status, jint change_wind_direction)
+JNIEXPORT jintArray JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irDecode (JNIEnv *env, jobject this_obj, jobject log_obj, jint key_code, jobject jni_ac_status, jint change_wind_direction)
 {
     UINT16 user_data[USER_DATA_SIZE] = { 0 };
     int i = 0;
@@ -63,11 +72,18 @@ JNIEXPORT jintArray JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irDecode (
         ac_status.ac_wind_dir = i_ac_wind_dir;
         ac_status.ac_wind_speed = i_ac_wind_speed;
 
-        ir_printf("ac status is not null : power = %d, mode = %d, "
-                  "temp = %d, wind_dir = %d, wind_speed = %d\n",
-                  ac_status.ac_power, ac_status.ac_mode,
-                  ac_status.ac_temp, ac_status.ac_wind_dir,
-                  ac_status.ac_wind_speed);
+		char msg[256];
+		sprintf(
+			msg, 
+			"空调状态: key_code = %d, power = %d, mode = %d, temp = %d, wind_dir = %d, wind_speed = %d",
+			key_code,
+			ac_status.ac_power, 
+			ac_status.ac_mode,
+			ac_status.ac_temp,
+			ac_status.ac_wind_dir,
+			ac_status.ac_wind_speed
+		);
+        log_info(env, log_obj, msg);
     }
     else
     {
@@ -81,25 +97,30 @@ JNIEXPORT jintArray JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_irDecode (
     {
         return NULL; /* out of memory error thrown */
     }
+	char msg2[USER_DATA_SIZE+100];
+	sprintf(msg2, "红外序列:");
     for (i = 0; i < wave_code_length; i++)
     {
         copy_array[i] = (int)user_data[i];
+		sprintf(msg2, "%s %d", msg2, copy_array[i]);
     }
+	log_info(env, log_obj, msg2);
     (*env)->SetIntArrayRegion(env, result, 0, wave_code_length, copy_array);
     (*env)->DeleteLocalRef(env, n_ac_status);
 
     return result;
 }
 
-JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (JNIEnv *env, jobject this_obj, jintArray code)
+JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (JNIEnv *env, jobject this_obj, jobject log_obj, jintArray code)
 {
 	jint *n_code = (*env)->GetIntArrayElements(env, code, NULL);
 	if( NULL == n_code ) return NULL;
 	jsize n_len = (*env)->GetArrayLength(env, code);
-	ir_printf("code n_len: %d\n", n_len);
 	
 	unsigned int crc = crc32(n_code, n_len);
-	ir_printf("xxx: %u\n", crc);
+	char msg[50];
+	sprintf(msg, "CRC32校验: %u", crc);
+	log_info(env, log_obj, msg);
 	
 	jint code_array[USER_DATA_SIZE] = { 0 };
 	jint dup_array[USER_DATA_SIZE] = { 0 };
@@ -158,6 +179,13 @@ JNIEXPORT jobject JNICALL Java_com_krt_mqtt_server_ir_core_IRDecode_mqttEncode (
 	jintArray i_dup = (*env)->NewIntArray(env, array_len);
 	(*env)->SetIntArrayRegion(env, i_dup, 0, array_len, dup_array);
 	(*env)->SetObjectField(env, obj_ircode, dup_fid, i_dup);
+	
+	jfieldID crc_fid = (*env)->GetFieldID(env, cls_ircode, "crc", "I");
+	if( NULL == crc_fid ){
+		ir_printf("crc is null");
+		return NULL;
+	}
+	(*env)->SetIntField(env, obj_ircode, crc_fid, crc);
 	
 	return obj_ircode;
 }

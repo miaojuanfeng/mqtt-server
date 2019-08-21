@@ -6,7 +6,6 @@ public class Constants {
     public static final String LIB_PATH  = BASE_PATH + "ext/";
     public static final String LIB_FILE = LIB_PATH + "libirda_decoder.so";
     public static final int IR_CMD = 10;
-    public static final String FILE_SUFFIX = ".bin";
 
     public static final int ERROR_CODE_SUCCESS = 0;
     public static final int ERROR_CODE_NETWORK_ERROR = -1;
