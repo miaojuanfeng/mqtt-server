@@ -1,34 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+    <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="" />
     <list id="f1a375f3-3b37-4013-bd48-26c9bfac5a87" name="Ignore changelist" comment="Ignore changelist" />
-    <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="xx">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/constant/CommonConst.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/constant/CommonConst.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACFunction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACFunction.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACMode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACMode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACPower.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACPower.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACSwing.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACSwing.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACTemperature.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACTemperature.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACWindSpeed.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$ACWindSpeed.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$BinaryType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$BinaryType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$CategoryID.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants$CategoryID.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/constant/Constants.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/core/IRDecode.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/ir/core/IRDecode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/mapper/DeviceMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/mapper/DeviceMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/MqttChannelApi.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/MqttChannelApi.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyServer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyServer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/service/DeviceService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/service/DeviceService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/service/impl/DeviceServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/service/impl/DeviceServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/thread/ProcessManageThread$NettyMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/thread/ProcessManageThread$NettyMessage.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/thread/ProcessManageThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/thread/ProcessManageThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/mapping/DeviceMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/mapping/DeviceMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.krt.mqtt.server.MqttServerApplicationTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.krt.mqtt.server.MqttServerApplicationTests.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.krt.mqtt.server.MqttServerApplicationTests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.krt.mqtt.server.MqttServerApplicationTests.txt" afterDir="false" />
-    </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path=".idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -664,7 +638,7 @@
       <workItem from="1566185258464" duration="2783000" />
       <workItem from="1566262693158" duration="662000" />
       <workItem from="1566292900909" duration="2243000" />
-      <workItem from="1566349585682" duration="12319000" />
+      <workItem from="1566349585682" duration="12366000" />
     </task>
     <task id="LOCAL-00001" summary="xx">
       <created>1561192051337</created>
@@ -967,14 +941,21 @@
       <option name="project" value="LOCAL" />
       <updated>1566378428574</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="xx">
+      <created>1566381684840</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1566381684840</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="242501000" />
+    <option name="totallyTimeSpent" value="242548000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50053304" side_tool="true" weight="0.5210811" />
