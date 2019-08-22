@@ -21,7 +21,7 @@ public class DeviceServiceImpl implements DeviceService {
     public Integer doLogin(String deviceId, String userName, String password) {
         Device device = deviceMapper.selectByDeviceId(deviceId);
         if( device != null ) {
-            if( userName.equals(device.getDeviceCode()) && password.equals(device.getVerifyCode()) ){
+            if( userName.equals(device.getDeviceId()) && password.equals(device.getVerifyCode()) ){
                 try {
                     if( AesUtil.getAESEncrypt(deviceId, CommonConst.AESKEY).equals(device.getVerifyCode()) ) {
                         return device.getId();

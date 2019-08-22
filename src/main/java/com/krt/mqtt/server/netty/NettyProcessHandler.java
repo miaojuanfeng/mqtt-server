@@ -201,7 +201,7 @@ public class NettyProcessHandler {
                                         return;
                                     }
                                     Integer messageId = MessageIdUtil.messageId();
-                                    String cmdSubjectName = "/sys/productId/"+segmentName[3]+"/thing/cmd/set";
+                                    String cmdSubjectName = "/sys/"+segmentName[2]+"/"+segmentName[3]+"/thing/cmd/set";
                                     mqttResendApi.saveSendMessage(channel.getCtx(),
                                             messageId,
                                             cmdSubjectName,
