@@ -4,7 +4,7 @@ import com.krt.mqtt.server.entity.Device;
 
 public interface DeviceService {
 
-    Integer doLogin(String deviceId, String userName, String password);
+    Integer doLogin(Long deviceId, String userName, String password);
 
     int update(Device device);
 

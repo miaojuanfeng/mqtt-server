@@ -51,7 +51,7 @@ public class NettyProcessHandler {
         /**
          * 通道deviceId
          */
-        String deviceId = mqttChannelApi.getDeviceId(ctx);
+        Long deviceId = mqttChannelApi.getDeviceId(ctx);
         /**
          * 处理客户端连接报文
          */
@@ -195,13 +195,15 @@ public class NettyProcessHandler {
                                     /**
                                      * 默认采用AT_LEAST_ONCE服务级别
                                      */
-                                    MqttChannel channel = mqttChannelApi.getChannel(segmentName[3]);
+                                    Long productId = Long.valueOf(segmentName[2]);
+                                    Long deviceId = Long.valueOf(segmentName[3]);
+                                    MqttChannel channel = mqttChannelApi.getChannel(deviceId);
                                     if( null == channel ){
-                                        log.info("设备不在线：" + segmentName[3]);
+                                        log.info("设备不在线：" + deviceId);
                                         return;
                                     }
                                     Integer messageId = MessageIdUtil.messageId();
-                                    String cmdSubjectName = "/sys/"+segmentName[2]+"/"+segmentName[3]+"/thing/cmd/set";
+                                    String cmdSubjectName = "/sys/"+productId+"/"+deviceId+"/thing/cmd/set";
                                     mqttResendApi.saveSendMessage(channel.getCtx(),
                                             messageId,
                                             cmdSubjectName,
@@ -209,7 +211,7 @@ public class NettyProcessHandler {
                                             MqttQoS.AT_LEAST_ONCE,
                                             MqttMessageStateConst.PUB);
                                     mqttMessageApi.PUBLISH(channel.getCtx(), cmdSubjectName, irContent.getBytes(), messageId, MqttQoS.AT_LEAST_ONCE, false);
-                                    cacheCommand(new DeviceCommand(segmentName[3], irContent, mqttChannelApi.getDbId(ctx), insertTime));
+                                    cacheCommand(new DeviceCommand(deviceId, irContent, mqttChannelApi.getDbId(ctx), insertTime));
                                     break;
                             }
                             break;

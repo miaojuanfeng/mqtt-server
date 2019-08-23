@@ -11,18 +11,18 @@ public class MqttTopicApi {
     /**
      * 所有主题列表，以及所有订阅该主题的通道
      */
-    private static ConcurrentHashMap<String, ConcurrentHashMap<String, MqttSubject>> topics = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, ConcurrentHashMap<Long, MqttSubject>> topics = new ConcurrentHashMap<>();
 
-    public ConcurrentHashMap<String, MqttSubject> get(String topicName){
+    public ConcurrentHashMap<Long, MqttSubject> get(String topicName){
         return topics.get(topicName);
     }
 
-    public void put(String topicName, ConcurrentHashMap<String, MqttSubject> mqttTopics){
+    public void put(String topicName, ConcurrentHashMap<Long, MqttSubject> mqttTopics){
         topics.put(topicName, mqttTopics);
     }
 
-    public void remove(String deviceId, String topicName){
-        ConcurrentHashMap<String, MqttSubject> mqttTopics = topics.get(topicName);
+    public void remove(Long deviceId, String topicName){
+        ConcurrentHashMap<Long, MqttSubject> mqttTopics = topics.get(topicName);
         if( mqttTopics != null ){
             mqttTopics.remove(deviceId);
             if( mqttTopics.size() == 0 ){

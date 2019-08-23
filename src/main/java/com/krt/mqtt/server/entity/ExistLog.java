@@ -9,13 +9,13 @@ public class ExistLog {
 
     private Integer id;
 
-    private String deviceId;
+    private Long deviceId;
 
     private Byte state;
 
     private Date time;
 
-    public ExistLog(String deviceId, Byte state, Date time) {
+    public ExistLog(Long deviceId, Byte state, Date time) {
         this.deviceId = deviceId;
         this.state = state;
         this.time = time;
@@ -29,11 +29,11 @@ public class ExistLog {
         this.id = id;
     }
 
-    public String getDeviceId() {
+    public Long getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
+    public void setDeviceId(Long deviceId) {
         this.deviceId = deviceId;
     }
 

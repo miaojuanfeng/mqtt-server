@@ -7,7 +7,7 @@ public class DeviceCommand {
 
     private Integer id;
 
-    private String deviceId;
+    private Long deviceId;
 
     private String command;
 
@@ -15,7 +15,7 @@ public class DeviceCommand {
 
     private Date insertTime;
 
-    public DeviceCommand(String deviceId, String command, Integer inserter, Date insertTime) {
+    public DeviceCommand(Long deviceId, String command, Integer inserter, Date insertTime) {
         this.deviceId = deviceId;
         this.command = command;
         this.inserter = inserter;
@@ -30,11 +30,11 @@ public class DeviceCommand {
         this.id = id;
     }
 
-    public String getDeviceId() {
+    public Long getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
+    public void setDeviceId(Long deviceId) {
         this.deviceId = deviceId;
     }
 

@@ -6,7 +6,7 @@ public class DeviceData{
 
     private Integer id;
 
-    private String deviceId;
+    private Long deviceId;
 
     private String dataType;
 
@@ -20,7 +20,7 @@ public class DeviceData{
 
     private Date updateTime;
 
-    public DeviceData(String deviceId, String deviceData, Integer inserter, Date insertTime) {
+    public DeviceData(Long deviceId, String deviceData, Integer inserter, Date insertTime) {
         this.deviceId = deviceId;
         this.deviceData = deviceData;
         this.inserter = inserter;
@@ -36,11 +36,11 @@ public class DeviceData{
         this.id = id;
     }
 
-    public String getDeviceId() {
+    public Long getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
+    public void setDeviceId(Long deviceId) {
         this.deviceId = deviceId;
     }
 

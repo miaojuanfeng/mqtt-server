@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DeviceMapper {
 
-    Device selectByDeviceId(String deviceId);
+    Device selectByDeviceId(Long deviceId);
 
     int update(Device device);
 

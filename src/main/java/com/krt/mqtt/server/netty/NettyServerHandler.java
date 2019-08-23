@@ -41,11 +41,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<MqttMessage>
         /**
          * 输出报文日志
          */
-        String deviceId = "";
+        Long deviceId = 0L;
         if( mqttChannelApi.hasAttr(ctx, MqttChannelApi._DEVICE_ID) ) {
             deviceId = mqttChannelApi.getDeviceId(ctx);
         }else{
-            deviceId = ((MqttConnectMessage) mqttMessage).payload().clientIdentifier();
+            deviceId = Long.valueOf(((MqttConnectMessage) mqttMessage).payload().clientIdentifier());
             mqttChannelApi.setDeviceId(ctx, deviceId);
         }
         log.info("客户端（" + deviceId + "）发来报文: " + mqttMessage);

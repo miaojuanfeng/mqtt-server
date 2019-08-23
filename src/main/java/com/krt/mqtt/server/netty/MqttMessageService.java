@@ -50,7 +50,7 @@ public class MqttMessageService {
          * Mqtt协议规定，相同Client ID客户端已连接到服务器，
          * 先前客户端必须断开连接后，服务器才能完成新的客户端CONNECT连接
          */
-        String deviceId = mqttConnectMessage.payload().clientIdentifier();
+        Long deviceId = Long.valueOf(mqttConnectMessage.payload().clientIdentifier());
         /**
          * 检查是否有重复连接的客户端
          */
@@ -157,7 +157,7 @@ public class MqttMessageService {
     }
 
     public void replySUBSCRIBE(ChannelHandlerContext ctx, MqttSubscribeMessage mqttSubscribeMessage){
-        String deviceId = mqttChannelApi.getDeviceId(ctx);
+        Long deviceId = mqttChannelApi.getDeviceId(ctx);
         ConcurrentSkipListSet<String> channelTopics = mqttChannelApi.getChannel(ctx).getTopics();
         int num = mqttSubscribeMessage.payload().topicSubscriptions().size();
         List<Integer> grantedQoSLevels = new ArrayList<>(num);
@@ -166,7 +166,7 @@ public class MqttMessageService {
             grantedQoSLevels.add(mqttSubscribeMessage.payload().topicSubscriptions().get(i).qualityOfService().value());
             //
             String topicName = mqttSubscribeMessage.payload().topicSubscriptions().get(i).topicName();
-            ConcurrentHashMap<String, MqttSubject> mqttTopics = mqttTopicApi.get(topicName);
+            ConcurrentHashMap<Long, MqttSubject> mqttTopics = mqttTopicApi.get(topicName);
             if( mqttTopics == null ){
                 mqttTopics = new ConcurrentHashMap<>();
             }
@@ -185,7 +185,7 @@ public class MqttMessageService {
     }
 
     public void replyUNSUBSCRIBE(ChannelHandlerContext ctx, MqttUnsubscribeMessage mqttUnsubscribeMessage){
-        String deviceId = mqttChannelApi.getDeviceId(ctx);
+        Long deviceId = mqttChannelApi.getDeviceId(ctx);
         int num = mqttUnsubscribeMessage.payload().topics().size();
         List<String> topicNames = new ArrayList<>();
         for (int i = 0; i < num; i++) {
@@ -208,8 +208,8 @@ public class MqttMessageService {
                 String willTopic = mqttWill.getWillTopic();
                 byte[] willMessage = mqttWill.getWillMessage();
                 MqttQoS mqttQoS = mqttWill.getMqttQoS();
-                ConcurrentHashMap<String, MqttSubject> mqttTopics = mqttTopicApi.get(willTopic);
-                for (String key : mqttTopics.keySet()){
+                ConcurrentHashMap<Long, MqttSubject> mqttTopics = mqttTopicApi.get(willTopic);
+                for (Long key : mqttTopics.keySet()){
                     int messageId = MessageIdUtil.messageId();
                     MqttSubject mqttTopic = mqttTopics.get(key);
                     switch (mqttWill.getMqttQoS()){
@@ -242,9 +242,9 @@ public class MqttMessageService {
         /**
          * 遍历所有订阅了该主题的客户端
          */
-        ConcurrentHashMap<String, MqttSubject> mqttTopics = mqttTopicApi.get(topicName);
+        ConcurrentHashMap<Long, MqttSubject> mqttTopics = mqttTopicApi.get(topicName);
         if( mqttTopics != null ) {
-            for (String deviceId : mqttTopics.keySet()) {
+            for (Long deviceId : mqttTopics.keySet()) {
                 MqttSubject mqttTopic = mqttTopics.get(deviceId);
                 if (mqttTopic.getCtx().channel().isActive() && mqttTopic.getCtx().channel().isWritable()) {
                     int messageId = MessageIdUtil.messageId();

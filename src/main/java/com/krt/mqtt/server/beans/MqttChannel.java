@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 public class MqttChannel {
 
-    private String deviceId;
+    private Long deviceId;
 
     private ChannelHandlerContext ctx;
 
@@ -33,11 +33,11 @@ public class MqttChannel {
      */
     private ConcurrentHashMap<Integer, MqttSendMessage> sendMessages;
 
-    public String getDeviceId() {
+    public Long getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(String deviceId) {
+    public void setDeviceId(Long deviceId) {
         this.deviceId = deviceId;
     }
 

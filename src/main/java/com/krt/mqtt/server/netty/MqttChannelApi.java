@@ -25,7 +25,7 @@ public class MqttChannelApi {
 
     public static final AttributeKey<Boolean> _LOGIN = AttributeKey.valueOf("login");
 
-    public static final AttributeKey<String> _DEVICE_ID = AttributeKey.valueOf("deviceId");
+    public static final AttributeKey<Long> _DEVICE_ID = AttributeKey.valueOf("deviceId");
 
     public static final AttributeKey<Integer> _DB_ID = AttributeKey.valueOf("dbId");
 
@@ -41,13 +41,13 @@ public class MqttChannelApi {
     /**
      * 已连接到服务器端的通道
      */
-    private static ConcurrentHashMap<String, MqttChannel> channels = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<Long, MqttChannel> channels = new ConcurrentHashMap<>();
 
-    public String getDeviceId(ChannelHandlerContext ctx){
+    public Long getDeviceId(ChannelHandlerContext ctx){
         return ctx.channel().attr(_DEVICE_ID).get();
     }
 
-    public void setDeviceId(ChannelHandlerContext ctx, String deviceId){ ctx.channel().attr(_DEVICE_ID).set(deviceId); }
+    public void setDeviceId(ChannelHandlerContext ctx, Long deviceId){ ctx.channel().attr(_DEVICE_ID).set(deviceId); }
 
     public Integer getDbId(ChannelHandlerContext ctx){
         return ctx.channel().attr(_DB_ID).get();
@@ -59,11 +59,11 @@ public class MqttChannelApi {
         return ctx.channel().attr(_LOGIN).get();
     }
 
-    public MqttChannel getChannel(String deviceId){
+    public MqttChannel getChannel(Long deviceId){
         return channels.get(deviceId);
     }
 
-    public void setChannelAttr(ChannelHandlerContext ctx, String deviceId, Integer dbId){
+    public void setChannelAttr(ChannelHandlerContext ctx, Long deviceId, Integer dbId){
         Channel channel = ctx.channel();
         channel.attr(_LOGIN).set(true);
         channel.attr(_DEVICE_ID).set(deviceId);
@@ -72,7 +72,7 @@ public class MqttChannelApi {
 
     public MqttChannel getChannel(ChannelHandlerContext ctx){ return channels.get(getDeviceId(ctx)); }
 
-    public void setChannel(String deviceId, MqttChannel mqttChannel){
+    public void setChannel(Long deviceId, MqttChannel mqttChannel){
         channels.put(deviceId, mqttChannel);
     }
 
@@ -80,12 +80,12 @@ public class MqttChannelApi {
 
     public ConcurrentHashMap<Integer, MqttSendMessage> getReplyMessages(ChannelHandlerContext ctx){ return channels.get(getDeviceId(ctx)).getReplyMessages(); }
 
-    public ConcurrentHashMap<String, MqttChannel> getChannels(){
+    public ConcurrentHashMap<Long, MqttChannel> getChannels(){
         return channels;
     }
 
     public void closeChannel(ChannelHandlerContext ctx, Date insertTime){
-        String deviceId = getDeviceId(ctx);
+        Long deviceId = getDeviceId(ctx);
         MqttChannel mqttChannel = channels.get(deviceId);
         if( mqttChannel != null ) {
             ConcurrentSkipListSet<String> topicNames = mqttChannel.getTopics();
@@ -126,7 +126,7 @@ public class MqttChannelApi {
     }
 
     public void checkAlive(){
-        for (String deviceId: channels.keySet()) {
+        for (Long deviceId: channels.keySet()) {
             MqttChannel mqttChannel = channels.get(deviceId);
             if( checkOvertime(mqttChannel.getActiveTime(), mqttChannel.getKeepAlive()) ){
                 /**

@@ -9,7 +9,7 @@
         <result column="verify_code" jdbcType="VARCHAR" property="verifyCode" />
     </resultMap>
 
-    <select id="selectByDeviceId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="selectByDeviceId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select * from t_device where state != 1 and device_id = #{deviceId} limit 1
     </select>
 

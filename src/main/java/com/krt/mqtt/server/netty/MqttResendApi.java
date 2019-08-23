@@ -104,8 +104,8 @@ public class MqttResendApi {
     }
 
     public void resendReplyMessage(){
-        ConcurrentHashMap<String, MqttChannel> channels = mqttChannelApi.getChannels();
-        for(String deviceId: channels.keySet()) {
+        ConcurrentHashMap<Long, MqttChannel> channels = mqttChannelApi.getChannels();
+        for(Long deviceId: channels.keySet()) {
             MqttChannel mqttChannel = channels.get(deviceId);
             ConcurrentHashMap<Integer, MqttSendMessage> replyMessages = channels.get(deviceId).getReplyMessages();
             for (Integer messageId : replyMessages.keySet()) {
@@ -133,8 +133,8 @@ public class MqttResendApi {
     }
 
     public void resendSendMessage(){
-        ConcurrentHashMap<String, MqttChannel> channels = mqttChannelApi.getChannels();
-        for(String deviceId: channels.keySet()) {
+        ConcurrentHashMap<Long, MqttChannel> channels = mqttChannelApi.getChannels();
+        for(Long deviceId: channels.keySet()) {
             MqttChannel mqttChannel = channels.get(deviceId);
             ConcurrentHashMap<Integer, MqttSendMessage> sendMessages = channels.get(deviceId).getSendMessages();
             for (Integer messageId : sendMessages.keySet()) {
