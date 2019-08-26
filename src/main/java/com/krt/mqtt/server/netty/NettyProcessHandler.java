@@ -87,7 +87,7 @@ public class NettyProcessHandler {
             /**
              * 上线日志
              */
-            mqttChannelApi.updateDeviceState(dbId, CommonConst.DEVICE_STATE_ONLINE);
+            mqttChannelApi.updateDeviceState(ctx, CommonConst.DEVICE_STATE_ONLINE);
             existLogService.insert(new ExistLog(deviceId, CommonConst.DEVICE_ONLINE, insertTime));
             return;
         }

@@ -102,11 +102,11 @@ public class MqttMessageService {
          */
         switch (mqttPublishMessage.fixedHeader().qosLevel()){
             case AT_MOST_ONCE:
-                broadcastPUBLISH(ctx, topicName, topicMessage);
+                broadcastPUBLISH(topicName, topicMessage);
                 break;
             case AT_LEAST_ONCE:
                 mqttMessageApi.PUBACK(ctx, messageId);
-                broadcastPUBLISH(ctx, topicName, topicMessage);
+                broadcastPUBLISH(topicName, topicMessage);
                 break;
             case EXACTLY_ONCE:
                 /**
@@ -238,7 +238,7 @@ public class MqttMessageService {
         }
     }
 
-    public void broadcastPUBLISH(ChannelHandlerContext ctx, String topicName, byte[] payload){
+    public void broadcastPUBLISH(String topicName, byte[] payload){
         /**
          * 遍历所有订阅了该主题的客户端
          */

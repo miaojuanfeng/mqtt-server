@@ -86,7 +86,7 @@ public class MqttResendApi {
         ConcurrentHashMap<Integer, MqttSendMessage> replyMessages = mqttChannelApi.getReplyMessages(ctx);
         MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
         if( mqttSendMessage != null && mqttSendMessage.getState() == MqttMessageStateConst.REC ){
-            mqttMessageService.broadcastPUBLISH(mqttSendMessage.getCtx(), mqttSendMessage.getTopicName(), mqttSendMessage.getPayload());
+            mqttMessageService.broadcastPUBLISH(mqttSendMessage.getTopicName(), mqttSendMessage.getPayload());
             replyMessages.remove(messageId);
         }else{
             log.error("未完成回复报文（"+messageId+"）不存在");

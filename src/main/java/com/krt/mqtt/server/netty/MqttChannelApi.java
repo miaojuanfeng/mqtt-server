@@ -1,5 +1,6 @@
 package com.krt.mqtt.server.netty;
 
+import com.alibaba.fastjson.JSONObject;
 import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.constant.CommonConst;
@@ -37,6 +38,9 @@ public class MqttChannelApi {
 
     @Autowired
     private DeviceService deviceService;
+
+    @Autowired
+    private MqttMessageService mqttMessageService;
 
     /**
      * 已连接到服务器端的通道
@@ -96,19 +100,33 @@ public class MqttChannelApi {
             mqttChannel.getCtx().channel().close();
             channels.remove(deviceId);
         }
-        updateDeviceState(getDbId(ctx), CommonConst.DEVICE_STATE_OFFLINE);
+        updateDeviceState(ctx, CommonConst.DEVICE_STATE_OFFLINE);
         existLogService.insert(new ExistLog(deviceId, CommonConst.DEVICE_OFFLINE, insertTime));
     }
 
-    public void updateDeviceState(Integer id, Integer state){
+    public void updateDeviceState(ChannelHandlerContext ctx, Integer state){
         Device device = new Device();
-        device.setId(id);
+        device.setId(getDbId(ctx));
         device.setState(state);
         deviceService.update(device);
-    }
+        /**
+         * 上下线信息
+         */
+        String topicName = "/sys/proucdtId/deviceId/thing/state/line";
+        JSONObject topicContent = new JSONObject();
+        topicContent.put("deviceId", getDeviceId(ctx));
+        topicContent.put("state", state);
+        mqttMessageService.broadcastPUBLISH(topicName, topicContent.toString().getBytes());
+}
 
     public void offLineAllDevice(){
         deviceService.offLineAllDevice();
+        /**
+         * 上下线信息
+         */
+        String topicName = "/sys/proucdtId/deviceId/thing/state/stop";
+        JSONObject topicContent = new JSONObject();
+        mqttMessageService.broadcastPUBLISH(topicName, topicContent.toString().getBytes());
     }
 
     public void updateActiveTime(ChannelHandlerContext ctx){
