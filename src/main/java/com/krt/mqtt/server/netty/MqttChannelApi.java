@@ -112,7 +112,7 @@ public class MqttChannelApi {
         /**
          * 上下线信息
          */
-        String topicName = "/sys/proucdtId/deviceId/thing/state/line";
+        String topicName = "/sys/productId/deviceId/thing/state/line";
         JSONObject topicContent = new JSONObject();
         topicContent.put("deviceId", getDeviceId(ctx));
         topicContent.put("state", state);
@@ -124,7 +124,7 @@ public class MqttChannelApi {
         /**
          * 上下线信息
          */
-        String topicName = "/sys/proucdtId/deviceId/thing/state/stop";
+        String topicName = "/sys/productId/deviceId/thing/state/stop";
         JSONObject topicContent = new JSONObject();
         mqttMessageService.broadcastPUBLISH(topicName, topicContent.toString().getBytes());
     }
