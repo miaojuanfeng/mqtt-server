@@ -111,7 +111,7 @@ public class MqttResendApi {
             for (Integer messageId : replyMessages.keySet()) {
                 MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
                 if (mqttSendMessage.getState() == MqttMessageStateConst.REC) {
-                    if (mqttSendMessage.getCtx().channel().isActive() && mqttSendMessage.getCtx().channel().isWritable()) {
+                    if (mqttSendMessage.getCtx() != null && mqttSendMessage.getCtx().channel().isActive() && mqttSendMessage.getCtx().channel().isWritable()) {
                         if ( mqttSendMessage.getResendCount() > CommonConst.MAX_RESEND_COUNT){
                             log.error("客户端（"+deviceId+"）未回复消息（"+messageId+"）超过最大重发次数，已忽略该消息");
                             replyMessages.remove(messageId);
@@ -139,7 +139,7 @@ public class MqttResendApi {
             ConcurrentHashMap<Integer, MqttSendMessage> sendMessages = channels.get(deviceId).getSendMessages();
             for (Integer messageId : sendMessages.keySet()) {
                 MqttSendMessage mqttSendMessage = sendMessages.get(messageId);
-                if (mqttSendMessage.getCtx().channel().isActive() && mqttSendMessage.getCtx().channel().isWritable()) {
+                if (mqttSendMessage.getCtx() != null && mqttSendMessage.getCtx().channel().isActive() && mqttSendMessage.getCtx().channel().isWritable()) {
                     if (mqttSendMessage.getState() == MqttMessageStateConst.PUB) {
                         if ( mqttSendMessage.getResendCount() > CommonConst.MAX_RESEND_COUNT ){
                             log.error("客户端（"+deviceId+"）未发送消息（"+messageId+"）超过最大重发次数，已忽略该消息");
