@@ -159,59 +159,60 @@ public class NettyProcessHandler {
                                     JSONObject obj = null;
                                     try {
                                         obj = JSONObject.parseObject(subjectContent);
+
+                                        Integer categoryID = obj.getInteger("CI");
+                                        Integer BinaryType = obj.getInteger("BT");
+                                        String fileName = obj.getString("FN");
+                                        Integer keyCode = obj.getInteger("KC");
+                                        JSONObject acObj = obj.getJSONObject("AC");
+                                        ACStatus acStatus = new ACStatus(
+                                                acObj.getInteger("PW"),
+                                                acObj.getInteger("MD"),
+                                                acObj.getInteger("TP"),
+                                                acObj.getInteger("WS"),
+                                                acObj.getInteger("WD"),
+                                                0,
+                                                0,
+                                                0
+                                        );
+                                        Integer acSwing = acObj.getInteger("WD");
+                                        Integer VER = obj.getInteger("VER");
+
+                                        String irContent = IRDecode.decode(
+                                                categoryID,
+                                                BinaryType,
+                                                fileName,
+                                                keyCode,
+                                                acStatus,
+                                                acSwing,
+                                                VER
+                                        );
+                                        log.info(irContent);
+                                        /**
+                                         * 默认采用AT_LEAST_ONCE服务级别
+                                         */
+                                        Long productId = Long.valueOf(segmentName[2]);
+                                        Long deviceId = Long.valueOf(segmentName[3]);
+                                        MqttChannel channel = mqttChannelApi.getChannel(deviceId);
+                                        if( null == channel ){
+                                            log.info("设备不在线：" + deviceId);
+                                            return;
+                                        }
+                                        Integer messageId = MessageIdUtil.messageId();
+                                        String cmdSubjectName = "/sys/"+productId+"/"+deviceId+"/thing/cmd/set";
+                                        mqttResendApi.saveSendMessage(channel.getCtx(),
+                                                messageId,
+                                                cmdSubjectName,
+                                                irContent.getBytes(),
+                                                MqttQoS.AT_LEAST_ONCE,
+                                                MqttMessageStateConst.PUB);
+                                        mqttMessageApi.PUBLISH(channel.getCtx(), cmdSubjectName, irContent.getBytes(), messageId, MqttQoS.AT_LEAST_ONCE, false);
+                                        cacheCommand(new DeviceCommand(deviceId, irContent, mqttChannelApi.getDbId(ctx), insertTime));
                                     }catch (Exception e){
                                         log.error("主题内容错误：" + subjectContent);
                                         e.printStackTrace();
                                         return;
                                     }
-                                    Integer categoryID = obj.getInteger("CI");
-                                    Integer BinaryType = obj.getInteger("BT");
-                                    String fileName = obj.getString("FN");
-                                    Integer keyCode = obj.getInteger("KC");
-                                    JSONObject acObj = obj.getJSONObject("AC");
-                                    ACStatus acStatus = new ACStatus(
-                                            acObj.getInteger("PW"),
-                                            acObj.getInteger("MD"),
-                                            acObj.getInteger("TP"),
-                                            acObj.getInteger("WS"),
-                                            acObj.getInteger("WD"),
-                                            0,
-                                            0,
-                                            0
-                                    );
-                                    Integer acSwing = acObj.getInteger("WD");
-                                    Integer VER = obj.getInteger("VER");
-
-                                    String irContent = IRDecode.decode(
-                                            categoryID,
-                                            BinaryType,
-                                            fileName,
-                                            keyCode,
-                                            acStatus,
-                                            acSwing,
-                                            VER
-                                    );
-                                    log.info(irContent);
-                                    /**
-                                     * 默认采用AT_LEAST_ONCE服务级别
-                                     */
-                                    Long productId = Long.valueOf(segmentName[2]);
-                                    Long deviceId = Long.valueOf(segmentName[3]);
-                                    MqttChannel channel = mqttChannelApi.getChannel(deviceId);
-                                    if( null == channel ){
-                                        log.info("设备不在线：" + deviceId);
-                                        return;
-                                    }
-                                    Integer messageId = MessageIdUtil.messageId();
-                                    String cmdSubjectName = "/sys/"+productId+"/"+deviceId+"/thing/cmd/set";
-                                    mqttResendApi.saveSendMessage(channel.getCtx(),
-                                            messageId,
-                                            cmdSubjectName,
-                                            irContent.getBytes(),
-                                            MqttQoS.AT_LEAST_ONCE,
-                                            MqttMessageStateConst.PUB);
-                                    mqttMessageApi.PUBLISH(channel.getCtx(), cmdSubjectName, irContent.getBytes(), messageId, MqttQoS.AT_LEAST_ONCE, false);
-                                    cacheCommand(new DeviceCommand(deviceId, irContent, mqttChannelApi.getDbId(ctx), insertTime));
                                     break;
                             }
                             break;

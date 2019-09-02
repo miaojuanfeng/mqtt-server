@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+    <list id="f1a375f3-3b37-4013-bd48-26c9bfac5a87" name="Ignore changelist" comment="Ignore changelist" />
     <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/MqttResendApi.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/MqttResendApi.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
@@ -12,7 +13,6 @@
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.krt.mqtt.server.MqttServerApplicationTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.krt.mqtt.server.MqttServerApplicationTests.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.krt.mqtt.server.MqttServerApplicationTests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.krt.mqtt.server.MqttServerApplicationTests.txt" afterDir="false" />
     </list>
-    <list id="f1a375f3-3b37-4013-bd48-26c9bfac5a87" name="Ignore changelist" comment="Ignore changelist" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path=".idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -41,20 +41,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="NettyProcessHandler.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="NettyProcessHandler.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="520">
-              <caret line="89" column="45" selection-start-line="89" selection-start-column="45" selection-end-line="89" selection-end-column="45" />
+            <state relative-caret-position="185">
+              <caret line="214" column="37" selection-start-line="214" selection-start-column="37" selection-end-line="214" selection-end-column="37" />
+              <folding>
+                <element signature="e#12237#12238#0" expanded="true" />
+                <element signature="e#12319#12320#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MqttResendApi.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MqttResendApi.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-558">
-              <caret line="113" column="39" selection-start-line="113" selection-start-column="24" selection-end-line="113" selection-end-column="39" />
+            <state relative-caret-position="454">
+              <caret line="159" column="33" selection-start-line="159" selection-start-column="33" selection-end-line="159" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -71,7 +75,7 @@
       <file leaf-file-name="DeviceServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="792">
+            <state relative-caret-position="770">
               <caret line="47" column="35" selection-start-line="47" selection-start-column="35" selection-end-line="47" selection-end-column="35" />
               <folding>
                 <element signature="e#1480#1481#0" expanded="true" />
@@ -211,10 +215,10 @@
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyServerHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttMessageService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttChannelApi.java" />
         <option value="$PROJECT_DIR$/src/main/resources/mapping/DeviceMapper.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" />
       </list>
     </option>
   </component>
@@ -267,7 +271,7 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -469,7 +473,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -643,7 +647,8 @@
       <workItem from="1566783717095" duration="705000" />
       <workItem from="1566784663471" duration="662000" />
       <workItem from="1567130033083" duration="35000" />
-      <workItem from="1567133763048" duration="995000" />
+      <workItem from="1567133763048" duration="1117000" />
+      <workItem from="1567387474818" duration="887000" />
     </task>
     <task id="LOCAL-00001" summary="xx">
       <created>1561192051337</created>
@@ -981,11 +986,18 @@
       <option name="project" value="LOCAL" />
       <updated>1566784361113</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="xx">
+      <created>1567134827568</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1567134827569</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="259609000" />
+    <option name="totallyTimeSpent" value="260618000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1007,22 +1019,22 @@
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info id="Image Layers" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="bottom" id="Version Control" order="12" sideWeight="0.4978678" weight="0.33333334" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4989339" visible="true" weight="0.24350649" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="12" sideWeight="0.4978678" visible="true" weight="0.11796537" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.4025974" />
       <window_info anchor="bottom" id="Spring" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32972974" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2153518" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21748401" />
       <window_info anchor="bottom" id="Problems" order="11" />
       <window_info id="JRebel" order="3" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="Theme Preview" order="7" />
       <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="9" weight="0.32900432" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="9" weight="0.32900432" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1360,7 +1372,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/service/impl/DeviceServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
+        <state relative-caret-position="770">
           <caret line="47" column="35" selection-start-line="47" selection-start-column="35" selection-end-line="47" selection-end-column="35" />
           <folding>
             <element signature="e#1480#1481#0" expanded="true" />
@@ -1383,17 +1395,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="520">
-          <caret line="89" column="45" selection-start-line="89" selection-start-column="45" selection-end-line="89" selection-end-column="45" />
+        <state relative-caret-position="454">
+          <caret line="159" column="33" selection-start-line="159" selection-start-column="33" selection-end-line="159" selection-end-column="33" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/MqttResendApi.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-558">
-          <caret line="113" column="39" selection-start-line="113" selection-start-column="24" selection-end-line="113" selection-end-column="39" />
+        <state relative-caret-position="185">
+          <caret line="214" column="37" selection-start-line="214" selection-start-column="37" selection-end-line="214" selection-end-column="37" />
+          <folding>
+            <element signature="e#12237#12238#0" expanded="true" />
+            <element signature="e#12319#12320#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
