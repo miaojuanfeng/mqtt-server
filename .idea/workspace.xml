@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="">
+    <list default="true" id="13e61054-3cba-415a-9c75-936a22e481df" name="Default" comment="xx">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/krt/mqtt/server/netty/NettyProcessHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/krt/mqtt/server/netty/NettyProcessHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/iot-mqttsev-32001.jar.original" afterDir="false" />
@@ -643,14 +642,7 @@
       <workItem from="1567130033083" duration="35000" />
       <workItem from="1567133763048" duration="1117000" />
       <workItem from="1567387474818" duration="913000" />
-      <workItem from="1567496686553" duration="1580000" />
-    </task>
-    <task id="LOCAL-00002" summary="xx">
-      <created>1561192171704</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1561192171704</updated>
+      <workItem from="1567496686553" duration="1657000" />
     </task>
     <task id="LOCAL-00003" summary="xx">
       <created>1561197742354</created>
@@ -988,11 +980,18 @@
       <option name="project" value="LOCAL" />
       <updated>1567388403426</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="xx">
+      <created>1567500145257</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1567500145257</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="262224000" />
+    <option name="totallyTimeSpent" value="262301000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1014,8 +1013,8 @@
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info id="Image Layers" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="bottom" id="Version Control" order="12" sideWeight="0.4978678" weight="0.15476191" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4989339" visible="true" weight="0.4025974" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="12" sideWeight="0.4978678" visible="true" weight="0.15476191" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.4025974" />
       <window_info anchor="bottom" id="Spring" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32972974" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2196162" />
