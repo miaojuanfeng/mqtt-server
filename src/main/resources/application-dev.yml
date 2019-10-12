@@ -1,5 +1,5 @@
 server:
-  port: 32001
+  port: 32009
   jks:
     path: E:\workspace-iot\IOT_MQTT\src\main\resources\cert\SHA256withRSA_iot.krtyun.com.jks
     password: az8TMPQ78S1f
@@ -8,5 +8,5 @@ spring:
   datasource:
     username: root
     password: krt83567922
-    url: jdbc:mysql://172.0.52.112:3306/iot-cloud?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://172.0.52.112:3306/iot-mqtt?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver

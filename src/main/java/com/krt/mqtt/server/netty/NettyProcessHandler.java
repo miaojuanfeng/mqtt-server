@@ -132,111 +132,14 @@ public class NettyProcessHandler {
                 log.error("主题名称格式错误："+subjectName);
                 return;
             }
-            switch (segmentName[1]){
-                case SystemTopicConst.PREFIX_SYS:
-                    // 这里用位移掩码来做
-                    switch (segmentName[5]){
-                        case "data":
-                            switch (segmentName[6]){
-                                case "post":
-                                case "ack":
-                                    cacheData(new DeviceData(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
-                                    break;
-                            }
-                            break;
-                        case "cmd":
-                            switch (segmentName[6]){
-                                case "set":
-                                case "ack":
-                                    Long deviceId = Long.valueOf(segmentName[3]);
-                                    cacheCommand(new DeviceCommand(deviceId, subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
-                                    break;
-                            }
-                            break;
-                        case "ir":
-                            switch (segmentName[6]){
-                                case "set":
-                                    cacheData(new DeviceData(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
-                                    JSONObject obj = null;
-                                    try {
-                                        obj = JSONObject.parseObject(subjectContent);
-
-                                        Integer categoryID = obj.getInteger("CI");
-                                        Integer BinaryType = obj.getInteger("BT");
-                                        String fileName = obj.getString("FN");
-                                        Integer keyCode = obj.getInteger("KC");
-                                        JSONObject acObj = obj.getJSONObject("AC");
-                                        ACStatus acStatus = new ACStatus(
-                                                acObj.getInteger("PW"),
-                                                acObj.getInteger("MD"),
-                                                acObj.getInteger("TP"),
-                                                acObj.getInteger("WS"),
-                                                acObj.getInteger("WD"),
-                                                0,
-                                                0,
-                                                0
-                                        );
-                                        Integer acSwing = acObj.getInteger("WD");
-                                        Integer VER = obj.getInteger("VER");
-
-                                        String irContent = IRDecode.decode(
-                                                categoryID,
-                                                BinaryType,
-                                                fileName,
-                                                keyCode,
-                                                acStatus,
-                                                acSwing,
-                                                VER
-                                        );
-                                        log.info(irContent);
-                                        /**
-                                         * 默认采用AT_LEAST_ONCE服务级别
-                                         */
-                                        Long productId = Long.valueOf(segmentName[2]);
-                                        Long deviceId = Long.valueOf(segmentName[3]);
-                                        MqttChannel channel = mqttChannelApi.getChannel(deviceId);
-                                        if( null == channel ){
-                                            log.info("设备不在线：" + deviceId);
-                                            return;
-                                        }
-                                        Integer messageId = MessageIdUtil.messageId();
-                                        String cmdSubjectName = "/sys/"+productId+"/"+deviceId+"/thing/cmd/set";
-                                        mqttResendApi.saveSendMessage(channel.getCtx(),
-                                                messageId,
-                                                cmdSubjectName,
-                                                irContent.getBytes(),
-                                                MqttQoS.AT_LEAST_ONCE,
-                                                MqttMessageStateConst.PUB);
-                                        mqttMessageApi.PUBLISH(channel.getCtx(), cmdSubjectName, irContent.getBytes(), messageId, MqttQoS.AT_LEAST_ONCE, false);
-                                        cacheCommand(new DeviceCommand(deviceId, irContent, mqttChannelApi.getDbId(ctx), insertTime));
-                                    }catch (Exception e){
-                                        log.error("主题内容错误：" + subjectContent);
-                                        e.printStackTrace();
-                                        return;
-                                    }
-                                    break;
-                            }
-                            break;
-                    }
+            switch (segmentName[3]){
+                case SystemTopicConst.DEVICE_CLOUD:
+                    Long deviceId = Long.valueOf(segmentName[3]);
+                    cacheCommand(new DeviceCommand(deviceId, subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
                     break;
-//                    case SystemTopicConst.PREFIX_DATA:
-//                        obj = JSONObject.parseObject(subjectContent);
-//                        if( obj != null ) {
-//                            log.info(obj.toString());
-//                        }
-//                        break;
-//                    case SystemTopicConst.PREFIX_OTA:
-//                        obj = JSONObject.parseObject(subjectContent);
-//                        if( obj != null ) {
-//                            log.info(obj.toString());
-//                        }
-//                        break;
-//                    case SystemTopicConst.PREFIX_SHADOW:
-//                        obj = JSONObject.parseObject(subjectContent);
-//                        if( obj != null ) {
-//                            log.info(obj.toString());
-//                        }
-//                        break;
+                default:
+                    cacheData(new DeviceData(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+                    break;
             }
         }
     }
