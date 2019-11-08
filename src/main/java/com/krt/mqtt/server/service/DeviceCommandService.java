@@ -1,7 +1,7 @@
 package com.krt.mqtt.server.service;
 
 
-import com.krt.mqtt.server.entity.DeviceCommand;
+import com.krt.mqtt.server.entity.DeviceCmd;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -13,5 +13,5 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public interface DeviceCommandService {
 
-    void insertBatch(ConcurrentLinkedQueue<DeviceCommand> deviceCommands);
+    void insertBatch(ConcurrentLinkedQueue<DeviceCmd> deviceCommands);
 }

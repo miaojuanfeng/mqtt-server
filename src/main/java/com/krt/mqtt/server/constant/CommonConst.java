@@ -35,4 +35,8 @@ public class CommonConst {
     public static final int DEVICE_STATE_ONLINE = 2;
 
     public static final int DEVICE_STATE_OFFLINE = 0;
+
+    public static final int MESSAGE_STATUS_OK = 200;
+
+    public static final int MESSAGE_STATUS_ERROR = 500;
 }

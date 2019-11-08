@@ -4,7 +4,9 @@ import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.beans.MqttSendMessage;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
+import com.krt.mqtt.server.utils.MqttUtil;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ public class MqttResendApi {
     @Autowired
     private MqttMessageService mqttMessageService;
 
-    public void saveReplyMessage(ChannelHandlerContext ctx, int messageId, String topicName, byte[] payload, int state){
+    public void saveReplyMessage(ChannelHandlerContext ctx, int messageId, String topicName, byte[] payload, Date insertTime, int state){
         MqttChannel mqttChannel = mqttChannelApi.getChannel(ctx);
         ConcurrentHashMap<Integer, MqttSendMessage> replyMessages = mqttChannel.getReplyMessages();
         MqttSendMessage mqttSendMessage = new MqttSendMessage();
@@ -37,6 +39,7 @@ public class MqttResendApi {
         mqttSendMessage.setCtx(ctx);
         mqttSendMessage.setSendTime(new Date().getTime());
         mqttSendMessage.setResendCount(1);
+        mqttSendMessage.setInsertTime(insertTime);
         replyMessages.put(messageId, mqttSendMessage);
     }
 
@@ -86,7 +89,7 @@ public class MqttResendApi {
         ConcurrentHashMap<Integer, MqttSendMessage> replyMessages = mqttChannelApi.getReplyMessages(ctx);
         MqttSendMessage mqttSendMessage = replyMessages.get(messageId);
         if( mqttSendMessage != null && mqttSendMessage.getState() == MqttMessageStateConst.REC ){
-            mqttMessageService.broadcastPUBLISH(mqttSendMessage.getTopicName(), mqttSendMessage.getPayload());
+            mqttMessageService.broadcastPUBLISH(mqttSendMessage.getTopicName(), mqttSendMessage.getPayload(), mqttSendMessage.getInsertTime());
             replyMessages.remove(messageId);
         }else{
             log.error("未完成回复报文（"+messageId+"）不存在");

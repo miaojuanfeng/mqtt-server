@@ -1,5 +1,5 @@
 server:
-  port: 32009
+  port: 32012
   jks:
     path: E:\workspace-iot\IOT_MQTT\src\main\resources\cert\SHA256withRSA_iot.krtyun.com.jks
     password: az8TMPQ78S1f

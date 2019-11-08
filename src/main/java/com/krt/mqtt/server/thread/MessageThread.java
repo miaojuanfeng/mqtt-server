@@ -1,9 +1,8 @@
 package com.krt.mqtt.server.thread;
 
 import com.krt.mqtt.server.constant.CommonConst;
-import com.krt.mqtt.server.entity.DeviceCommand;
+import com.krt.mqtt.server.entity.DeviceCmd;
 import com.krt.mqtt.server.entity.DeviceData;
-import com.krt.mqtt.server.entity.ExistLog;
 import com.krt.mqtt.server.service.DeviceCommandService;
 import com.krt.mqtt.server.service.DeviceDataService;
 import com.krt.mqtt.server.service.ExistLogService;
@@ -18,7 +17,7 @@ public class MessageThread extends Thread{
 
     private final ConcurrentLinkedQueue<DeviceData> dataQueue = new ConcurrentLinkedQueue<>();
 
-    private final ConcurrentLinkedQueue<DeviceCommand> commandQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<DeviceCmd> commandQueue = new ConcurrentLinkedQueue<>();
 
 //    private final ConcurrentLinkedQueue<ExistLog> existLogQueue = new ConcurrentLinkedQueue<>();
 
@@ -67,7 +66,7 @@ public class MessageThread extends Thread{
         }
     }
 
-    public void insertDeviceCommand(DeviceCommand deviceCommand) {
+    public void insertDeviceCommand(DeviceCmd deviceCommand) {
         commandQueue.add(deviceCommand);
         // 限制单次插入数量
         if( commandQueue.size() >= CommonConst.THREAD_DATA_FULL_SIZE ) {

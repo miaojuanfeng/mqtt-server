@@ -3,6 +3,8 @@ package com.krt.mqtt.server.beans;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.MqttQoS;
 
+import java.util.Date;
+
 public class MqttSendMessage {
 
     private int messageId;
@@ -20,6 +22,8 @@ public class MqttSendMessage {
     private long sendTime;
 
     private int resendCount;
+
+    private Date insertTime;
 
     public int getMessageId() {
         return messageId;
@@ -83,5 +87,13 @@ public class MqttSendMessage {
 
     public void setResendCount(int resendCount) {
         this.resendCount = resendCount;
+    }
+
+    public Date getInsertTime() {
+        return insertTime;
+    }
+
+    public void setInsertTime(Date insertTime) {
+        this.insertTime = insertTime;
     }
 }

@@ -116,7 +116,7 @@ public class MqttChannelApi {
         JSONObject topicContent = new JSONObject();
         topicContent.put("deviceId", getDeviceId(ctx));
         topicContent.put("state", state);
-        mqttMessageService.broadcastPUBLISH(topicName, topicContent.toString().getBytes());
+        mqttMessageService.broadcastPUBLISH(topicName, topicContent.toString().getBytes(), new Date());
 }
 
     public void offLineAllDevice(){
@@ -126,7 +126,7 @@ public class MqttChannelApi {
          */
         String topicName = "/sys/productId/deviceId/thing/state/stop";
         JSONObject topicContent = new JSONObject();
-        mqttMessageService.broadcastPUBLISH(topicName, topicContent.toString().getBytes());
+        mqttMessageService.broadcastPUBLISH(topicName, topicContent.toString().getBytes(), new Date());
     }
 
     public void updateActiveTime(ChannelHandlerContext ctx){

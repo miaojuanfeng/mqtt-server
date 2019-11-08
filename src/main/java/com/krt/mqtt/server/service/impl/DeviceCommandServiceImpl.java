@@ -1,11 +1,9 @@
 package com.krt.mqtt.server.service.impl;
 
 
-import com.krt.mqtt.server.entity.DeviceCommand;
-import com.krt.mqtt.server.entity.DeviceData;
-import com.krt.mqtt.server.mapper.DeviceCommandMapper;
+import com.krt.mqtt.server.entity.DeviceCmd;
+import com.krt.mqtt.server.mapper.DeviceCmdMapper;
 import com.krt.mqtt.server.service.DeviceCommandService;
-import com.krt.mqtt.server.service.DeviceDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +19,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class DeviceCommandServiceImpl implements DeviceCommandService {
 
     @Autowired
-    private DeviceCommandMapper deviceCommandMapper;
+    private DeviceCmdMapper deviceCommandMapper;
 
     @Override
-    public void insertBatch(ConcurrentLinkedQueue<DeviceCommand> deviceCommands) {
+    public void insertBatch(ConcurrentLinkedQueue<DeviceCmd> deviceCommands) {
         deviceCommandMapper.insertBatch(deviceCommands);
     }
 }

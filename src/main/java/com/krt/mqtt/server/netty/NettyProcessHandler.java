@@ -1,21 +1,12 @@
 package com.krt.mqtt.server.netty;
 
-import com.alibaba.fastjson.JSONObject;
-import com.krt.mqtt.server.beans.MqttChannel;
 import com.krt.mqtt.server.constant.CommonConst;
-import com.krt.mqtt.server.constant.MqttMessageStateConst;
 import com.krt.mqtt.server.constant.SystemTopicConst;
-import com.krt.mqtt.server.entity.Device;
-import com.krt.mqtt.server.entity.DeviceCommand;
+import com.krt.mqtt.server.entity.DeviceCmd;
 import com.krt.mqtt.server.entity.DeviceData;
 import com.krt.mqtt.server.entity.ExistLog;
-import com.krt.mqtt.server.ir.constant.Constants;
-import com.krt.mqtt.server.ir.core.IRDecode;
-import com.krt.mqtt.server.ir.entity.ACStatus;
 import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.service.ExistLogService;
-import com.krt.mqtt.server.utils.MessageIdUtil;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
 import io.netty.util.CharsetUtil;
@@ -125,21 +116,19 @@ public class NettyProcessHandler {
         }
     }
 
-    public void publish(ChannelHandlerContext ctx, String subjectName, String subjectContent, Date insertTime){
+    public void publish(ChannelHandlerContext ctx, String subjectName, String subjectContent, Date insertTime, Integer status){
+        log.info(mqttChannelApi.getDeviceId(ctx)+"");
         if( subjectName != null && subjectContent != null ){
-            String[] segmentName = subjectName.split("/");
-            if( segmentName.length < 7 ){
-                log.error("主题名称格式错误："+subjectName);
-                return;
-            }
-            switch (segmentName[3]){
-                case SystemTopicConst.DEVICE_CLOUD:
-                    Long deviceId = Long.valueOf(segmentName[3]);
-                    cacheCommand(new DeviceCommand(deviceId, subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
-                    break;
-                default:
-                    cacheData(new DeviceData(mqttChannelApi.getDeviceId(ctx), subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
-                    break;
+            try {
+                String[] segName = subjectName.split("/");
+                Long toDeviceId = Long.valueOf(segName[3]);
+                if (SystemTopicConst.DEVICE_CLOUD.equals(mqttChannelApi.getDeviceId(ctx))) {
+                    cacheData(new DeviceData(toDeviceId, subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+                }else{
+                    cacheCommand(new DeviceCmd(toDeviceId, subjectName, subjectContent, status, mqttChannelApi.getDbId(ctx), insertTime));
+                }
+            }catch (Exception e){
+                // 忽略系统主题
             }
         }
     }
@@ -149,7 +138,7 @@ public class NettyProcessHandler {
         CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceData(deviceData);
     }
 
-    private void cacheCommand(DeviceCommand deviceCommand){
+    private void cacheCommand(DeviceCmd deviceCommand){
         long time = deviceCommand.getInsertTime().getTime();
         CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceCommand(deviceCommand);
     }

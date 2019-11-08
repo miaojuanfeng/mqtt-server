@@ -93,27 +93,22 @@ public class MqttMessageService {
         String topicName = mqttPublishMessage.variableHeader().topicName();
         byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
         /**
-         * 持久化发布报文
-         */
-        String topicContent = MqttUtil.byteToString(topicMessage);
-        nettyProcessHandler.publish(ctx, topicName, topicContent, insertTime);
-        /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
         switch (mqttPublishMessage.fixedHeader().qosLevel()){
             case AT_MOST_ONCE:
-                broadcastPUBLISH(topicName, topicMessage);
+                broadcastPUBLISH(topicName, topicMessage, insertTime);
                 break;
             case AT_LEAST_ONCE:
                 mqttMessageApi.PUBACK(ctx, messageId);
-                broadcastPUBLISH(topicName, topicMessage);
+                broadcastPUBLISH(topicName, topicMessage, insertTime);
                 break;
             case EXACTLY_ONCE:
                 /**
                  * 检查一下消息是否重复，是否需要idDup标识位
                  */
                 if( !mqttPublishMessage.fixedHeader().isDup() || !mqttResendApi.checkExistReplyMessage(ctx, messageId) ) {
-                    mqttResendApi.saveReplyMessage(ctx, messageId, topicName, topicMessage, MqttMessageStateConst.REC);
+                    mqttResendApi.saveReplyMessage(ctx, messageId, topicName, topicMessage, insertTime, MqttMessageStateConst.REC);
                 }
                 mqttMessageApi.PUBREC(ctx, messageId, false);
                 break;
@@ -238,7 +233,7 @@ public class MqttMessageService {
         }
     }
 
-    public void broadcastPUBLISH(String topicName, byte[] payload){
+    public void broadcastPUBLISH(String topicName, byte[] payload, Date insertTime){
         /**
          * 遍历所有订阅了该主题的客户端
          */
@@ -246,14 +241,25 @@ public class MqttMessageService {
         if( mqttTopics != null ) {
             for (Long deviceId : mqttTopics.keySet()) {
                 MqttSubject mqttTopic = mqttTopics.get(deviceId);
+                Integer status = CommonConst.MESSAGE_STATUS_ERROR;
                 if (mqttTopic.getCtx().channel().isActive() && mqttTopic.getCtx().channel().isWritable()) {
                     int messageId = MessageIdUtil.messageId();
-                    if( mqttTopic.getMqttQoS().value() > MqttQoS.AT_MOST_ONCE.value() ) {
+                    if (mqttTopic.getMqttQoS().value() > MqttQoS.AT_MOST_ONCE.value()) {
                         mqttResendApi.saveSendMessage(mqttTopic.getCtx(), messageId, topicName, payload, mqttTopic.getMqttQoS(), MqttMessageStateConst.PUB);
                     }
                     mqttMessageApi.PUBLISH(mqttTopic.getCtx(), topicName, payload, messageId, mqttTopic.getMqttQoS(), false);
+                    status = CommonConst.MESSAGE_STATUS_OK;
                 }
+                /**
+                 * 持久化发布报文
+                 */
+                nettyProcessHandler.publish(mqttTopic.getCtx(), topicName, MqttUtil.byteToString(payload), insertTime, status);
             }
+            if( mqttTopics.isEmpty() ){
+                log.info("empty subcriber");
+            }
+        }else {
+            log.info("empty subcriber 2");
         }
     }
 }
