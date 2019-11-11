@@ -116,29 +116,29 @@ public class NettyProcessHandler {
         }
     }
 
-    public void publish(ChannelHandlerContext ctx, String subjectName, String subjectContent, Date insertTime, Integer status){
-        log.info(mqttChannelApi.getDeviceId(ctx)+"");
-        if( subjectName != null && subjectContent != null ){
-            try {
-                String[] segName = subjectName.split("/");
-                Long toDeviceId = Long.valueOf(segName[3]);
-                if (SystemTopicConst.DEVICE_CLOUD.equals(mqttChannelApi.getDeviceId(ctx))) {
-                    cacheData(new DeviceData(toDeviceId, subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
-                }else{
-                    cacheCommand(new DeviceCmd(toDeviceId, subjectName, subjectContent, status, mqttChannelApi.getDbId(ctx), insertTime));
-                }
-            }catch (Exception e){
-                // 忽略系统主题
-            }
-        }
-    }
+//    public void publish(ChannelHandlerContext ctx, String subjectName, String subjectContent, Date insertTime, Integer status){
+//        log.info(mqttChannelApi.getDeviceId(ctx)+"");
+//        if( subjectName != null && subjectContent != null ){
+//            try {
+//                String[] segName = subjectName.split("/");
+//                Long toDeviceId = Long.valueOf(segName[3]);
+//                if (SystemTopicConst.DEVICE_CLOUD.equals(mqttChannelApi.getDeviceId(ctx))) {
+////                    cacheData(new DeviceData(toDeviceId, subjectContent, mqttChannelApi.getDbId(ctx), insertTime));
+//                }else{
+//                    cacheCommand(new DeviceCmd(toDeviceId, subjectName, subjectContent, status, mqttChannelApi.getDbId(ctx), insertTime));
+//                }
+//            }catch (Exception e){
+//                // 忽略系统主题
+//            }
+//        }
+//    }
 
-    private void cacheData(DeviceData deviceData){
+    public void cacheData(DeviceData deviceData){
         long time = deviceData.getInsertTime().getTime();
         CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceData(deviceData);
     }
 
-    private void cacheCommand(DeviceCmd deviceCommand){
+    public void cacheCommand(DeviceCmd deviceCommand){
         long time = deviceCommand.getInsertTime().getTime();
         CommonConst.DEVICE_DATA_THREAD_ARRAY[getIndex(time)].insertDeviceCommand(deviceCommand);
     }

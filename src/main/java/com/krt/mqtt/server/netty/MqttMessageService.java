@@ -7,6 +7,8 @@ import com.krt.mqtt.server.beans.MqttSubject;
 import com.krt.mqtt.server.beans.MqttWill;
 import com.krt.mqtt.server.constant.CommonConst;
 import com.krt.mqtt.server.constant.MqttMessageStateConst;
+import com.krt.mqtt.server.constant.SystemTopicConst;
+import com.krt.mqtt.server.entity.DeviceCmd;
 import com.krt.mqtt.server.entity.DeviceData;
 import com.krt.mqtt.server.service.DeviceService;
 import com.krt.mqtt.server.utils.MessageIdUtil;
@@ -92,6 +94,10 @@ public class MqttMessageService {
         int messageId = mqttPublishMessage.variableHeader().packetId();
         String topicName = mqttPublishMessage.variableHeader().topicName();
         byte[] topicMessage = MqttUtil.readBytes(mqttPublishMessage.payload());
+        /**
+         * 持久化发布数据
+         */
+        nettyProcessHandler.cacheData(new DeviceData(mqttChannelApi.getDeviceId(ctx), MqttUtil.byteToString(topicMessage), mqttChannelApi.getDbId(ctx), insertTime));
         /**
          * 根据客户端发来的报文类型来决定回复客户端的报文类型
          */
@@ -253,13 +259,16 @@ public class MqttMessageService {
                 /**
                  * 持久化发布报文
                  */
-                nettyProcessHandler.publish(mqttTopic.getCtx(), topicName, MqttUtil.byteToString(payload), insertTime, status);
+                if (!SystemTopicConst.DEVICE_CLOUD.equals(mqttChannelApi.getDeviceId(mqttTopic.getCtx()))) {
+                    try {
+                        String[] segName = topicName.split("/");
+                        Long toDeviceId = Long.valueOf(segName[3]);
+                        nettyProcessHandler.cacheCommand(new DeviceCmd(toDeviceId, topicName, MqttUtil.byteToString(payload), status, mqttChannelApi.getDbId(mqttTopic.getCtx()), insertTime));
+                    }catch (Exception e){
+                        // 忽略系统主题
+                    }
+                }
             }
-            if( mqttTopics.isEmpty() ){
-                log.info("empty subcriber");
-            }
-        }else {
-            log.info("empty subcriber 2");
         }
     }
 }
