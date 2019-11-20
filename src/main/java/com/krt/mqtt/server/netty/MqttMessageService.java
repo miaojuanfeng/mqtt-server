@@ -261,14 +261,16 @@ public class MqttMessageService {
                  */
                 if (!SystemTopicConst.DEVICE_CLOUD.equals(mqttChannelApi.getDeviceId(mqttTopic.getCtx()))) {
                     try {
-                        String[] segName = topicName.split("/");
-                        Long toDeviceId = Long.valueOf(segName[3]);
-                        nettyProcessHandler.cacheCommand(new DeviceCmd(toDeviceId, topicName, MqttUtil.byteToString(payload), status, mqttChannelApi.getDbId(mqttTopic.getCtx()), insertTime));
+//                        String[] segName = topicName.split("/");
+//                        Long toDeviceId = Long.valueOf(segName[3]);
+                        nettyProcessHandler.cacheCommand(new DeviceCmd(mqttChannelApi.getDeviceId(mqttTopic.getCtx()), topicName, MqttUtil.byteToString(payload), status, mqttChannelApi.getDbId(mqttTopic.getCtx()), insertTime));
                     }catch (Exception e){
                         // 忽略系统主题
                     }
                 }
             }
+        }else{
+            log.info("无设备订阅主题：" + topicName);
         }
     }
 }
